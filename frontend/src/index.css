@@ -1,0 +1,106 @@
+﻿@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --tracora-void: #050811;
+  --tracora-bg: #080c18;
+  --tracora-surface: #0c1222;
+  --tracora-card: #0f172a;
+  --tracora-card-hover: #141f36;
+  --tracora-border: rgba(56, 189, 248, 0.12);
+  --tracora-border-subtle: #1e293b;
+  --tracora-border-focus: rgba(0, 229, 255, 0.4);
+  --tracora-cyan: #00e5ff;
+  --tracora-cyan-glow: rgba(0, 229, 255, 0.15);
+  --tracora-blue: #2563eb;
+  --tracora-indigo: #6366f1;
+  --tracora-emerald: #10b981;
+  --tracora-amber: #f59e0b;
+  --tracora-rose: #f43f5e;
+  --tracora-text-primary: #f8fafc;
+  --tracora-text-secondary: #94a3b8;
+  --tracora-text-muted: #64748b;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--tracora-void);
+  color: var(--tracora-text-primary);
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #080c18;
+}
+::-webkit-scrollbar-thumb {
+  background: #1e293b;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #334155;
+}
+
+/* Scanline Animation for Scanner Viewport */
+@keyframes scanline {
+  0% {
+    top: 0%;
+    opacity: 0.8;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    top: 100%;
+    opacity: 0.2;
+  }
+}
+
+.animate-scanline {
+  animation: scanline 2.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+/* Glow Breathe */
+@keyframes glow-breathe {
+  0%, 100% {
+    opacity: 0.4;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.03);
+  }
+}
+
+.animate-glow-breathe {
+  animation: glow-breathe 4s ease-in-out infinite;
+}
+
+/* Technical Glass Card */
+.tracora-glass-card {
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(56, 189, 248, 0.12);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.45);
+}
+
+.tracora-glass-card:hover {
+  border-color: rgba(56, 189, 248, 0.22);
+}
+
+.tracora-hud-border {
+  border: 1px solid rgba(0, 229, 255, 0.3);
+  box-shadow: 0 0 15px -2px rgba(0, 229, 255, 0.2);
+}

@@ -1,0 +1,23 @@
+{
+ "align_labels_right": 0,
+ "creation": "2026-09-07 12:00:00.000000",
+ "custom_format": 0,
+ "default_print_language": "en",
+ "disabled": 0,
+ "doc_type": "Tracora Asset",
+ "doctype": "Print Format",
+ "font_size": 14,
+ "line_breaks": 0,
+ "modified": "2026-09-07 12:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Tracora",
+ "name": "Tracora Asset Label",
+ "owner": "Administrator",
+ "page_number": "Hide",
+ "print_format_builder": 0,
+ "print_format_builder_beta": 0,
+ "print_format_type": "Jinja",
+ "raw_printing": 0,
+ "show_section_headings": 0,
+ "standard": "Yes"
+}

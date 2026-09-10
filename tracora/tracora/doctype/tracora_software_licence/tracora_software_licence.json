@@ -1,0 +1,227 @@
+{
+ "actions": [],
+ "allow_rename": 0,
+ "autoname": "TSL-.######",
+ "creation": "2026-09-08 10:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "section_break_licence",
+  "software_name",
+  "licence_name",
+  "company",
+  "column_break_type",
+  "licence_type",
+  "renewal_cycle",
+  "section_break_dates",
+  "licence_start_date",
+  "licence_expiry_date",
+  "column_break_dates",
+  "next_renewal_date",
+  "section_break_seats",
+  "seats",
+  "section_break_warranty",
+  "warranty_expiry_date",
+  "warranty_renewal_date",
+  "section_break_history",
+  "last_renewed_on",
+  "column_break_history",
+  "licence_status"
+ ],
+ "fields": [
+  {
+   "fieldname": "section_break_licence",
+   "fieldtype": "Section Break",
+   "label": "Licence Details"
+  },
+  {
+   "fieldname": "software_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Software Name",
+   "reqd": 1
+  },
+  {
+   "description": "Descriptive licence or asset package name",
+   "fieldname": "licence_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Licence Name",
+   "reqd": 1
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Company",
+   "options": "Tracora Company",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_type",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "licence_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Licence Type",
+   "options": "User licence\nDevice licence",
+   "reqd": 1
+  },
+  {
+   "default": "Yearly",
+   "fieldname": "renewal_cycle",
+   "fieldtype": "Select",
+   "label": "Renewal Cycle",
+   "options": "One-time\nMonthly\nQuarterly\nHalf-yearly\nYearly",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_break_dates",
+   "fieldtype": "Section Break",
+   "label": "Dates"
+  },
+  {
+   "description": "When the licence was purchased/started. Used to calculate the next renewal date.",
+   "fieldname": "licence_start_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Licence Start Date"
+  },
+  {
+   "description": "Hard contract end date. Determines Expired status.",
+   "fieldname": "licence_expiry_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Licence Expiry",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_dates",
+   "fieldtype": "Column Break"
+  },
+  {
+   "description": "Auto-calculated by the daily scheduler from Licence Start Date + Renewal Cycle. Not editable.",
+   "fieldname": "next_renewal_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Next Renewal Due",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_seats",
+   "fieldtype": "Section Break",
+   "label": "Seats"
+  },
+  {
+   "fieldname": "seats",
+   "fieldtype": "Table",
+   "label": "Seats",
+   "options": "Tracora Licence Seat"
+  },
+  {
+   "collapsed": 1,
+   "collapsible": 1,
+   "fieldname": "section_break_warranty",
+   "fieldtype": "Section Break",
+   "label": "Vendor Warranty & Support (Optional)"
+  },
+  {
+   "fieldname": "warranty_expiry_date",
+   "fieldtype": "Date",
+   "label": "Warranty Expiry"
+  },
+  {
+   "fieldname": "warranty_renewal_date",
+   "fieldtype": "Date",
+   "label": "Warranty Renewal Due"
+  },
+  {
+   "collapsed": 1,
+   "collapsible": 1,
+   "fieldname": "section_break_history",
+   "fieldtype": "Section Break",
+   "label": "History & Status"
+  },
+  {
+   "description": "Date the scheduler last recalculated the renewal date.",
+   "fieldname": "last_renewed_on",
+   "fieldtype": "Date",
+   "label": "Last Renewed On",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_history",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "Unassigned",
+   "fieldname": "licence_status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Status",
+   "options": "Active\nUnassigned\nExpired",
+   "read_only": 1,
+   "reqd": 1
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-09-08 16:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Tracora",
+ "name": "Tracora Software Licence",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Tracora Super Admin",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 0,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Tracora Admin",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 0,
+   "delete": 0,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Tracora Auditor",
+   "share": 0,
+   "write": 0
+  }
+ ],
+ "quick_entry": 0,
+ "search_fields": "software_name, licence_name, company, licence_status",
+ "sort_field": "licence_expiry_date",
+ "sort_order": "ASC",
+ "states": [],
+ "track_changes": 1
+}

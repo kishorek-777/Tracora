@@ -1,0 +1,156 @@
+{
+ "actions": [],
+ "creation": "2026-09-03 12:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "asset_tags_section",
+  "tag_prefix",
+  "labels_section",
+  "label_width_mm",
+  "column_break_labels",
+  "label_height_mm",
+  "column_break_qr",
+  "qr_size_mm",
+  "reminders_section",
+  "reminder_lead_days",
+  "sender_email",
+  "column_break_reminders",
+  "last_reminder_run",
+  "hrms_section",
+  "hrms_sync_enabled",
+  "import_hrms_data"
+ ],
+ "fields": [
+  {
+   "fieldname": "asset_tags_section",
+   "fieldtype": "Section Break",
+   "label": "Asset Tags"
+  },
+  {
+   "default": "TRC-",
+   "description": "Prefix added to the start of every generated asset tag.",
+   "fieldname": "tag_prefix",
+   "fieldtype": "Data",
+   "label": "Tag Prefix",
+   "reqd": 1
+  },
+  {
+   "fieldname": "labels_section",
+   "fieldtype": "Section Break",
+   "label": "Labels"
+  },
+  {
+   "default": "50",
+   "description": "Width of the physical label sticker in millimetres.",
+   "fieldname": "label_width_mm",
+   "fieldtype": "Float",
+   "label": "Label Width (mm)"
+  },
+  {
+   "fieldname": "column_break_labels",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "25",
+   "description": "Height of the physical label sticker in millimetres.",
+   "fieldname": "label_height_mm",
+   "fieldtype": "Float",
+   "label": "Label Height (mm)"
+  },
+  {
+   "fieldname": "column_break_qr",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "15",
+   "description": "Size of the square QR code on the label in millimetres.",
+   "fieldname": "qr_size_mm",
+   "fieldtype": "Float",
+   "label": "QR Size (mm)"
+  },
+  {
+   "fieldname": "reminders_section",
+   "fieldtype": "Section Break",
+   "label": "Reminders"
+  },
+  {
+   "default": "30,15,7,2,1,0",
+   "description": "Days before a due date to send reminders. Comma separated.",
+   "fieldname": "reminder_lead_days",
+   "fieldtype": "Data",
+   "label": "Reminder Lead Days"
+  },
+  {
+   "description": "Email address used to send asset due and return reminders.",
+   "fieldname": "sender_email",
+   "fieldtype": "Data",
+   "label": "Sender Email"
+  },
+  {
+   "fieldname": "column_break_reminders",
+   "fieldtype": "Column Break"
+  },
+  {
+   "description": "Date and time the automated reminder job last executed.",
+   "fieldname": "last_reminder_run",
+   "fieldtype": "Datetime",
+   "label": "Last Reminder Run",
+   "read_only": 1
+  },
+  {
+   "fieldname": "hrms_section",
+   "fieldtype": "Section Break",
+   "label": "HRMS"
+  },
+  {
+   "default": "0",
+   "description": "Enables Tracora to receive employee, company, branch and department updates from HRMS as they happen.",
+   "fieldname": "hrms_sync_enabled",
+   "fieldtype": "Check",
+   "label": "Enable HRMS Sync"
+  },
+  {
+   "depends_on": "eval:doc.hrms_sync_enabled == 1",
+   "fieldname": "import_hrms_data",
+   "fieldtype": "Button",
+   "label": "Import Existing HRMS Data"
+  }
+ ],
+ "issingle": 1,
+ "links": [],
+ "modified": "2026-09-03 12:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Tracora",
+ "name": "Tracora Settings",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 0,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "Tracora Super Admin",
+   "share": 1,
+   "write": 1,
+   "report": 1
+  },
+  {
+   "create": 1,
+   "delete": 0,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "Tracora Admin",
+   "share": 1,
+   "write": 1,
+   "report": 1
+  }
+ ],
+ "quick_entry": 0,
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

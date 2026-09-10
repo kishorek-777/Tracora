@@ -1,0 +1,50 @@
+{
+ "app": "tracora",
+ "creation": "2026-09-10 11:56:08.724363",
+ "docstatus": 0,
+ "doctype": "Workspace Sidebar",
+ "idx": 0,
+ "items": [
+  {
+   "child": 0,
+   "collapsible": 1,
+   "icon": "home",
+   "indent": 0,
+   "keep_closed": 0,
+   "label": "Home",
+   "link_to": "Tracora",
+   "link_type": "Workspace",
+   "show_arrow": 0,
+   "type": "Link"
+  },
+  {
+   "child": 0,
+   "collapsible": 0,
+   "indent": 0,
+   "keep_closed": 0,
+   "label": "Reports",
+   "link_type": "DocType",
+   "show_arrow": 0,
+   "type": "Section Break"
+  },
+  {
+   "child": 0,
+   "collapsible": 1,
+   "icon": "bar-chart-2",
+   "indent": 0,
+   "keep_closed": 0,
+   "label": "Reports",
+   "link_to": "Tracora Report",
+   "link_type": "Report",
+   "show_arrow": 0,
+   "type": "Link"
+  }
+ ],
+ "modified": "2026-09-10 14:51:29.081596",
+ "modified_by": "Administrator",
+ "module": "Tracora",
+ "name": "Tracora Reports",
+ "owner": "Administrator",
+ "standard": 1,
+ "title": "Tracora Reports"
+}

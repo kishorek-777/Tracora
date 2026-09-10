@@ -1,0 +1,70 @@
+{
+ "app": "tracora",
+ "charts": [],
+ "content": "[{\"id\": \"header_rep\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>Tracora Reports</b></span>\", \"col\": 12}}, {\"id\": \"card_report\", \"type\": \"card\", \"data\": {\"card_name\": \"Reports\", \"col\": 12}}]",
+ "creation": "2026-09-10 11:56:08.125295",
+ "custom_blocks": [],
+ "docstatus": 0,
+ "doctype": "Workspace",
+ "for_user": "",
+ "hide_custom": 0,
+ "icon": "bar-chart-2",
+ "idx": 1,
+ "indicator_color": "blue",
+ "is_hidden": 0,
+ "label": "Tracora Reports",
+ "link_type": "DocType",
+ "links": [
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Reports",
+   "link_count": 0,
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "description": "Unified asset custody, inventory, and licence register with selectable views, multi-select filters, and customizable column exports.",
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Tracora Report",
+   "link_count": 0,
+   "link_to": "Tracora Report",
+   "link_type": "Report",
+   "onboard": 1,
+   "report_ref_doctype": "Tracora Asset",
+   "type": "Link"
+  }
+ ],
+ "modified": "2026-09-10 14:28:25.599795",
+ "modified_by": "Administrator",
+ "module": "Tracora",
+ "name": "Tracora Reports",
+ "number_cards": [],
+ "owner": "Administrator",
+ "parent_page": "Tracora",
+ "public": 1,
+ "quick_lists": [],
+ "restrict_to_domain": "",
+ "roles": [
+  {
+   "role": "Tracora Super Admin"
+  },
+  {
+   "role": "Tracora Admin"
+  }
+ ],
+ "sequence_id": 2.0,
+ "shortcuts": [
+  {
+   "doc_view": "",
+   "label": "Open Tracora Report",
+   "link_to": "Tracora Report",
+   "report_ref_doctype": "Tracora Asset",
+   "type": "Report"
+  }
+ ],
+ "title": "Tracora Reports",
+ "type": "Workspace"
+}

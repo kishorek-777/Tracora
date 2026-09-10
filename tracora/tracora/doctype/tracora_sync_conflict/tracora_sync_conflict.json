@@ -1,0 +1,140 @@
+{
+ "actions": [],
+ "autoname": "hash",
+ "creation": "2026-09-04 10:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "reference_doctype",
+  "reference_key",
+  "column_break_ref",
+  "conflict_type",
+  "conflict_status",
+  "hrms_reference",
+  "section_diff",
+  "differing_fields",
+  "section_snapshots",
+  "hrms_values",
+  "column_break_snapshots",
+  "tracora_values"
+ ],
+ "fields": [
+  {
+   "fieldname": "reference_doctype",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Record Type",
+   "reqd": 1
+  },
+  {
+   "fieldname": "reference_key",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Key",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_ref",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "Value mismatch",
+   "fieldname": "conflict_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Conflict Type",
+   "options": "Value mismatch\nSubscriber failure",
+   "reqd": 1
+  },
+  {
+   "default": "Open",
+   "fieldname": "conflict_status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Status",
+   "options": "Open\nResolved",
+   "reqd": 1
+  },
+  {
+   "fieldname": "hrms_reference",
+   "fieldtype": "Data",
+   "label": "HRMS Record",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_diff",
+   "fieldtype": "Section Break",
+   "label": "Difference Summary"
+  },
+  {
+   "fieldname": "differing_fields",
+   "fieldtype": "Small Text",
+   "in_list_view": 1,
+   "label": "Differing Fields",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_snapshots",
+   "fieldtype": "Section Break",
+   "label": "Values Snapshot"
+  },
+  {
+   "fieldname": "hrms_values",
+   "fieldtype": "Code",
+   "label": "HRMS Values",
+   "options": "JSON",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_snapshots",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "tracora_values",
+   "fieldtype": "Code",
+   "label": "Tracora Values",
+   "options": "JSON",
+   "reqd": 1
+  }
+ ],
+ "links": [],
+ "modified": "2026-09-04 10:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Tracora",
+ "name": "Tracora Sync Conflict",
+ "naming_rule": "Random",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "Tracora Super Admin",
+   "share": 1,
+   "write": 1,
+   "report": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "Tracora Admin",
+   "share": 1,
+   "write": 1,
+   "report": 1
+  }
+ ],
+ "quick_entry": 0,
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

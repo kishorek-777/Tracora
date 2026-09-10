@@ -1,0 +1,187 @@
+{
+ "actions": [],
+ "allow_rename": 0,
+ "autoname": "TAM-.YYYY.-.######",
+ "creation": "2026-09-07 12:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "asset",
+  "movement_type",
+  "movement_date",
+  "recorded_by",
+  "column_break_parties",
+  "from_employee",
+  "to_employee",
+  "from_company",
+  "to_company",
+  "section_break_details",
+  "from_owner",
+  "to_owner",
+  "column_break_loc",
+  "from_location",
+  "to_location",
+  "section_break_status",
+  "from_status",
+  "to_status",
+  "remarks"
+ ],
+ "fields": [
+  {
+   "fieldname": "asset",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Asset",
+   "options": "Tracora Asset",
+   "reqd": 1
+  },
+  {
+   "fieldname": "movement_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Type",
+   "options": "Assign\nUnassign\nLocation Change\nCustody Transfer\nOwnership Transfer\nStatus Change\nCondition Change\nMaintenance Sent\nMaintenance Returned\nBeyond Repair\nExit Release\nRecovered\nReleased\nLabel Reprint",
+   "reqd": 1
+  },
+  {
+   "default": "Now",
+   "fieldname": "movement_date",
+   "fieldtype": "Datetime",
+   "in_list_view": 1,
+   "label": "Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "recorded_by",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Recorded By",
+   "options": "User",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_parties",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "from_employee",
+   "fieldtype": "Link",
+   "label": "From Employee",
+   "options": "Tracora Employee"
+  },
+  {
+   "fieldname": "to_employee",
+   "fieldtype": "Link",
+   "label": "To Employee",
+   "options": "Tracora Employee"
+  },
+  {
+   "fieldname": "from_company",
+   "fieldtype": "Link",
+   "label": "From Company",
+   "options": "Tracora Company"
+  },
+  {
+   "fieldname": "to_company",
+   "fieldtype": "Link",
+   "label": "To Company",
+   "options": "Tracora Company"
+  },
+  {
+   "fieldname": "section_break_details",
+   "fieldtype": "Section Break",
+   "label": "Entity and Location"
+  },
+  {
+   "fieldname": "from_owner",
+   "fieldtype": "Link",
+   "label": "From Owner",
+   "options": "Tracora Company"
+  },
+  {
+   "fieldname": "to_owner",
+   "fieldtype": "Link",
+   "label": "To Owner",
+   "options": "Tracora Company"
+  },
+  {
+   "fieldname": "column_break_loc",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "from_location",
+   "fieldtype": "Link",
+   "label": "From Location",
+   "options": "Tracora Location"
+  },
+  {
+   "fieldname": "to_location",
+   "fieldtype": "Link",
+   "label": "To Location",
+   "options": "Tracora Location"
+  },
+  {
+   "fieldname": "section_break_status",
+   "fieldtype": "Section Break",
+   "label": "Status Transition"
+  },
+  {
+   "fieldname": "from_status",
+   "fieldtype": "Data",
+   "label": "From Status"
+  },
+  {
+   "fieldname": "to_status",
+   "fieldtype": "Data",
+   "label": "To Status"
+  },
+  {
+   "fieldname": "remarks",
+   "fieldtype": "Small Text",
+   "label": "Remarks"
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-09-07 22:50:00.000000",
+ "modified_by": "Administrator",
+ "module": "Tracora",
+ "name": "Tracora Asset Movement",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 0,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Tracora Super Admin",
+   "share": 1,
+   "write": 0
+  },
+  {
+   "create": 1,
+   "delete": 0,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Tracora Admin",
+   "share": 1,
+   "write": 0
+  }
+ ],
+ "quick_entry": 0,
+ "search_fields": "asset, movement_type, from_employee, to_employee",
+ "sort_field": "movement_date",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 0
+}

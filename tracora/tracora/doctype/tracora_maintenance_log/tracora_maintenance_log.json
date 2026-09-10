@@ -1,0 +1,155 @@
+{
+ "actions": [],
+ "allow_rename": 0,
+ "autoname": "TML-.YYYY.-.######",
+ "creation": "2026-09-07 12:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "asset",
+  "vendor",
+  "date_sent",
+  "due_date",
+  "log_status",
+  "pre_maintenance_status",
+  "column_break_dates",
+  "date_returned",
+  "condition_on_return",
+  "recorded_by",
+  "section_break_reason",
+  "reason",
+  "remarks"
+ ],
+ "fields": [
+  {
+   "fieldname": "asset",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Asset",
+   "options": "Tracora Asset",
+   "reqd": 1
+  },
+  {
+   "fieldname": "vendor",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Vendor / Handler",
+   "reqd": 1
+  },
+  {
+   "default": "Today",
+   "fieldname": "date_sent",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Date Sent",
+   "reqd": 1
+  },
+  {
+   "description": "Drives automated maintenance-due reminders (FR-25)",
+   "fieldname": "due_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Expected Return"
+  },
+  {
+   "default": "Open",
+   "fieldname": "log_status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Status",
+   "options": "Open\nClosed\nBeyond Repair",
+   "reqd": 1
+  },
+  {
+   "fieldname": "pre_maintenance_status",
+   "fieldtype": "Select",
+   "label": "Pre-Maintenance Status",
+   "options": "\nIn Store\nAssigned\nUnder Maintenance\nDamaged\nLost\nRecovered\nReleased\nRetired",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_dates",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "date_returned",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Date Returned"
+  },
+  {
+   "fieldname": "condition_on_return",
+   "fieldtype": "Select",
+   "label": "Condition on Return",
+   "options": "\nNew\nGood\nFair\nPoor\nNot Working"
+  },
+  {
+   "fieldname": "recorded_by",
+   "fieldtype": "Link",
+   "label": "Recorded By",
+   "options": "User",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_break_reason",
+   "fieldtype": "Section Break",
+   "label": "Reason and Remarks"
+  },
+  {
+   "fieldname": "reason",
+   "fieldtype": "Small Text",
+   "label": "Reason",
+   "reqd": 1
+  },
+  {
+   "fieldname": "remarks",
+   "fieldtype": "Small Text",
+   "label": "Remarks"
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-09-07 22:50:00.000000",
+ "modified_by": "Administrator",
+ "module": "Tracora",
+ "name": "Tracora Maintenance Log",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Tracora Super Admin",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 0,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Tracora Admin",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "quick_entry": 0,
+ "search_fields": "asset, vendor, log_status",
+ "sort_field": "date_sent",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

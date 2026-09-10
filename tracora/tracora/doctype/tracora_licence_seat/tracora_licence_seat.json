@@ -1,0 +1,61 @@
+{
+ "actions": [],
+ "allow_rename": 0,
+ "creation": "2026-09-08 10:00:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "device",
+  "user",
+  "seat_status",
+  "flagged_reason"
+ ],
+ "fields": [
+  {
+   "fieldname": "device",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Device",
+   "options": "Tracora Asset",
+   "reqd": 1
+  },
+  {
+   "fieldname": "user",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "User",
+   "options": "Tracora Employee"
+  },
+  {
+   "default": "Active",
+   "fieldname": "seat_status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Seat Status",
+   "options": "Active\nFlagged\nReleased",
+   "reqd": 1
+  },
+  {
+   "fieldname": "flagged_reason",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Flagged Reason"
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "istable": 1,
+ "links": [],
+ "modified": "2026-09-08 10:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Tracora",
+ "name": "Tracora Licence Seat",
+ "naming_rule": "Random",
+ "owner": "Administrator",
+ "permissions": [],
+ "quick_entry": 0,
+ "sort_field": "creation",
+ "sort_order": "ASC",
+ "states": [],
+ "track_changes": 0
+}

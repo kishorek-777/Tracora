@@ -1,0 +1,113 @@
+{
+ "actions": [],
+ "autoname": "field:company_name",
+ "creation": "2026-09-03 12:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "company_name",
+  "company_type",
+  "company_abbr",
+  "column_break_info",
+  "source",
+  "hrms_company",
+  "section_break_address",
+  "company_address"
+ ],
+ "fields": [
+  {
+   "fieldname": "company_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Company Name",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "company_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Company Type",
+   "options": "\nInternal\nExternal",
+   "reqd": 1
+  },
+  {
+   "description": "Unique company abbreviation used to qualify branch and department names.",
+   "fieldname": "company_abbr",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Abbreviation",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "column_break_info",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "Tracora",
+   "fieldname": "source",
+   "fieldtype": "Select",
+   "label": "Source",
+   "options": "Tracora\nHRMS",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "description": "Text reference to the matching company in HRMS, if synced.",
+   "fieldname": "hrms_company",
+   "fieldtype": "Data",
+   "label": "HRMS Company",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_address",
+   "fieldtype": "Section Break",
+   "label": "Address"
+  },
+  {
+   "fieldname": "company_address",
+   "fieldtype": "Small Text",
+   "label": "Company Address",
+   "reqd": 1
+  }
+ ],
+ "links": [],
+ "modified": "2026-09-03 12:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Tracora",
+ "name": "Tracora Company",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "Tracora Super Admin",
+   "share": 1,
+   "write": 1,
+   "report": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "Tracora Admin",
+   "share": 1,
+   "write": 1,
+   "report": 1
+  }
+ ],
+ "quick_entry": 0,
+ "sort_field": "company_name",
+ "sort_order": "ASC",
+ "states": [],
+ "title_field": "company_name",
+ "track_changes": 1
+}
