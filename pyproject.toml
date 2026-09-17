@@ -4,7 +4,7 @@ authors = [
     { name = "Kishore", email = "kishore.k@aionioncapital.com"}
 ]
 description = "Asset management tool"
-requires-python = ">=3.14"
+requires-python = ">=3.10"
 readme = "README.md"
 dynamic = ["version"]
 dependencies = [
@@ -12,6 +12,9 @@ dependencies = [
     "qrcode>=7.4.2",
     "pillow>=10.0.0",
 ]
+
+[tool.bench.frappe-dependencies]
+frappe = ">=16.0.0-dev,<17.0.0"
 
 [build-system]
 requires = ["flit_core >=3.4,<4"]
