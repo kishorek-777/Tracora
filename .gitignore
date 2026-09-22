@@ -20,7 +20,8 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
-tags
+/tags
+!tracora/tags/
 MANIFEST
 
 # Environments
