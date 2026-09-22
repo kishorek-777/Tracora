@@ -5,10 +5,12 @@ app_description = "Asset custody register"
 app_email = "kishore.k@aionioncapital.com"
 app_license = "mit"
 
-# Website routing for custom SPA portal
+# Website routing for custom SPA portal & mobile PWA
 website_route_rules = [
 	{"from_route": "/tracora/<path:app_path>", "to_route": "tracora"},
 	{"from_route": "/tracora", "to_route": "tracora"},
+	{"from_route": "/mobile/<path:app_path>", "to_route": "mobile"},
+	{"from_route": "/mobile", "to_route": "mobile"},
 ]
 
 # Doc events for external apps (HRMS / ERPNext)
