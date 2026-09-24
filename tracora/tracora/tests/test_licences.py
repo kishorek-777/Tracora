@@ -501,3 +501,65 @@ class TestTracoraLicences(FrappeTestCase):
 
 		# Reset session to Administrator
 		frappe.set_user("Administrator")
+
+	def test_seat_capacity_and_depleted_status(self):
+		"""Test seat range capacity enforcement and real-time Available/Depleted status."""
+		dev1 = self._create_asset("SN-CAP-001")
+		dev2 = self._create_asset("SN-CAP-002")
+		dev3 = self._create_asset("SN-CAP-003")
+		emp1 = self._create_employee("EMP-CAP-001")
+		emp2 = self._create_employee("EMP-CAP-002")
+		emp3 = self._create_employee("EMP-CAP-003")
+
+		# 1. Negative total_seats is rejected
+		with self.assertRaises(frappe.ValidationError) as cm:
+			frappe.get_doc({
+				"doctype": "Tracora Software Licence",
+				"software_name": "Capacity Test App",
+				"licence_name": "Cap Test Invalid",
+				"company": "Licence Test Corp",
+				"licence_type": "User licence",
+				"renewal_cycle": "Monthly",
+				"licence_expiry_date": add_days(today(), 60),
+				"total_seats": 0
+			}).insert()
+		self.assertIn("Total Seats must be at least 1", str(cm.exception))
+
+		# 2. Create licence with total_seats = 2
+		lic = frappe.get_doc({
+			"doctype": "Tracora Software Licence",
+			"software_name": "Capacity Test App",
+			"licence_name": "Cap Test 2 Seats",
+			"company": "Licence Test Corp",
+			"licence_type": "User licence",
+			"renewal_cycle": "Monthly",
+			"licence_expiry_date": add_days(today(), 60),
+			"total_seats": 2,
+			"seats": [
+				{"device": dev1, "user": emp1, "seat_status": "Active"}
+			]
+		}).insert()
+
+		self.assertEqual(lic.total_seats, 2)
+		self.assertEqual(lic.allocated_seats, 1)
+		self.assertEqual(lic.seat_availability, "Available")
+
+		# 3. Add second seat -> capacity reached, status becomes Depleted
+		lic.append("seats", {"device": dev2, "user": emp2, "seat_status": "Active"})
+		lic.save()
+		self.assertEqual(lic.allocated_seats, 2)
+		self.assertEqual(lic.seat_availability, "Depleted")
+
+		# 4. Attempt to add third active seat -> hard blocked by validation error
+		lic.append("seats", {"device": dev3, "user": emp3, "seat_status": "Active"})
+		with self.assertRaises(frappe.ValidationError) as cm:
+			lic.save()
+		self.assertIn("capacity is depleted", str(cm.exception))
+
+		# 5. Reload fresh doc from DB, release seat 2 -> status returns to Available
+		lic.reload()
+		lic.seats[1].seat_status = "Released"
+		lic.save()
+		self.assertEqual(lic.allocated_seats, 1)
+		self.assertEqual(lic.seat_availability, "Available")
+

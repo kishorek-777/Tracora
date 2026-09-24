@@ -464,3 +464,38 @@ class TestTracoraAsset(FrappeTestCase):
 		frappe.set_user(super_admin_user)
 		self.assertTrue(asset.has_permission("delete"))
 		frappe.set_user("Administrator")
+
+	def test_assigned_status_requires_assignee_and_custody_integrity(self):
+		"""An asset cannot be set to 'Assigned' without an assignee, nor hold an assignee while In Store."""
+		# 1. Direct Assigned without assigned_to is refused
+		with self.assertRaises(frappe.ValidationError) as cm:
+			frappe.get_doc({
+				"doctype": "Tracora Asset",
+				"tag_mode": "Auto-generated",
+				"brand": "Dell",
+				"serial_no": "SN-ASSIGN-VALIDATE-01",
+				"owner_company": "Test Internal Corp",
+				"holding_company": "Test Internal Corp",
+				"branch": "HQ - TIC",
+				"location": "Server Room 1",
+				"status": "Assigned",
+				"condition": "Good"
+			}).insert()
+		self.assertIn("cannot have status 'Assigned' without an assigned employee", str(cm.exception))
+
+		# 2. In Store with assigned_to is refused
+		with self.assertRaises(frappe.ValidationError) as cm:
+			frappe.get_doc({
+				"doctype": "Tracora Asset",
+				"tag_mode": "Auto-generated",
+				"brand": "Dell",
+				"serial_no": "SN-ASSIGN-VALIDATE-02",
+				"owner_company": "Test Internal Corp",
+				"holding_company": "Test Internal Corp",
+				"branch": "HQ - TIC",
+				"location": "Server Room 1",
+				"status": "In Store",
+				"assigned_to": "EMP-ACT-001",
+				"condition": "Good"
+			}).insert()
+		self.assertIn("cannot have an assigned employee while status is 'In Store'", str(cm.exception))

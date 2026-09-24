@@ -47,14 +47,14 @@ frappe.ui.form.on('Tracora Employee', {
 	company: function(frm) {
 		if (frm.doc.company) {
 			frappe.db.get_value('Tracora Company', frm.doc.company, 'company_type').then(r => {
-				if (r && r.message) {
+				if (r && r.message && r.message.company_type) {
 					frm.set_value('company_type', r.message.company_type);
-					frm.refresh_fields();
+				} else {
+					frm.set_value('company_type', '');
 				}
 			});
 		} else {
 			frm.set_value('company_type', '');
-			frm.refresh_fields();
 		}
 	},
 

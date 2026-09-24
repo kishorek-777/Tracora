@@ -7,3 +7,4 @@
 tracora.patches.v1_0.update_workspace_icons
 tracora.patches.v1_0.update_seat_status_and_software_key
 tracora.patches.v1_0.add_import_sidebar_and_perms
+tracora.patches.v1_0.add_seat_capacity_and_availability

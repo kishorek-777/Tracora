@@ -132,7 +132,6 @@
    "label": "Email"
   },
   {
-   "collapsed": 1,
    "depends_on": "eval:doc.company_type != 'External'",
    "fieldname": "section_personal",
    "fieldtype": "Section Break",

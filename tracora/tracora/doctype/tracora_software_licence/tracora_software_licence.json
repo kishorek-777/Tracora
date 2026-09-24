@@ -19,10 +19,13 @@
   "column_break_dates",
   "next_renewal_date",
   "section_break_seats",
+  "total_seats",
+  "column_break_seats_1",
+  "allocated_seats",
+  "column_break_seats_2",
+  "seat_availability",
+  "section_break_seats_table",
   "seats",
-  "section_break_warranty",
-  "warranty_expiry_date",
-  "warranty_renewal_date",
   "section_break_history",
   "last_renewed_on",
   "column_break_history",
@@ -120,27 +123,51 @@
    "label": "Seats"
   },
   {
+   "fieldname": "total_seats",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Total Seats",
+   "reqd": 1,
+   "description": "Total licensed seat capacity."
+  },
+  {
+   "fieldname": "column_break_seats_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "allocated_seats",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Allocated Seats",
+   "read_only": 1,
+   "description": "Number of currently active allocated seats."
+  },
+  {
+   "fieldname": "column_break_seats_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "Available",
+   "fieldname": "seat_availability",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Seat Availability",
+   "options": "Available\nDepleted",
+   "read_only": 1,
+   "description": "Real-time seat capacity availability status."
+  },
+  {
+   "fieldname": "section_break_seats_table",
+   "fieldtype": "Section Break",
+   "hide_border": 1
+  },
+  {
    "fieldname": "seats",
    "fieldtype": "Table",
    "label": "Seats",
    "options": "Tracora Licence Seat"
-  },
-  {
-   "collapsed": 1,
-   "collapsible": 1,
-   "fieldname": "section_break_warranty",
-   "fieldtype": "Section Break",
-   "label": "Vendor Warranty & Support (Optional)"
-  },
-  {
-   "fieldname": "warranty_expiry_date",
-   "fieldtype": "Date",
-   "label": "Warranty Expiry"
-  },
-  {
-   "fieldname": "warranty_renewal_date",
-   "fieldtype": "Date",
-   "label": "Warranty Renewal Due"
   },
   {
    "collapsed": 1,
