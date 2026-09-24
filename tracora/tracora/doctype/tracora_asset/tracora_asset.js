@@ -18,6 +18,7 @@ frappe.ui.form.on('Tracora Asset', {
 		frm.set_query('point_of_contact', function() {
 			return { filters: { status: ['!=', 'Exited'] } };
 		});
+		frm.set_query("asset_category", () => ({ filters: { disabled: 0 } }));
 	},
 
 	refresh: function(frm) {

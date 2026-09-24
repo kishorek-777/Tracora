@@ -5,6 +5,7 @@ import frappe
 from frappe import _
 from frappe.model.document import Document
 from frappe.model.naming import make_autoname
+from frappe.utils import getdate, today
 
 
 class TracoraAsset(Document):
@@ -29,6 +30,41 @@ class TracoraAsset(Document):
 		self.name = self.asset_tag
 
 	def validate(self):
+		# Purchase, Warranty, and Audit date validations
+		if self.purchase_date and self.warranty_expiry:
+			if getdate(self.warranty_expiry) < getdate(self.purchase_date):
+				frappe.throw(
+					_("Warranty Expiry ({0}) must be on or after Purchase Date ({1}).").format(
+						self.warranty_expiry, self.purchase_date
+					),
+					frappe.ValidationError
+				)
+
+		if self.warranty_renewal_due and self.warranty_expiry:
+			if getdate(self.warranty_renewal_due) > getdate(self.warranty_expiry):
+				frappe.throw(
+					_("Warranty Renewal Due ({0}) must be on or before Warranty Expiry ({1}).").format(
+						self.warranty_renewal_due, self.warranty_expiry
+					),
+					frappe.ValidationError
+				)
+
+		if self.warranty_renewal_due and self.purchase_date:
+			if getdate(self.warranty_renewal_due) < getdate(self.purchase_date):
+				frappe.throw(
+					_("Warranty Renewal Due ({0}) must be on or after Purchase Date ({1}).").format(
+						self.warranty_renewal_due, self.purchase_date
+					),
+					frappe.ValidationError
+				)
+
+		if self.audit_date:
+			if getdate(self.audit_date) > getdate(today()):
+				frappe.throw(
+					_("Audit Date ({0}) cannot be in the future.").format(self.audit_date),
+					frappe.ValidationError
+				)
+
 		# Auto-populate asset_tag from name if imported without explicit asset_tag
 		if not self.asset_tag and self.name:
 			self.asset_tag = self.name
@@ -160,6 +196,22 @@ class TracoraAsset(Document):
 					),
 					frappe.ValidationError
 				)
+
+		# Enforce status-custody integrity
+		if self.status == "Assigned" and not self.assigned_to:
+			frappe.throw(
+				_("Asset '{0}' cannot have status 'Assigned' without an assigned employee (Assigned To). Use the Assign action.").format(
+					self.asset_tag or self.name
+				),
+				frappe.ValidationError
+			)
+		if self.status in ["In Store", "Retired"] and self.assigned_to:
+			frappe.throw(
+				_("Asset '{0}' cannot have an assigned employee while status is '{1}'. Use the Unassign action.").format(
+					self.asset_tag or self.name, self.status
+				),
+				frappe.ValidationError
+			)
 
 		# Rule 1, FR-82: Protection of custody and ownership fields against direct form editing
 		if not self.is_new():

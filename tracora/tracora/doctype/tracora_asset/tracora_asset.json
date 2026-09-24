@@ -10,6 +10,7 @@
   "asset_tag",
   "asset_name",
   "brand",
+  "asset_category",
   "column_break_id",
   "model_number",
   "serial_no",
@@ -30,7 +31,23 @@
   "column_break_condition",
   "condition",
   "section_break_labels",
-  "label_printed_on"
+  "label_printed_on",
+  "vendor_purchase_section",
+  "vendor_name",
+  "vendor_mobile_no",
+  "vendor_email_id",
+  "vendor_purchase_column",
+  "purchase_date",
+  "purchase_order_no",
+  "invoice_no",
+  "warranty_section",
+  "warranty_expiry",
+  "warranty_column",
+  "warranty_renewal_due",
+  "audit_section",
+  "audit_date",
+  "audit_column",
+  "audit_remarks"
  ],
  "fields": [
   {
@@ -71,6 +88,14 @@
    "in_standard_filter": 1,
    "label": "Brand",
    "reqd": 1
+  },
+  {
+   "fieldname": "asset_category",
+   "fieldtype": "Link",
+   "in_standard_filter": 1,
+   "label": "Asset Category",
+   "options": "Tracora Asset Category",
+   "search_index": 1
   },
   {
    "fieldname": "column_break_id",
@@ -191,7 +216,8 @@
    "in_standard_filter": 1,
    "label": "Status",
    "options": "In Store\nAssigned\nUnder Maintenance\nDamaged\nLost\nRecovered\nReleased\nRetired",
-   "reqd": 1
+   "reqd": 1,
+   "read_only": 1
   },
   {
    "fieldname": "column_break_condition",
@@ -218,6 +244,89 @@
    "fieldtype": "Datetime",
    "label": "Label Printed On",
    "read_only": 1
+  },
+  {
+   "collapsible": 0,
+   "fieldname": "vendor_purchase_section",
+   "fieldtype": "Section Break",
+   "label": "Vendor and Purchase Details"
+  },
+  {
+   "fieldname": "vendor_name",
+   "fieldtype": "Data",
+   "label": "Vendor Name"
+  },
+  {
+   "fieldname": "vendor_mobile_no",
+   "fieldtype": "Data",
+   "label": "Vendor Mobile No",
+   "options": "Phone"
+  },
+  {
+   "fieldname": "vendor_email_id",
+   "fieldtype": "Data",
+   "label": "Vendor Email ID",
+   "options": "Email"
+  },
+  {
+   "fieldname": "vendor_purchase_column",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "purchase_date",
+   "fieldtype": "Date",
+   "label": "Purchase Date"
+  },
+  {
+   "fieldname": "purchase_order_no",
+   "fieldtype": "Data",
+   "label": "Purchase Order No"
+  },
+  {
+   "fieldname": "invoice_no",
+   "fieldtype": "Data",
+   "label": "Invoice No"
+  },
+  {
+   "fieldname": "warranty_section",
+   "fieldtype": "Section Break",
+   "label": "Warranty Details"
+  },
+  {
+   "fieldname": "warranty_expiry",
+   "fieldtype": "Date",
+   "in_standard_filter": 1,
+   "label": "Warranty Expiry"
+  },
+  {
+   "fieldname": "warranty_column",
+   "fieldtype": "Column Break"
+  },
+  {
+   "description": "Date by which renewal action must start. Must be on or before Warranty Expiry.",
+   "fieldname": "warranty_renewal_due",
+   "fieldtype": "Date",
+   "in_standard_filter": 1,
+   "label": "Warranty Renewal Due"
+  },
+  {
+   "fieldname": "audit_section",
+   "fieldtype": "Section Break",
+   "label": "Audit"
+  },
+  {
+   "fieldname": "audit_date",
+   "fieldtype": "Date",
+   "label": "Audit Date"
+  },
+  {
+   "fieldname": "audit_column",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "audit_remarks",
+   "fieldtype": "Small Text",
+   "label": "Audit Remarks"
   }
  ],
  "links": [
@@ -227,7 +336,7 @@
    "link_fieldname": "device"
   }
  ],
- "modified": "2026-09-06 12:00:00.000000",
+ "modified": "2026-09-24 04:21:22.161206",
  "modified_by": "Administrator",
  "module": "Tracora",
  "name": "Tracora Asset",
