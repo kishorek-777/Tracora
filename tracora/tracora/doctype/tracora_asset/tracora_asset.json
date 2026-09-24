@@ -244,7 +244,8 @@
    "role": "Tracora Super Admin",
    "share": 1,
    "write": 1,
-   "report": 1
+   "report": 1,
+   "import": 1
   },
   {
    "create": 1,
@@ -256,7 +257,8 @@
    "role": "Tracora Admin",
    "share": 1,
    "write": 1,
-   "report": 1
+   "report": 1,
+   "import": 1
   }
  ],
  "quick_entry": 0,
@@ -265,5 +267,6 @@
  "sort_order": "DESC",
  "states": [],
  "title_field": "asset_name",
- "track_changes": 1
+ "track_changes": 1,
+ "allow_import": 1
 }

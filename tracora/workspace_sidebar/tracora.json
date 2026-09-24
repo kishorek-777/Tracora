@@ -150,7 +150,19 @@
   {
    "child": 0,
    "collapsible": 1,
-   "icon": "alert-triangle",
+   "icon": "upload",
+   "indent": 0,
+   "keep_closed": 0,
+   "label": "Import Data",
+   "link_to": "Data Import",
+   "link_type": "DocType",
+   "show_arrow": 0,
+   "type": "Link"
+  },
+  {
+   "child": 0,
+   "collapsible": 1,
+   "icon": "triangle-alert",
    "indent": 0,
    "keep_closed": 0,
    "label": "Sync Conflicts",
@@ -184,7 +196,7 @@
   {
    "child": 0,
    "collapsible": 1,
-   "icon": "bar-chart-2",
+   "icon": "chart-column",
    "indent": 0,
    "keep_closed": 0,
    "label": "Reports",
@@ -194,7 +206,7 @@
    "type": "Link"
   }
  ],
- "modified": "2026-09-10 15:32:13.425015",
+ "modified": "2026-09-23 11:21:31.960410",
  "modified_by": "Administrator",
  "module": "Tracora",
  "name": "Tracora",

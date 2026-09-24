@@ -3,7 +3,8 @@
 
 import frappe
 from frappe.tests.utils import FrappeTestCase
-from tracora.api.lookup import find_asset
+
+from tracora.api.lookup import find_asset, get_session_info
 
 
 class TestTracoraLookup(FrappeTestCase):
@@ -354,5 +355,32 @@ class TestTracoraLookup(FrappeTestCase):
 		try:
 			with self.assertRaises(frappe.PermissionError):
 				find_asset("TAG-LKP-01")
+		finally:
+			frappe.set_user("Administrator")
+
+	def test_get_session_info_authenticated(self):
+		"""
+		get_session_info returns current user and a non-empty CSRF token.
+		"""
+		frappe.set_user("Administrator")
+		info = get_session_info()
+		self.assertIsInstance(info, dict)
+		self.assertEqual(info.get("user"), "Administrator")
+		self.assertTrue(bool(info.get("csrf_token")))
+
+	def test_get_session_info_guest(self):
+		"""
+		get_session_info is callable by Guest under allow_guest=True.
+		Asserts the response body contains exactly {"user": None, "csrf_token": "..."}
+		with no additional fields, no server error details, and no session metadata.
+		"""
+		frappe.set_user("Guest")
+		try:
+			info = get_session_info()
+			self.assertIsInstance(info, dict)
+			self.assertEqual(set(info.keys()), {"user", "csrf_token"})
+			self.assertIsNone(info.get("user"))
+			self.assertIsInstance(info.get("csrf_token"), str)
+			self.assertTrue(bool(info.get("csrf_token")))
 		finally:
 			frappe.set_user("Administrator")

@@ -334,7 +334,7 @@ def get_external_custody(filters):
 	return columns, data, message
 
 # -------------------------------------------------------------------------
-# 7. Licence Expiry (Active seats = Active + Flagged)
+# 7. Licence Expiry (Active seats = Active)
 # -------------------------------------------------------------------------
 def get_licence_expiry(filters):
 	columns = [
@@ -367,7 +367,7 @@ def get_licence_expiry(filters):
 			l.licence_expiry_date,
 			l.licence_status,
 			(SELECT COUNT(s.name) FROM `tabTracora Licence Seat` s
-			 WHERE s.parent = l.name AND s.seat_status IN ('Active', 'Flagged')) as active_seats
+			 WHERE s.parent = l.name AND s.seat_status = 'Active') as active_seats
 		FROM `tabTracora Software Licence` l
 		{where_clause}
 		ORDER BY

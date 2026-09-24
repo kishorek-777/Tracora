@@ -9,7 +9,7 @@
   "device",
   "user",
   "seat_status",
-  "flagged_reason"
+  "software_key"
  ],
  "fields": [
   {
@@ -33,14 +33,14 @@
    "fieldtype": "Select",
    "in_list_view": 1,
    "label": "Seat Status",
-   "options": "Active\nFlagged\nReleased",
+   "options": "Active\nReleased",
    "reqd": 1
   },
   {
-   "fieldname": "flagged_reason",
+   "fieldname": "software_key",
    "fieldtype": "Data",
    "in_list_view": 1,
-   "label": "Flagged Reason"
+   "label": "Software Key"
   }
  ],
  "index_web_pages_for_search": 0,

@@ -29,6 +29,10 @@ class TracoraAsset(Document):
 		self.name = self.asset_tag
 
 	def validate(self):
+		# Auto-populate asset_tag from name if imported without explicit asset_tag
+		if not self.asset_tag and self.name:
+			self.asset_tag = self.name
+
 		# FR-66, FR-67: Reserved prefix check for manual tags
 		if self.tag_mode == "Manual entry" and self.asset_tag:
 			prefix = (frappe.db.get_single_value("Tracora Settings", "tag_prefix") or "TRC-").strip().upper()
@@ -113,13 +117,29 @@ class TracoraAsset(Document):
 		# FR-12, FR-72: Conditional branch requirement for Internal holding company
 		if self.holding_company:
 			company_type = frappe.db.get_value("Tracora Company", self.holding_company, "company_type")
-			if company_type == "Internal" and not self.branch:
-				frappe.throw(
-					_("Branch is required when holding company '{0}' is Internal (FR-12, FR-72).").format(
-						self.holding_company
-					),
-					frappe.ValidationError
-				)
+			if company_type == "Internal":
+				if not self.branch:
+					frappe.throw(
+						_("Branch is required when holding company '{0}' is Internal (FR-12, FR-72).").format(
+							self.holding_company
+						),
+						frappe.ValidationError
+					)
+				elif not frappe.db.exists("Tracora Branch", self.branch):
+					# Auto-resolve bare branch name (e.g. "royapettah 2") to ID ("royapettah 2 - AC")
+					resolved = frappe.db.get_value(
+						"Tracora Branch",
+						{"branch_name": self.branch.strip(), "company": self.holding_company},
+						"name"
+					)
+					if not resolved and self.owner_company:
+						resolved = frappe.db.get_value(
+							"Tracora Branch",
+							{"branch_name": self.branch.strip(), "company": self.owner_company},
+							"name"
+						)
+					if resolved:
+						self.branch = resolved
 
 		# FR-93: Shared equipment rules
 		if self.is_shared:
@@ -172,7 +192,7 @@ class TracoraAsset(Document):
 		if frappe.db.exists("DocType", "Tracora Licence Seat"):
 			linked_seats = frappe.db.get_all(
 				"Tracora Licence Seat",
-				filters={"device": self.name, "seat_status": ["in", ["Active", "Flagged"]]},
+				filters={"device": self.name, "seat_status": "Active"},
 				fields=["name", "parent", "seat_status"]
 			)
 			if linked_seats:

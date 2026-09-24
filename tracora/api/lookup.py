@@ -119,7 +119,9 @@ def _build_single_match_payload(asset_name: str, query: str) -> dict:
 		"assigned_on": str(asset_doc.assigned_on) if asset_doc.assigned_on else None,
 		"status": asset_doc.status,
 		"condition": asset_doc.condition,
-		"label_printed_on": str(asset_doc.label_printed_on) if getattr(asset_doc, "label_printed_on", None) else None,
+		"label_printed_on": str(asset_doc.label_printed_on)
+		if getattr(asset_doc, "label_printed_on", None)
+		else None,
 	}
 
 	# Holder details ? explicit projection.
@@ -165,7 +167,7 @@ def _build_single_match_payload(asset_name: str, query: str) -> dict:
 			s.parent,
 			s.user,
 			s.seat_status,
-			s.flagged_reason,
+			s.software_key,
 			l.software_name,
 			l.licence_name,
 			l.licence_type
@@ -210,4 +212,17 @@ def _build_single_match_payload(asset_name: str, query: str) -> dict:
 		"open_maintenance": open_maintenance,
 		"licence_seats": licence_seats,
 		"recent_movements": recent_movements,
+	}
+
+
+@frappe.whitelist(allow_guest=True, methods=["GET", "POST"])
+def get_session_info() -> dict:
+	"""
+	Returns active session user and valid CSRF token.
+	Used by Tracora Mobile PWA after login or on demand to refresh CSRF token.
+	Returns user as None for unauthenticated (Guest) sessions.
+	"""
+	return {
+		"user": frappe.session.user if frappe.session.user != "Guest" else None,
+		"csrf_token": frappe.sessions.get_csrf_token(),
 	}

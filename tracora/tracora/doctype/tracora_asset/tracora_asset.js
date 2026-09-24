@@ -684,14 +684,13 @@ frappe.ui.form.on('Tracora Asset', {
 
 				const badge_colors = {
 					'Active': '#2b6cb0',
-					'Flagged': '#c05621',
 					'Released': '#718096'
 				};
 
 				const items_html = seats.map(s => {
 					const badge_color = badge_colors[s.seat_status] || '#718096';
 					const user_str = s.user ? ` &bull; User: <b>${frappe.utils.escape_html(s.user)}</b>` : ' &bull; <i>No user assigned</i>';
-					const reason_str = s.flagged_reason ? `<div class="text-muted mt-1" style="font-size: 11px; font-style: italic;">Reason: ${frappe.utils.escape_html(s.flagged_reason)}</div>` : '';
+					const reason_str = s.software_key ? `<div class="text-muted mt-1" style="font-size: 11px;">Software Key: <code>${frappe.utils.escape_html(s.software_key)}</code></div>` : '';
 					return `
 						<li class="list-group-item px-3 py-2" style="border-left: 3px solid ${badge_color}; margin-bottom: 6px; border-radius: 4px; background: var(--card-bg, #f7fafc);">
 							<div class="d-flex justify-content-between align-items-center">

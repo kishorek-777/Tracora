@@ -66,7 +66,7 @@ class TracoraEmployee(Document):
 			if frappe.db.exists("DocType", "Tracora Licence Seat"):
 				held_seats = frappe.db.get_all(
 					"Tracora Licence Seat",
-					filters={"user": self.name, "seat_status": ["in", ["Active", "Flagged"]]},
+					filters={"user": self.name, "seat_status": "Active"},
 					fields=["name", "parent", "device", "seat_status"]
 				)
 
@@ -76,10 +76,8 @@ class TracoraEmployee(Document):
 					held_str = ", ".join([f"{a.asset_tag or a.name} ({a.asset_name})" for a in held_assets])
 					violations.append(_("Assets: {0}").format(held_str))
 				if held_seats:
-					active_s = [s for s in held_seats if s.seat_status == "Active"]
-					flagged_s = [s for s in held_seats if s.seat_status == "Flagged"]
-					seat_str = ", ".join([f"{s.parent} (Seat #{s.name}, Device {s.device}, {s.seat_status})" for s in held_seats])
-					violations.append(_("Software Licence Seats: {0} (Active: {1}, Flagged: {2})").format(seat_str, len(active_s), len(flagged_s)))
+					seat_str = ", ".join([f"{s.parent} (Seat #{s.name}, Device {s.device})" for s in held_seats])
+					violations.append(_("Software Licence Seats: {0} (Active: {1})").format(seat_str, len(held_seats)))
 
 				frappe.throw(
 					_("Cannot mark employee '{0}' as {1} while they hold outstanding items: {2} (FR-78, FR-10, FR-60). Clear or release all items before exit.").format(

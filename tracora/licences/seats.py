@@ -22,7 +22,7 @@ def get_installed_licences(asset: str):
 	seats = frappe.get_all(
 		"Tracora Licence Seat",
 		filters={"device": asset},
-		fields=["name", "parent", "device", "user", "seat_status", "flagged_reason"],
+		fields=["name", "parent", "device", "user", "seat_status", "software_key"],
 		order_by="creation desc",
 		limit=50,
 	)

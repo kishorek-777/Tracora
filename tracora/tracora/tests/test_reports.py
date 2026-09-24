@@ -220,7 +220,7 @@ class TestTracoraReports(FrappeTestCase):
 		self.assertEqual(data[0].get("employee_status"), "Exited", "Report must surface employee_status as 'Exited'")
 
 	def test_licence_expiry_active_seats_and_sorting(self):
-		"""Confirm active_seats on Licence Expiry includes Active + Flagged seats, and sorting is ascending."""
+		"""Confirm active_seats on Licence Expiry counts only Active seats, and sorting is ascending."""
 		ast = frappe.get_all("Tracora Asset", limit=2, pluck="name")
 		lic = frappe.get_doc({
 			"doctype": "Tracora Software Licence",
@@ -231,16 +231,16 @@ class TestTracoraReports(FrappeTestCase):
 			"renewal_cycle": "Yearly",
 			"licence_expiry_date": add_days(today(), 45),
 			"seats": [
-				{"device": ast[0], "seat_status": "Active"},
-				{"device": ast[1], "seat_status": "Flagged", "flagged_reason": "Test flag"},
+				{"device": ast[0], "seat_status": "Active", "software_key": "KEY-ACT-1"},
+				{"device": ast[1], "seat_status": "Released", "software_key": "KEY-REL-1"},
 			]
 		}).insert(ignore_permissions=True)
 
 		cols, data = exec_licence_expiry({"company": "Report Internal Corp"})
 		target_row = next((d for d in data if d.get("licence_name") == lic.name), None)
 		self.assertIsNotNone(target_row, "Created licence must appear in Licence Expiry report")
-		# active_seats must be 2 (Active + Flagged)
-		self.assertEqual(target_row.get("active_seats"), 2, "active_seats must include Active + Flagged seats")
+		# active_seats must be 1 (Active only)
+		self.assertEqual(target_row.get("active_seats"), 1, "active_seats must include only Active seats")
 
 	def test_licence_renewal_due_null_handling(self):
 		"""Confirm Licence Renewal Due excludes NULL next_renewal_date by default and includes with toggle."""

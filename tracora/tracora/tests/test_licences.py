@@ -211,14 +211,13 @@ class TestTracoraLicences(FrappeTestCase):
 		# Unassign the device
 		unassign_asset(asset_name, location="Tech Park Floor 4", remarks="Returning laptop due to upgrade")
 
-		# Both seats must be flagged with reason
+		# Both seats must be released
 		licence.reload()
 		for seat in licence.seats:
-			self.assertEqual(seat.seat_status, "Flagged")
-			self.assertIn("was unassigned", seat.flagged_reason)
+			self.assertEqual(seat.seat_status, "Released")
 
 	def test_fr59_retire_device_flags_seats(self):
-		"""FR-59: Retiring an asset flags active seats."""
+		"""FR-59: Retiring an asset releases active seats."""
 		asset_name = self._create_asset("SN-LIC-04")
 		emp = self._create_employee("EMP-LIC-04")
 
@@ -231,7 +230,7 @@ class TestTracoraLicences(FrappeTestCase):
 			"renewal_cycle": "Yearly",
 			"licence_expiry_date": add_days(today(), 120),
 			"seats": [
-				{"device": asset_name, "user": emp, "seat_status": "Active"}
+				{"device": asset_name, "user": emp, "seat_status": "Active", "software_key": "KEY-ADOBE-1"}
 			]
 		}).insert()
 
@@ -241,8 +240,7 @@ class TestTracoraLicences(FrappeTestCase):
 		asset_doc.save()
 
 		licence.reload()
-		self.assertEqual(licence.seats[0].seat_status, "Flagged")
-		self.assertIn("was retired", licence.seats[0].flagged_reason)
+		self.assertEqual(licence.seats[0].seat_status, "Released")
 
 	def test_on_trash_blocks_asset_delete_with_attached_seats(self):
 		"""Preserve link integrity: Deleting asset with attached seats is refused."""
@@ -258,7 +256,7 @@ class TestTracoraLicences(FrappeTestCase):
 			"renewal_cycle": "Yearly",
 			"licence_expiry_date": add_days(today(), 240),
 			"seats": [
-				{"device": asset_name, "user": emp, "seat_status": "Active"}
+				{"device": asset_name, "user": emp, "seat_status": "Active", "software_key": "KEY-DOCKER"}
 			]
 		}).insert()
 
@@ -269,7 +267,7 @@ class TestTracoraLicences(FrappeTestCase):
 
 	def test_fr60_exit_employee_blocked_by_active_or_flagged_seat(self):
 		"""
-		FR-60, FR-78: Exit is blocked by an active seat AND blocked by a flagged seat.
+		FR-60, FR-78: Exit is blocked by an active seat.
 		Unblocked only when released.
 		"""
 		asset_name = self._create_asset("SN-LIC-06")
@@ -284,7 +282,7 @@ class TestTracoraLicences(FrappeTestCase):
 			"renewal_cycle": "Yearly",
 			"licence_expiry_date": add_days(today(), 300),
 			"seats": [
-				{"device": asset_name, "user": emp_name, "seat_status": "Active"}
+				{"device": asset_name, "user": emp_name, "seat_status": "Active", "software_key": "KEY-SLACK"}
 			]
 		}).insert()
 
@@ -297,17 +295,6 @@ class TestTracoraLicences(FrappeTestCase):
 		self.assertIn("Software Licence Seats", str(ctx.exception))
 		self.assertIn("Active: 1", str(ctx.exception))
 
-		# Set seat to Flagged -> still blocked (FR-60, item 4)
-		licence.seats[0].seat_status = "Flagged"
-		licence.seats[0].flagged_reason = "Device unassigned"
-		licence.save()
-
-		emp_doc.reload()
-		emp_doc.status = "Exited"
-		with self.assertRaises(frappe.ValidationError) as ctx:
-			emp_doc.save()
-		self.assertIn("Flagged: 1", str(ctx.exception))
-
 		# Release seat -> exit succeeds
 		licence.seats[0].seat_status = "Released"
 		licence.save()
@@ -319,13 +306,15 @@ class TestTracoraLicences(FrappeTestCase):
 
 	def test_fr69_pending_clearance_blocked_by_active_seat(self):
 		"""
-		FR-69: Pending Clearance employee unassigning last asset does NOT clear to Exited
-		if they still hold active licence seats.
+		FR-69: Pending Clearance employee unassigning asset with remaining active seats
+		remains Pending Clearance until all assets and seats are cleared.
 		"""
-		asset_name = self._create_asset("SN-LIC-07")
+		asset_1 = self._create_asset("SN-LIC-07A")
+		asset_2 = self._create_asset("SN-LIC-07B")
 		emp_name = self._create_employee("EMP-LIC-07")
 
-		assign_asset(asset_name, emp_name, remarks="Assign asset before clearance")
+		assign_asset(asset_1, emp_name, remarks="Assign asset 1 before clearance")
+		assign_asset(asset_2, emp_name, remarks="Assign asset 2 before clearance")
 
 		frappe.get_doc({
 			"doctype": "Tracora Software Licence",
@@ -336,19 +325,26 @@ class TestTracoraLicences(FrappeTestCase):
 			"renewal_cycle": "Yearly",
 			"licence_expiry_date": add_days(today(), 250),
 			"seats": [
-				{"device": asset_name, "user": emp_name, "seat_status": "Active"}
+				{"device": asset_2, "user": emp_name, "seat_status": "Active", "software_key": "KEY-TAB"}
 			]
 		}).insert()
 
 		# Put employee into Pending Clearance
 		frappe.db.set_value("Tracora Employee", emp_name, "status", "Pending Clearance")
 
-		# Unassign the asset
-		unassign_asset(asset_name, location="Tech Park Floor 4", remarks="Clearance handover")
+		# Unassign only asset 1
+		unassign_asset(asset_1, location="Tech Park Floor 4", remarks="Clearance handover asset 1")
 
-		# Employee should NOT be marked Exited because licence seat was flagged (not released)
+		# Employee still holds asset 2 with its active seat -> remains Pending Clearance
 		emp_status = frappe.db.get_value("Tracora Employee", emp_name, "status")
 		self.assertEqual(emp_status, "Pending Clearance")
+
+		# Unassign asset 2 (releases active seat automatically)
+		unassign_asset(asset_2, location="Tech Park Floor 4", remarks="Clearance handover asset 2")
+
+		# Fully cleared -> auto-transitions to Exited
+		emp_status = frappe.db.get_value("Tracora Employee", emp_name, "status")
+		self.assertEqual(emp_status, "Exited")
 
 	def test_mark_expired_licences_job(self):
 		"""Daily job updates expired licences."""

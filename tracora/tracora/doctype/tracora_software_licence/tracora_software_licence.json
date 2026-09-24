@@ -191,7 +191,8 @@
    "report": 1,
    "role": "Tracora Super Admin",
    "share": 1,
-   "write": 1
+   "write": 1,
+   "import": 1
   },
   {
    "create": 1,
@@ -203,7 +204,8 @@
    "report": 1,
    "role": "Tracora Admin",
    "share": 1,
-   "write": 1
+   "write": 1,
+   "import": 1
   },
   {
    "create": 0,
@@ -223,5 +225,6 @@
  "sort_field": "licence_expiry_date",
  "sort_order": "ASC",
  "states": [],
- "track_changes": 1
+ "track_changes": 1,
+ "allow_import": 1
 }

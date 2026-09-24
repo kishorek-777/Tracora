@@ -179,7 +179,7 @@ def _has_outstanding_assets_or_seats(employee_name: str) -> bool:
 			return True
 
 	if frappe.db.exists("DocType", "Tracora Licence Seat"):
-		seat_count = frappe.db.count("Tracora Licence Seat", filters={"user": employee_name, "seat_status": ["in", ["Active", "Flagged"]]})
+		seat_count = frappe.db.count("Tracora Licence Seat", filters={"user": employee_name, "seat_status": "Active"})
 		if seat_count > 0:
 			return True
 

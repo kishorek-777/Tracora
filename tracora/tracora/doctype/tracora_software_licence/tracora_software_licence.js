@@ -16,7 +16,6 @@ frappe.ui.form.on('Tracora Software Licence', {
 
 	refresh: function(frm) {
 		frm.trigger('toggle_seats_user_reqd');
-		frm.trigger('render_flagged_seats_banner');
 		frm.trigger('render_overdue_banner');
 
 		if (!frm.is_new()) {
@@ -37,29 +36,6 @@ frappe.ui.form.on('Tracora Software Licence', {
 		const is_user_licence = frm.doc.licence_type === 'User licence';
 		frm.fields_dict.seats.grid.toggle_reqd('user', is_user_licence);
 		frm.fields_dict.seats.grid.refresh();
-	},
-
-	render_flagged_seats_banner: function(frm) {
-		const flagged_seats = (frm.doc.seats || []).filter(s => s.seat_status === 'Flagged');
-		if (flagged_seats.length > 0) {
-			const seat_items = flagged_seats.map(s => {
-				const user_str = s.user ? ` (${frappe.utils.escape_html(s.user)})` : '';
-				const reason_str = s.flagged_reason ? ` &mdash; <i>${frappe.utils.escape_html(s.flagged_reason)}</i>` : '';
-				return `<li>Device <b>${frappe.utils.escape_html(s.device)}</b>${user_str}${reason_str}</li>`;
-			}).join('');
-
-			const msg = `
-				<div style="font-size: 13px;">
-					<strong>⚠️ ${flagged_seats.length} seat${flagged_seats.length > 1 ? 's' : ''} need attention &mdash; the device was unassigned or retired.</strong>
-					<ul style="margin-top: 4px; margin-bottom: 0; padding-left: 18px;">
-						${seat_items}
-					</ul>
-				</div>
-			`;
-			frm.dashboard.set_headline(msg, 'orange');
-		} else {
-			frm.dashboard.clear_headline();
-		}
 	},
 
 	render_overdue_banner: function(frm) {

@@ -39,7 +39,7 @@ def get_data(filters):
 
 	where_clause = (" WHERE " + " AND ".join(conditions)) if conditions else ""
 
-	# active_seats defined strictly as Active + Flagged per FR-20/FR-86 convention
+	# active_seats defined strictly as Active seats per FR-20/FR-86 convention
 	query = f"""
 		SELECT
 			l.software_name,
@@ -51,7 +51,7 @@ def get_data(filters):
 			(
 				SELECT COUNT(*)
 				FROM `tabTracora Licence Seat` s
-				WHERE s.parent = l.name AND s.seat_status IN ('Active', 'Flagged')
+				WHERE s.parent = l.name AND s.seat_status = 'Active'
 			) AS active_seats,
 			l.licence_status
 		FROM `tabTracora Software Licence` l

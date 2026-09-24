@@ -50,8 +50,8 @@ class TracoraSoftwareLicence(Document):
 			self.next_renewal_date = None
 
 		# FR-20, FR-86: Compute licence_status automatically (not by hand)
-		active_or_flagged = [s for s in (self.seats or []) if s.seat_status in ("Active", "Flagged")]
-		if not active_or_flagged:
+		active_seats = [s for s in (self.seats or []) if s.seat_status == "Active"]
+		if not active_seats:
 			self.licence_status = "Unassigned"
 		elif self.licence_expiry_date and getdate(self.licence_expiry_date) < getdate(today()):
 			self.licence_status = "Expired"

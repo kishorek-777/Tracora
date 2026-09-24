@@ -187,7 +187,7 @@ def unassign_asset(asset, location, remarks, condition=None, status=None):
 		if frappe.db.exists("DocType", "Tracora Licence Seat"):
 			remaining_seats = frappe.db.count(
 				"Tracora Licence Seat",
-				{"user": previous_holder, "seat_status": ["in", ["Active", "Flagged"]]}
+				{"user": previous_holder, "seat_status": "Active"}
 			)
 		if remaining_assets == 0 and remaining_seats == 0:
 			frappe.db.set_value("Tracora Employee", previous_holder, "status", "Exited")

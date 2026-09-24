@@ -6,9 +6,9 @@ from collections import defaultdict
 import frappe
 
 
-def flag_active_seats_for_device(asset_name: str, reason: str) -> list:
+def flag_active_seats_for_device(asset_name: str, reason: str = "") -> list:
 	"""
-	Flags all active licence seats installed on asset_name (FR-59).
+	Releases all active licence seats installed on asset_name when unassigned or retired.
 	Groups matching seats by parent licence and saves each parent exactly once,
 	preventing double-save races and TimestampMismatchError.
 	"""
@@ -28,21 +28,23 @@ def flag_active_seats_for_device(asset_name: str, reason: str) -> list:
 	for s in seats:
 		seats_by_parent[s.parent].append(s)
 
-	flagged_summary = []
+	released_summary = []
 	for parent_name, seat_list in seats_by_parent.items():
 		licence_doc = frappe.get_doc("Tracora Software Licence", parent_name)
 		target_seat_names = {s.name for s in seat_list}
 		for seat_row in licence_doc.seats:
 			if seat_row.name in target_seat_names:
-				seat_row.seat_status = "Flagged"
-				seat_row.flagged_reason = reason
-				flagged_summary.append({
+				seat_row.seat_status = "Released"
+				released_summary.append({
 					"licence": parent_name,
 					"seat": seat_row.name,
 					"device": asset_name,
 					"user": seat_row.user,
-					"reason": reason
+					"status": "Released"
 				})
 		licence_doc.save(ignore_permissions=True)
 
-	return flagged_summary
+	return released_summary
+
+
+release_active_seats_for_device = flag_active_seats_for_device

@@ -250,8 +250,8 @@ Append-only, enforced in code (§5). No role can edit or delete a movement.
 |---|---|---|---|---|---|
 | user | User | Link | Cond. | Tracora Employee | Required on a user licence, optional on a device licence (FR-79, FR-85) |
 | device | Device | Link | Yes | Tracora Asset | Always required |
-| seat_status | Seat Status | Select | Yes | — | `Active` / `Flagged` / `Released`. Default `Active` |
-| flagged_reason | Flagged Reason | Data | No | — | Set when the device is unassigned (FR-59) |
+| seat_status | Seat Status | Select | Yes | — | `Active` / `Released`. Default `Active` |
+| software_key | Software Key | Data | No | — | Software / licence product key for this seat |
 
 ### Tracora Reminder Log
 
