@@ -4,7 +4,7 @@
 import frappe
 from frappe.tests.utils import FrappeTestCase
 
-from tracora.api.lookup import find_asset, get_session_info
+from tracora.api.lookup import find_asset, get_session_info, mobile_login
 
 
 class TestTracoraLookup(FrappeTestCase):
@@ -384,3 +384,95 @@ class TestTracoraLookup(FrappeTestCase):
 			self.assertTrue(bool(info.get("csrf_token")))
 		finally:
 			frappe.set_user("Administrator")
+
+	def test_role_less_user_lookup_refused(self):
+		"""
+		Authenticated user with NEITHER Tracora Admin NOR Tracora Super Admin
+		must be refused by find_asset with frappe.PermissionError.
+		"""
+		test_user = "kishore.k@aionioncapital.com"
+		frappe.set_user(test_user)
+		try:
+			with self.assertRaises(frappe.PermissionError) as cm:
+				find_asset("TAG-LKP-01")
+			self.assertIn("Tracora Admin or Tracora Super Admin", str(cm.exception))
+		finally:
+			frappe.set_user("Administrator")
+
+	def test_get_session_info_role_less_user_returns_none(self):
+		"""
+		Authenticated user without Tracora role must get user=None from get_session_info.
+		"""
+		test_user = "kishore.k@aionioncapital.com"
+		frappe.set_user(test_user)
+		try:
+			info = get_session_info()
+			self.assertIsNone(info.get("user"))
+			self.assertTrue(bool(info.get("csrf_token")))
+		finally:
+			frappe.set_user("Administrator")
+
+	def test_mobile_login_rejects_non_tracora_user(self):
+		"""
+		mobile_login must reject users who have valid credentials but lack Tracora role
+		with frappe.PermissionError before establishing session.
+		"""
+		test_user = "kishore.k@aionioncapital.com"
+		from frappe.utils.password import update_password
+		update_password(test_user, "TemporaryTestPass123!", logout_all_sessions=False)
+		try:
+			with self.assertRaises(frappe.PermissionError) as cm:
+				mobile_login(usr=test_user, pwd="TemporaryTestPass123!")
+			self.assertIn("Tracora Admin or Tracora Super Admin", str(cm.exception))
+		finally:
+			frappe.set_user("Administrator")
+
+	def test_mobile_login_accepts_tracora_admin(self):
+		"""
+		mobile_login must succeed for user with Tracora Admin role.
+		"""
+		admin_user = "test_tracora_admin@example.com"
+		from frappe.utils.password import update_password
+		update_password(admin_user, "AdminPass123!", logout_all_sessions=False)
+		try:
+			res = mobile_login(usr=admin_user, pwd="AdminPass123!")
+			self.assertEqual(res.get("user"), admin_user)
+			self.assertTrue(bool(res.get("csrf_token")))
+		finally:
+			frappe.set_user("Administrator")
+
+	def test_system_manager_without_tracora_role_rejected(self):
+		"""
+		User with System Manager role but NEITHER Tracora Admin NOR Tracora Super Admin
+		must be refused by find_asset and mobile_login.
+		"""
+		sm_user = "test_sm_only_user@example.com"
+		if not frappe.db.exists("User", sm_user):
+			user_doc = frappe.get_doc({
+				"doctype": "User",
+				"email": sm_user,
+				"first_name": "SM Only",
+				"roles": [{"role": "System Manager"}],
+			}).insert()
+		else:
+			user_doc = frappe.get_doc("User", sm_user)
+			user_doc.roles = []
+			user_doc.append("roles", {"role": "System Manager"})
+			user_doc.save()
+
+		from frappe.utils.password import update_password
+		update_password(sm_user, "SMPassword123!", logout_all_sessions=False)
+
+		# 1. find_asset rejection
+		frappe.set_user(sm_user)
+		try:
+			with self.assertRaises(frappe.PermissionError) as cm:
+				find_asset("TAG-LKP-01")
+			self.assertIn("Tracora Admin or Tracora Super Admin", str(cm.exception))
+		finally:
+			frappe.set_user("Administrator")
+
+		# 2. mobile_login rejection
+		with self.assertRaises(frappe.PermissionError) as cm:
+			mobile_login(usr=sm_user, pwd="SMPassword123!")
+		self.assertIn("Tracora Admin or Tracora Super Admin", str(cm.exception))

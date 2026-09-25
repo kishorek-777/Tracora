@@ -95,7 +95,12 @@ export default function MobileApp() {
   const [loginPassword, setLoginPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loginLoading, setLoginLoading] = useState(false);
-  const [loginError, setLoginError] = useState('');
+  const [loginError, setLoginError] = useState(() => {
+    if (typeof window !== 'undefined' && window.__TRACORA_ACCESS_ERROR__) {
+      return window.__TRACORA_ACCESS_ERROR__;
+    }
+    return '';
+  });
   const [logoutLoading, setLogoutLoading] = useState(false);
 
   // Shell tab state: 'scan' | 'lookup'
@@ -280,7 +285,7 @@ export default function MobileApp() {
     setLoginLoading(true);
     try {
       const body = new URLSearchParams({ usr, pwd });
-      const response = await fetch('/api/method/login', {
+      const response = await fetch('/api/method/tracora.api.lookup.mobile_login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
@@ -293,7 +298,16 @@ export default function MobileApp() {
       const data = await response.json().catch(() => null);
 
       if (!response.ok || (data && data.exc)) {
-        const msg = data?.message || 'Invalid username or password.';
+        let msg = 'Invalid username or password.';
+        if (data?._server_messages) {
+          try {
+            const msgs = JSON.parse(data._server_messages);
+            const parsed = JSON.parse(msgs[0]);
+            msg = parsed.message || msg;
+          } catch {}
+        } else if (data?.message) {
+          msg = typeof data.message === 'string' ? data.message : (data.message?.message || msg);
+        }
         setLoginError(msg);
         setLoginLoading(false);
         return;
@@ -302,9 +316,9 @@ export default function MobileApp() {
       // Purge cached guest shell in Workbox immediately upon login
       await invalidateShellCache();
 
-      // Retrieve new authenticated session info and updated CSRF token
-      let authedUser = usr;
-      let newCsrf = '';
+      // Retrieve authenticated session info and updated CSRF token
+      let authedUser = data?.message?.user || usr;
+      let newCsrf = data?.message?.csrf_token || '';
       try {
         const sessionRes = await fetch('/api/method/tracora.api.lookup.get_session_info', {
           method: 'GET',
@@ -315,6 +329,10 @@ export default function MobileApp() {
           const info = sessionData.message || {};
           if (info.user && info.user !== 'Guest') {
             authedUser = info.user;
+          } else {
+            setLoginError('Access denied: You do not have permission to access Tracora Mobile. Required role: Tracora Admin or Tracora Super Admin.');
+            setLoginLoading(false);
+            return;
           }
           if (info.csrf_token) {
             newCsrf = info.csrf_token;

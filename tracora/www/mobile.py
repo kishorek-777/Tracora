@@ -1,6 +1,8 @@
+import frappe.sessions
 from pathlib import Path
 
 import frappe
+from tracora.api.lookup import _has_tracora_access
 
 
 def get_context(context):
@@ -20,10 +22,16 @@ def get_context(context):
 	if html_file.exists():
 		raw_html = html_file.read_text(encoding="utf-8")
 		user = frappe.session.user if frappe.session.user != "Guest" else None
+		access_error = None
+		if user and not _has_tracora_access(user):
+			user = None
+			access_error = "Access denied: You do not have permission to access Tracora Mobile. Required role: Tracora Admin or Tracora Super Admin."
+
 		csrf_token = frappe.sessions.get_csrf_token()
 		bootstrap_script = (
 			f"<script>\n"
 			f"\twindow.__TRACORA_USER__ = {frappe.as_json(user)};\n"
+			f"\twindow.__TRACORA_ACCESS_ERROR__ = {frappe.as_json(access_error)};\n"
 			f"\twindow.__CSRF_TOKEN__ = {frappe.as_json(csrf_token)};\n"
 			f"</script>\n"
 		)

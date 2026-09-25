@@ -1,3 +1,19 @@
+import frappe.sessions
+def _has_tracora_access(user: str | None = None) -> bool:
+	"""
+	Verifies whether the given user possesses administrative access to Tracora.
+	Only Tracora Super Admin, Tracora Admin, and the platform Administrator
+	are permitted access to Tracora Mobile PWA and asset lookup endpoints.
+	System Manager is explicitly excluded.
+	"""
+	if not user or user == "Guest":
+		return False
+	if user == "Administrator":
+		return True
+	user_roles = set(frappe.get_roles(user))
+	return bool(user_roles & {"Tracora Super Admin", "Tracora Admin"})
+
+
 import frappe
 from frappe import _
 
@@ -20,6 +36,12 @@ def find_asset(q: str | None = None) -> dict:
 	"""
 	if not frappe.session.user or frappe.session.user == "Guest":
 		frappe.throw(_("Authentication required"), frappe.PermissionError)
+
+	if not _has_tracora_access(frappe.session.user):
+		frappe.throw(
+			_("Access denied: Tracora Admin or Tracora Super Admin role required"),
+			frappe.PermissionError,
+		)
 
 	query = (q or "").strip()
 	if not query:
@@ -220,9 +242,53 @@ def get_session_info() -> dict:
 	"""
 	Returns active session user and valid CSRF token.
 	Used by Tracora Mobile PWA after login or on demand to refresh CSRF token.
-	Returns user as None for unauthenticated (Guest) sessions.
+	Returns user as None for unauthenticated (Guest) sessions or sessions
+	lacking Tracora Admin/Super Admin role.
 	"""
+	user = frappe.session.user if frappe.session.user != "Guest" else None
+	if user and not _has_tracora_access(user):
+		user = None
+
 	return {
-		"user": frappe.session.user if frappe.session.user != "Guest" else None,
+		"user": user,
 		"csrf_token": frappe.sessions.get_csrf_token(),
+	}
+
+
+@frappe.whitelist(allow_guest=True, methods=["POST"])
+def mobile_login(usr: str | None = None, pwd: str | None = None) -> dict:
+	"""
+	Dedicated server-side authentication for Tracora Mobile PWA.
+	Verifies credentials and enforces that the user possesses either the
+	'Tracora Admin' or 'Tracora Super Admin' role at the point of login.
+	Rejects non-Tracora-role users before establishing a mobile session.
+	"""
+	from frappe.utils.password import check_password
+
+	usr = (usr or frappe.form_dict.get("usr") or "").strip()
+	pwd = pwd or frappe.form_dict.get("pwd") or ""
+
+	if not usr or not pwd:
+		frappe.throw(_("Please enter both email/username and password."), frappe.AuthenticationError)
+
+	# 1. Authenticate user credentials
+	valid_user = check_password(usr, pwd)
+
+	# 2. Server-side role check: must have Tracora Admin or Tracora Super Admin
+	if not _has_tracora_access(valid_user):
+		frappe.throw(
+			_("Access denied: You do not have permission to access Tracora Mobile. Required role: Tracora Admin or Tracora Super Admin."),
+			frappe.PermissionError,
+		)
+
+	# 3. Validated: establish session
+	if getattr(frappe.local, "login_manager", None):
+		frappe.local.login_manager.user = valid_user
+		frappe.local.login_manager.post_login()
+	frappe.set_user(valid_user)
+
+	return {
+		"user": valid_user,
+		"csrf_token": frappe.sessions.get_csrf_token(),
+		"message": _("Logged In"),
 	}
