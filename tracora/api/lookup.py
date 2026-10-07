@@ -6,6 +6,7 @@ def _has_tracora_access(user: str | None = None) -> bool:
 	are permitted access to Tracora Mobile PWA and asset lookup endpoints.
 	System Manager is explicitly excluded.
 	"""
+	user = user or (frappe.session.user if getattr(frappe, "session", None) else None)
 	if not user or user == "Guest":
 		return False
 	if user == "Administrator":
@@ -274,18 +275,24 @@ def mobile_login(usr: str | None = None, pwd: str | None = None) -> dict:
 	# 1. Authenticate user credentials
 	valid_user = check_password(usr, pwd)
 
-	# 2. Server-side role check: must have Tracora Admin or Tracora Super Admin
+	# 2. Establish session
+	login_manager = getattr(frappe.local, "login_manager", None)
+	if login_manager:
+		login_manager.user = valid_user
+		login_manager.post_login()
+	else:
+		frappe.set_user(valid_user)
+
+	# 3. Server-side role check: must have Tracora Admin or Tracora Super Admin
 	if not _has_tracora_access(valid_user):
+		if login_manager:
+			login_manager.logout()
+		else:
+			frappe.set_user("Guest")
 		frappe.throw(
 			_("Access denied: You do not have permission to access Tracora Mobile. Required role: Tracora Admin or Tracora Super Admin."),
 			frappe.PermissionError,
 		)
-
-	# 3. Validated: establish session
-	if getattr(frappe.local, "login_manager", None):
-		frappe.local.login_manager.user = valid_user
-		frappe.local.login_manager.post_login()
-	frappe.set_user(valid_user)
 
 	return {
 		"user": valid_user,

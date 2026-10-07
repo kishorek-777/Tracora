@@ -385,12 +385,30 @@ class TestTracoraLookup(FrappeTestCase):
 		finally:
 			frappe.set_user("Administrator")
 
+	def _ensure_non_tracora_user(self):
+		user_email = "test_non_tracora_user@example.com"
+		if not frappe.db.exists("User", user_email):
+			frappe.get_doc({
+				"doctype": "User",
+				"email": user_email,
+				"first_name": "Non",
+				"last_name": "Tracora",
+				"send_welcome_email": 0,
+				"roles": [{"role": "Employee"}],
+			}).insert(ignore_permissions=True)
+		else:
+			doc = frappe.get_doc("User", user_email)
+			doc.roles = []
+			doc.append("roles", {"role": "Employee"})
+			doc.save(ignore_permissions=True)
+		return user_email
+
 	def test_role_less_user_lookup_refused(self):
 		"""
 		Authenticated user with NEITHER Tracora Admin NOR Tracora Super Admin
 		must be refused by find_asset with frappe.PermissionError.
 		"""
-		test_user = "kishore.k@aionioncapital.com"
+		test_user = self._ensure_non_tracora_user()
 		frappe.set_user(test_user)
 		try:
 			with self.assertRaises(frappe.PermissionError) as cm:
@@ -403,7 +421,7 @@ class TestTracoraLookup(FrappeTestCase):
 		"""
 		Authenticated user without Tracora role must get user=None from get_session_info.
 		"""
-		test_user = "kishore.k@aionioncapital.com"
+		test_user = self._ensure_non_tracora_user()
 		frappe.set_user(test_user)
 		try:
 			info = get_session_info()
@@ -417,7 +435,7 @@ class TestTracoraLookup(FrappeTestCase):
 		mobile_login must reject users who have valid credentials but lack Tracora role
 		with frappe.PermissionError before establishing session.
 		"""
-		test_user = "kishore.k@aionioncapital.com"
+		test_user = self._ensure_non_tracora_user()
 		from frappe.utils.password import update_password
 		update_password(test_user, "TemporaryTestPass123!", logout_all_sessions=False)
 		try:
@@ -432,11 +450,55 @@ class TestTracoraLookup(FrappeTestCase):
 		mobile_login must succeed for user with Tracora Admin role.
 		"""
 		admin_user = "test_tracora_admin@example.com"
+		if not frappe.db.exists("User", admin_user):
+			frappe.get_doc({
+				"doctype": "User",
+				"email": admin_user,
+				"first_name": "Test",
+				"last_name": "Admin",
+				"send_welcome_email": 0,
+				"roles": [{"role": "Tracora Admin"}],
+			}).insert(ignore_permissions=True)
+		else:
+			doc = frappe.get_doc("User", admin_user)
+			doc.roles = []
+			doc.append("roles", {"role": "Tracora Admin"})
+			doc.save(ignore_permissions=True)
+
 		from frappe.utils.password import update_password
 		update_password(admin_user, "AdminPass123!", logout_all_sessions=False)
 		try:
 			res = mobile_login(usr=admin_user, pwd="AdminPass123!")
 			self.assertEqual(res.get("user"), admin_user)
+			self.assertTrue(bool(res.get("csrf_token")))
+		finally:
+			frappe.set_user("Administrator")
+
+	def test_mobile_login_accepts_tracora_super_admin(self):
+		"""
+		mobile_login must succeed for user with Tracora Super Admin role.
+		"""
+		super_admin_user = "test_tracora_super_admin@example.com"
+		if not frappe.db.exists("User", super_admin_user):
+			frappe.get_doc({
+				"doctype": "User",
+				"email": super_admin_user,
+				"first_name": "Super",
+				"last_name": "Admin",
+				"send_welcome_email": 0,
+				"roles": [{"role": "Tracora Super Admin"}],
+			}).insert(ignore_permissions=True)
+		else:
+			doc = frappe.get_doc("User", super_admin_user)
+			doc.roles = []
+			doc.append("roles", {"role": "Tracora Super Admin"})
+			doc.save(ignore_permissions=True)
+
+		from frappe.utils.password import update_password
+		update_password(super_admin_user, "SuperAdminPass123!", logout_all_sessions=False)
+		try:
+			res = mobile_login(usr=super_admin_user, pwd="SuperAdminPass123!")
+			self.assertEqual(res.get("user"), super_admin_user)
 			self.assertTrue(bool(res.get("csrf_token")))
 		finally:
 			frappe.set_user("Administrator")
