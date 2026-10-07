@@ -138,17 +138,26 @@ def unassign_asset(asset, location, remarks, condition=None, status=None):
 		frappe.throw(_("Return location is mandatory and must be a valid Location (FR-52)."), frappe.ValidationError)
 
 	asset_doc = frappe.get_doc("Tracora Asset", asset)
-	if not asset_doc.assigned_to:
+	if not asset_doc.assigned_to and asset_doc.status != "Assigned":
 		frappe.throw(
 			_("Asset '{0}' is not currently assigned.").format(asset_doc.asset_tag or asset_doc.name),
 			frappe.ValidationError
 		)
 
 	previous_holder = asset_doc.assigned_to
+	if not previous_holder:
+		previous_holder = frappe.db.get_value(
+			"Tracora Asset Movement",
+			{"asset": asset_doc.name, "movement_type": "Assign"},
+			"to_employee",
+			order_by="movement_date desc, creation desc"
+		)
 	previous_status = asset_doc.status
 	previous_location = asset_doc.location
 
 	target_status = status or "In Store"
+	if target_status == "Assigned":
+		target_status = "In Store"
 	target_condition = condition or asset_doc.condition
 
 	frappe.flags.in_tracora_assign = True
@@ -180,17 +189,18 @@ def unassign_asset(asset, location, remarks, condition=None, status=None):
 	flag_active_seats_for_device(asset_doc.name, _("Device '{0}' was unassigned").format(asset_doc.asset_tag or asset_doc.name))
 
 	# FR-69: Pending Clearance clears to Exited automatically on last release (checking both assets and software seats)
-	emp_status = frappe.db.get_value("Tracora Employee", previous_holder, "status")
-	if emp_status == "Pending Clearance":
-		remaining_assets = frappe.db.count("Tracora Asset", {"assigned_to": previous_holder})
-		remaining_seats = 0
-		if frappe.db.exists("DocType", "Tracora Licence Seat"):
-			remaining_seats = frappe.db.count(
-				"Tracora Licence Seat",
-				{"user": previous_holder, "seat_status": "Active"}
-			)
-		if remaining_assets == 0 and remaining_seats == 0:
-			frappe.db.set_value("Tracora Employee", previous_holder, "status", "Exited")
+	if previous_holder:
+		emp_status = frappe.db.get_value("Tracora Employee", previous_holder, "status")
+		if emp_status == "Pending Clearance":
+			remaining_assets = frappe.db.count("Tracora Asset", {"assigned_to": previous_holder})
+			remaining_seats = 0
+			if frappe.db.exists("DocType", "Tracora Licence Seat"):
+				remaining_seats = frappe.db.count(
+					"Tracora Licence Seat",
+					{"user": previous_holder, "seat_status": "Active"}
+				)
+			if remaining_assets == 0 and remaining_seats == 0:
+				frappe.db.set_value("Tracora Employee", previous_holder, "status", "Exited")
 
 	return {"asset": asset_doc.name, "movement": movement.name, "status": target_status}
 

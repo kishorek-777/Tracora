@@ -256,7 +256,7 @@ frappe.ui.form.on('Tracora Asset', {
 					fieldname: 'current_holder',
 					fieldtype: 'Data',
 					label: __('Current Holder'),
-					default: frm.doc.assigned_to,
+					default: frm.doc.assigned_to || __('Not recorded'),
 					read_only: 1
 				},
 				{

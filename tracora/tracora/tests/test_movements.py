@@ -219,6 +219,34 @@ class TestTracoraMovements(FrappeTestCase):
 		self.assertIsNone(m.to_employee)
 		self.assertEqual(m.remarks, "Returned due to project end")
 
+	def test_unassign_asset_assigned_without_holder_succeeds(self):
+		"""Unassigning an asset marked Assigned but with empty assigned_to (legacy/orphaned) succeeds and resets to In Store."""
+		a = self._create_test_asset("SN-ORPHAN-ASSIGN")
+		frappe.db.set_value("Tracora Asset", a.name, {"status": "Assigned", "assigned_to": None})
+		a.reload()
+		self.assertEqual(a.status, "Assigned")
+		self.assertIsNone(a.assigned_to)
+
+		res = unassign_asset(a.name, location="Warehouse", remarks="Unassigning legacy assigned asset", condition="Good", status="In Store")
+		a.reload()
+		self.assertEqual(a.status, "In Store")
+		self.assertIsNone(a.assigned_to)
+		self.assertEqual(a.location, "Warehouse")
+
+		m = frappe.get_doc("Tracora Asset Movement", res["movement"])
+		self.assertEqual(m.movement_type, "Unassign")
+		self.assertIsNone(m.from_employee)
+		self.assertEqual(m.from_status, "Assigned")
+		self.assertEqual(m.to_status, "In Store")
+		self.assertEqual(m.remarks, "Unassigning legacy assigned asset")
+
+	def test_unassign_truly_unassigned_asset_refused(self):
+		"""Attempting to unassign an asset that is In Store without an assigned holder throws ValidationError."""
+		a = self._create_test_asset("SN-STORE-UNASSIGN", status="In Store")
+		with self.assertRaises(frappe.ValidationError) as ctx:
+			unassign_asset(a.name, location="Warehouse", remarks="Attempting invalid unassign")
+		self.assertIn("is not currently assigned", str(ctx.exception))
+
 	def test_fr57_assign_already_assigned_refused(self):
 		"""FR-57: Assigning an already-assigned asset is refused, naming the current holder."""
 		a = self._create_test_asset("SN-FR57")
