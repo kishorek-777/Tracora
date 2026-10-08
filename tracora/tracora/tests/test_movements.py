@@ -425,3 +425,29 @@ class TestTracoraMovements(FrappeTestCase):
 		# No movement was committed for a1
 		m_count = frappe.db.count("Tracora Asset Movement", {"asset": a1.name})
 		self.assertEqual(m_count, 0)
+	def test_fr17_location_change_logged_on_asset_save(self):
+		"""
+		FR-17: When an asset's location is changed directly on the Tracora Asset document,
+		an immutable 'Location Change' movement is automatically logged in Tracora Asset Movement.
+		"""
+		a = self._create_test_asset("SN-LOC-CHG")
+		self.assertEqual(a.location, "Main Office")
+
+		# Direct location edit on asset record
+		a.location = "Warehouse"
+		a.save()
+
+		# Movement log must exist
+		movements = frappe.get_all(
+			"Tracora Asset Movement",
+			filters={"asset": a.name, "movement_type": "Location Change"},
+			fields=["name", "from_location", "to_location", "from_status", "to_status", "recorded_by"]
+		)
+		self.assertEqual(len(movements), 1)
+		m = movements[0]
+		self.assertEqual(m.from_location, "Main Office")
+		self.assertEqual(m.to_location, "Warehouse")
+		self.assertEqual(m.from_status, "In Store")
+		self.assertEqual(m.to_status, "In Store")
+		self.assertEqual(m.recorded_by, frappe.session.user)
+

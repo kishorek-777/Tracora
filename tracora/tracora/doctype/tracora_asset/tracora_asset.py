@@ -239,6 +239,27 @@ class TracoraAsset(Document):
 				from tracora.licences.flagging import flag_active_seats_for_device
 				flag_active_seats_for_device(self.name, _("Device '{0}' was retired").format(self.asset_tag or self.name))
 
+	def on_update(self):
+		# FR-17: Track location changes on asset record edits outside assignment/transfer flows
+		if not self.is_new():
+			before_doc = self.get_doc_before_save()
+			if before_doc and before_doc.location != self.location:
+				if not getattr(frappe.flags, "in_tracora_assign", False) and not getattr(frappe.flags, "in_tracora_transfer", False):
+					frappe.get_doc({
+						"doctype": "Tracora Asset Movement",
+						"asset": self.name,
+						"movement_type": "Location Change",
+						"movement_date": frappe.utils.now_datetime(),
+						"from_location": before_doc.location,
+						"to_location": self.location,
+						"from_status": before_doc.status,
+						"to_status": self.status,
+						"from_employee": self.assigned_to,
+						"to_employee": self.assigned_to,
+						"remarks": _("Location updated from '{0}' to '{1}'").format(before_doc.location, self.location),
+						"recorded_by": frappe.session.user
+					}).insert(ignore_permissions=True)
+
 	def on_trash(self):
 		# Deliberate deviation from FR-59: deletion is blocked, not flagged, to preserve reqd FK integrity on Tracora Licence Seat.device
 		if frappe.db.exists("DocType", "Tracora Licence Seat"):

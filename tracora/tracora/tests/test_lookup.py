@@ -100,6 +100,10 @@ class TestTracoraLookup(FrappeTestCase):
 		else:
 			self.ext_emp_name = existing_ext
 
+	def tearDown(self):
+		frappe.set_user("Administrator")
+		super().tearDown()
+
 	def test_exact_tag_lookup_resolves_asset(self):
 		tag = "TAG-LKP-01"
 		serial = "SN-LKP-TAG-01"
@@ -535,6 +539,9 @@ class TestTracoraLookup(FrappeTestCase):
 			frappe.set_user("Administrator")
 
 		# 2. mobile_login rejection
-		with self.assertRaises(frappe.PermissionError) as cm:
-			mobile_login(usr=sm_user, pwd="SMPassword123!")
-		self.assertIn("Tracora Admin or Tracora Super Admin", str(cm.exception))
+		try:
+			with self.assertRaises(frappe.PermissionError) as cm:
+				mobile_login(usr=sm_user, pwd="SMPassword123!")
+			self.assertIn("Tracora Admin or Tracora Super Admin", str(cm.exception))
+		finally:
+			frappe.set_user("Administrator")

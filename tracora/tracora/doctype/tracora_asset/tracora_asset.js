@@ -54,7 +54,7 @@ frappe.ui.form.on('Tracora Asset', {
 				return btn;
 			};
 
-			if (frm.doc.status === 'In Store') {
+			if (frm.doc.status === 'In Store' || frm.doc.status === 'Recovered') {
 				frm.add_custom_button(__('Assign'), function() {
 					frm.events.show_assign_dialog(frm);
 				}).addClass('btn-primary');

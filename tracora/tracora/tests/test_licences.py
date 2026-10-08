@@ -562,4 +562,37 @@ class TestTracoraLicences(FrappeTestCase):
 		lic.save()
 		self.assertEqual(lic.allocated_seats, 1)
 		self.assertEqual(lic.seat_availability, "Available")
+	def test_fr69_pending_clearance_auto_cleared_on_licence_seat_release(self):
+		"""
+		FR-69: When an employee in Pending Clearance has no remaining assets,
+		releasing their software licence seat directly on the licence doc
+		automatically transitions their status to Exited.
+		"""
+		emp_name = self._create_employee("EMP-FR69-LIC")
+		dev = self._create_asset("SN-FR69-DEV")
+
+		lic = frappe.get_doc({
+			"doctype": "Tracora Software Licence",
+			"software_name": "Clearance Test Suite",
+			"licence_name": "Clearance Suite Licence",
+			"company": "Licence Test Corp",
+			"licence_type": "User licence",
+			"renewal_cycle": "Monthly",
+			"licence_expiry_date": add_days(today(), 60),
+			"total_seats": 2,
+			"seats": [
+				{"device": dev, "user": emp_name, "seat_status": "Active"}
+			]
+		}).insert()
+
+		# Employee enters Pending Clearance (no physical assets assigned)
+		frappe.db.set_value("Tracora Employee", emp_name, "status", "Pending Clearance")
+		self.assertEqual(frappe.db.get_value("Tracora Employee", emp_name, "status"), "Pending Clearance")
+
+		# IT releases the licence seat directly
+		lic.seats[0].seat_status = "Released"
+		lic.save()
+
+		# Employee status must auto-transition to Exited
+		self.assertEqual(frappe.db.get_value("Tracora Employee", emp_name, "status"), "Exited")
 

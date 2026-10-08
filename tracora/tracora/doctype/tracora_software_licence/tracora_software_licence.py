@@ -83,3 +83,23 @@ class TracoraSoftwareLicence(Document):
 			self.licence_status = "Expired"
 		else:
 			self.licence_status = "Active"
+
+	def on_update(self):
+		# FR-69: Pending Clearance clears to Exited automatically on last release (checking both assets and software seats)
+		if not frappe.db.exists("DocType", "Tracora Employee"):
+			return
+
+		checked_users = {s.user for s in (self.seats or []) if s.user}
+		before_doc = self.get_doc_before_save()
+		if before_doc:
+			checked_users.update({s.user for s in (before_doc.seats or []) if s.user})
+
+		for user in checked_users:
+			if frappe.db.get_value("Tracora Employee", user, "status") == "Pending Clearance":
+				remaining_assets = frappe.db.count("Tracora Asset", {"assigned_to": user})
+				remaining_seats = frappe.db.count(
+					"Tracora Licence Seat",
+					{"user": user, "seat_status": "Active"}
+				)
+				if remaining_assets == 0 and remaining_seats == 0:
+					frappe.db.set_value("Tracora Employee", user, "status", "Exited")

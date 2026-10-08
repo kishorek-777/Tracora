@@ -10,6 +10,8 @@ from tracora.integrations import hrms
 
 class TestHRMSIntegration(FrappeTestCase):
 	def setUp(self):
+		super().setUp()
+		frappe.set_user("Administrator")
 		# Ensure test roles
 		for role in ["Tracora Super Admin", "Tracora Admin"]:
 			if not frappe.db.exists("Role", role):
