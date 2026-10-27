@@ -124,3 +124,43 @@ class TestTracoraInfraRecord(FrappeTestCase):
 		# Check write/read permissions
 		self.assertTrue(frappe.has_permission("Tracora Infra Record", "read", user=admin_email))
 		self.assertTrue(frappe.has_permission("Tracora Infra Record", "write", user=admin_email))
+
+	def test_13_first_value_300_chars_saves_and_title_cut_to_140(self):
+		# Test 13: A record whose first value is 300 characters long saves.
+		long_val = "A" * 300
+		rec = frappe.get_doc({
+			"doctype": "Tracora Infra Record",
+			"field_rows": [
+				{"field_label": "Description", "field_value": long_val}
+			]
+		}).insert()
+
+		self.assertEqual(len(rec.title), 140)
+		self.assertEqual(rec.title, "A" * 140)
+		self.assertEqual(rec.field_rows[0].field_value, long_val)
+
+	def test_14_row_with_200_char_label_saves_and_cut_to_140(self):
+		# Test 14: A row with a 200-character label saves.
+		long_label = "B" * 200
+		rec = frappe.get_doc({
+			"doctype": "Tracora Infra Record",
+			"field_rows": [
+				{"field_label": long_label, "field_value": "Short Value"}
+			]
+		}).insert()
+
+		self.assertEqual(len(rec.field_rows[0].field_label), 140)
+		self.assertEqual(rec.field_rows[0].field_label, "B" * 140)
+
+	def test_15_multiline_value_title_uses_only_first_line(self):
+		# Test 15: A value containing a line break: title uses only the first line.
+		multiline_val = "First Line Of Name\nSecond Line Details\nThird Line Notes"
+		rec = frappe.get_doc({
+			"doctype": "Tracora Infra Record",
+			"field_rows": [
+				{"field_label": "Device Name", "field_value": multiline_val}
+			]
+		}).insert()
+
+		self.assertEqual(rec.title, "First Line Of Name")
+		self.assertEqual(rec.field_rows[0].field_value, multiline_val)

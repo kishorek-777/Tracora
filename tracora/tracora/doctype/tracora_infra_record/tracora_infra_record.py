@@ -27,26 +27,31 @@ class TracoraInfraRecord(Document):
 		first_non_empty_value = None
 
 		for row in list(self.field_rows or []):
-			label = (row.field_label or "").strip()
+			raw_label = (row.field_label or "").strip()
 			val = (row.field_value or "").strip()
 
 			# b) If label AND value are both empty -> remove the row silently
-			if not label and not val:
+			if not raw_label and not val:
 				continue
 
 			# c) If label is empty but value is present -> set label to "Untitled Field"
-			if not label and val:
-				label = "Untitled Field"
+			if not raw_label and val:
+				raw_label = "Untitled Field"
+
+			# Cut label to 140 characters
+			label = raw_label[:140]
 
 			row.field_label = label
-			row.field_value = val
+			row.field_value = row.field_value  # Full value stays untouched in field_value
 			cleaned_rows.append(row)
 
 			if val:
+				# Use first line of chosen value, trimmed, cut to 140 characters
+				first_line = val.split("\n", 1)[0].strip()[:140]
 				if candidate_priority_title is None and label.lower() in priority_labels:
-					candidate_priority_title = val
+					candidate_priority_title = first_line
 				if first_non_empty_value is None:
-					first_non_empty_value = val
+					first_non_empty_value = first_line
 
 			if label:
 				text_parts.append(label)

@@ -15,7 +15,8 @@
    "fieldtype": "Data",
    "in_list_view": 1,
    "label": "Field Label",
-   "reqd": 0
+   "reqd": 0,
+   "placeholder": "Field name"
   },
   {
    "columns": 8,
@@ -23,7 +24,8 @@
    "fieldtype": "Small Text",
    "in_list_view": 1,
    "label": "Field Value",
-   "reqd": 0
+   "reqd": 0,
+   "placeholder": "Enter value"
   }
  ],
  "istable": 1,
