@@ -5,12 +5,24 @@ import frappe
 from frappe.model.document import Document
 from frappe.model.naming import make_autoname
 
+FALLBACK_TYPE = "Other"
+
 
 class TracoraInfraRecord(Document):
 	def autoname(self):
 		self.name = make_autoname("INF-.#####")
 
 	def validate(self):
+		# Fallback handling for record_type
+		clean_type = (self.record_type or "").strip()
+		if not clean_type:
+			if frappe.db.exists("Tracora Infra Record Type", FALLBACK_TYPE):
+				self.record_type = FALLBACK_TYPE
+			else:
+				self.record_type = ""
+		else:
+			self.record_type = clean_type
+
 		cleaned_rows = []
 		text_parts = []
 

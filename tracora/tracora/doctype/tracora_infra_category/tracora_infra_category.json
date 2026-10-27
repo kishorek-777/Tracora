@@ -21,13 +21,12 @@
    "reqd": 0
   },
   {
-   "default": "Device",
    "fieldname": "record_type",
-   "fieldtype": "Select",
+   "fieldtype": "Link",
    "in_list_view": 1,
    "in_standard_filter": 1,
    "label": "Record Type",
-   "options": "Device\nBuilding\nVendor\nOther",
+   "options": "Tracora Infra Record Type",
    "reqd": 0
   },
   {

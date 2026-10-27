@@ -75,7 +75,7 @@ frappe.listview_settings["Tracora Infra Record"] = {
 							<use href="#icon-small-file"></use>
 						</svg>
 					</div>
-					<p>${__("Select a Record Type (Device, Building, Vendor or Other) to view records.")}</p>
+					<p>${__("Select a Record Type to view records.")}</p>
 				</div>`;
 			}
 			return standard_get_no_result_message();
