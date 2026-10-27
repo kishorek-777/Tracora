@@ -1,0 +1,42 @@
+{
+ "actions": [],
+ "creation": "2026-10-27 16:35:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "field_label",
+  "field_value"
+ ],
+ "fields": [
+  {
+   "columns": 4,
+   "fieldname": "field_label",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Field Label",
+   "reqd": 0
+  },
+  {
+   "columns": 8,
+   "fieldname": "field_value",
+   "fieldtype": "Small Text",
+   "in_list_view": 1,
+   "label": "Field Value",
+   "reqd": 0
+  }
+ ],
+ "istable": 1,
+ "links": [],
+ "modified": "2026-10-27 16:35:00.000000",
+ "modified_by": "Administrator",
+ "module": "Tracora",
+ "name": "Tracora Infra Field",
+ "naming_rule": "Random",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "idx",
+ "sort_order": "ASC",
+ "states": [],
+ "track_changes": 0
+}
