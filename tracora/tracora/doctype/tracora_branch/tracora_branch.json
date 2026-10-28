@@ -50,7 +50,7 @@
   }
  ],
  "links": [],
- "modified": "2026-10-28 11:30:00.000000",
+ "modified": "2026-10-28 12:00:00.000000",
  "modified_by": "Administrator",
  "module": "Tracora",
  "name": "Tracora Branch",
@@ -70,7 +70,7 @@
   },
   {
    "create": 1,
-   "delete": 1,
+   "delete": 0,
    "email": 1,
    "print": 1,
    "read": 1,

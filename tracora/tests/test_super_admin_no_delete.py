@@ -90,25 +90,18 @@ class TestSuperAdminNoDelete(FrappeTestCase):
 			self.assertEqual(bool(can_create), bool(expected["create"]), f"Create permission mismatch on {dt}")
 
 	def test_02_admin_user_delete_and_other_permissions(self):
-		"""Tracora Admin still has no delete on core asset/infra doctypes and keeps read/write/create."""
-		core_doctypes = [
-			"Tracora Asset",
-			"Tracora Asset Category",
-			"Tracora Asset Movement",
-			"Tracora Infra Record",
-			"Tracora Infra Category",
-			"Tracora Infra Record Type",
-			"Tracora Maintenance Log",
-			"Tracora Reminder Log",
-			"Tracora Settings",
-			"Tracora Software Licence",
-		]
-		for dt in core_doctypes:
+		"""Tracora Admin still has no delete on all non-child Tracora module doctypes and keeps read/write/create."""
+		non_child_doctypes = frappe.get_all(
+			"DocType",
+			filters={"module": "Tracora", "istable": 0},
+			pluck="name",
+		)
+		for dt in non_child_doctypes:
 			can_delete = frappe.has_permission(dt, "delete", user=self.admin_user)
 			self.assertFalse(can_delete, f"Tracora Admin must NOT have delete permission on {dt}")
 			self.assertTrue(frappe.has_permission(dt, "read", user=self.admin_user), f"Admin must have read on {dt}")
 			# Check write for non-log doctypes
-			if SNAPSHOT[dt]["write"]:
+			if SNAPSHOT.get(dt, {}).get("write"):
 				self.assertTrue(frappe.has_permission(dt, "write", user=self.admin_user), f"Admin must have write on {dt}")
 
 	def test_03_patch_targets_only_super_admin_and_tracora_doctypes(self):
