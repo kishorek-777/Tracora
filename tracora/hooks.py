@@ -71,6 +71,7 @@ scheduler_events = {
 
 # Desk JS includes
 app_include_js = "/assets/tracora/js/tracora.js"
+app_include_css = "/assets/tracora/css/tracora.css"
 
 # Permission hooks
 permission_query_conditions = {
