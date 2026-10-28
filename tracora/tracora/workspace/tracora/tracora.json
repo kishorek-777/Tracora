@@ -70,6 +70,17 @@
    "type": "Link"
   },
   {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Infra Records",
+   "link_count": 0,
+   "link_to": "Tracora Infra Record",
+   "link_type": "DocType",
+   "onboard": 1,
+   "type": "Link"
+  },
+  {
    "hidden": 0,
    "is_query_report": 0,
    "label": "Masters",
@@ -129,6 +140,28 @@
    "label": "Locations",
    "link_count": 0,
    "link_to": "Tracora Location",
+   "link_type": "DocType",
+   "onboard": 1,
+   "type": "Link"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Infra Categories",
+   "link_count": 0,
+   "link_to": "Tracora Infra Category",
+   "link_type": "DocType",
+   "onboard": 1,
+   "type": "Link"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Infra Record Types",
+   "link_count": 0,
+   "link_to": "Tracora Infra Record Type",
    "link_type": "DocType",
    "onboard": 1,
    "type": "Link"
@@ -199,7 +232,7 @@
    "type": "Link"
   }
  ],
- "modified": "2026-09-10 15:32:14.041542",
+ "modified": "2026-10-28 04:03:45.733766",
  "modified_by": "Administrator",
  "module": "Tracora",
  "name": "Tracora",

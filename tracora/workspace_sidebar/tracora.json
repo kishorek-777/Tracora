@@ -80,6 +80,18 @@
   {
    "child": 0,
    "collapsible": 1,
+   "icon": "server",
+   "indent": 0,
+   "keep_closed": 0,
+   "label": "Infra Records",
+   "link_to": "Tracora Infra Record",
+   "link_type": "DocType",
+   "show_arrow": 0,
+   "type": "Link"
+  },
+  {
+   "child": 0,
+   "collapsible": 1,
    "icon": "users",
    "indent": 0,
    "keep_closed": 0,
@@ -133,6 +145,30 @@
    "keep_closed": 0,
    "label": "Locations",
    "link_to": "Tracora Location",
+   "link_type": "DocType",
+   "show_arrow": 0,
+   "type": "Link"
+  },
+  {
+   "child": 0,
+   "collapsible": 1,
+   "icon": "tags",
+   "indent": 0,
+   "keep_closed": 0,
+   "label": "Infra Categories",
+   "link_to": "Tracora Infra Category",
+   "link_type": "DocType",
+   "show_arrow": 0,
+   "type": "Link"
+  },
+  {
+   "child": 0,
+   "collapsible": 1,
+   "icon": "layers",
+   "indent": 0,
+   "keep_closed": 0,
+   "label": "Infra Record Types",
+   "link_to": "Tracora Infra Record Type",
    "link_type": "DocType",
    "show_arrow": 0,
    "type": "Link"
@@ -218,7 +254,7 @@
    "type": "Link"
   }
  ],
- "modified": "2026-09-24 09:57:10.131602",
+ "modified": "2026-10-28 04:03:45.733766",
  "modified_by": "Administrator",
  "module": "Tracora",
  "name": "Tracora",
