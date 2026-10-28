@@ -15,6 +15,10 @@ website_route_rules = [
 
 # Doc events for external apps (HRMS / ERPNext)
 doc_events = {
+	"Data Import": {
+		"validate": "tracora.permissions.validate_data_import",
+	},
+
 	"Employee": {
 		"after_insert": "tracora.integrations.hrms.on_employee_change",
 		"on_update": "tracora.integrations.hrms.on_employee_change",
@@ -67,3 +71,16 @@ scheduler_events = {
 
 # Desk JS includes
 app_include_js = "/assets/tracora/js/tracora.js"
+
+# Permission hooks
+permission_query_conditions = {
+	"Data Import": "tracora.permissions.get_data_import_query_conditions",
+}
+
+has_permission = {
+	"Data Import": "tracora.permissions.has_data_import_permission",
+}
+
+doctype_js = {
+	"Data Import": "public/js/data_import.js",
+}

@@ -11,3 +11,4 @@ tracora.patches.v1_0.add_seat_capacity_and_availability
 tracora.patches.v1_0.seed_infra_record_types
 tracora.patches.v1_0.seed_infra_categories
 tracora.patches.v1_0.rebuild_infra_search_text
+tracora.patches.v1_0.restrict_data_import_and_perms

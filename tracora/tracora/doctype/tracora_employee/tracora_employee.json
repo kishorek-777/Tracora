@@ -220,7 +220,7 @@
   }
  ],
  "links": [],
- "modified": "2026-09-03 12:00:00.000000",
+ "modified": "2026-10-28 11:30:00.000000",
  "modified_by": "Administrator",
  "module": "Tracora",
  "name": "Tracora Employee",
@@ -236,8 +236,7 @@
    "role": "Tracora Super Admin",
    "share": 1,
    "write": 1,
-   "report": 1,
-   "import": 1
+   "report": 1
   },
   {
    "create": 1,
@@ -248,8 +247,7 @@
    "role": "Tracora Admin",
    "share": 1,
    "write": 1,
-   "report": 1,
-   "import": 1
+   "report": 1
   }
  ],
  "quick_entry": 0,
@@ -259,5 +257,5 @@
  "title_field": "employee_name",
  "track_changes": 1,
  "allow_rename": 1,
- "allow_import": 1
+ "allow_import": 0
 }
