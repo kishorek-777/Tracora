@@ -350,7 +350,7 @@ class TestHRMSIntegration(FrappeTestCase):
 		emp_name = emp_hrms.name
 
 		if frappe.db.exists("Tracora Employee", emp_name):
-			frappe.delete_doc("Tracora Employee", emp_name, force=1)
+			frappe.delete_doc("Tracora Employee", emp_name, force=1, ignore_permissions=True)
 
 		count_before_dry = frappe.db.count("Tracora Employee")
 		res_dry = hrms.bulk_import(dry_run=True)

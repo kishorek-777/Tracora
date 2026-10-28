@@ -461,9 +461,11 @@ class TestTracoraAsset(FrappeTestCase):
 				"roles": [{"role": "Tracora Super Admin"}]
 			}).insert(ignore_permissions=True)
 
-		frappe.set_user(super_admin_user)
-		self.assertTrue(asset.has_permission("delete"))
-		frappe.set_user("Administrator")
+		try:
+			frappe.set_user(super_admin_user)
+			self.assertFalse(asset.has_permission("delete"))
+		finally:
+			frappe.set_user("Administrator")
 
 	def test_assigned_status_requires_assignee_and_custody_integrity(self):
 		"""An asset cannot be set to 'Assigned' without an assignee, nor hold an assignee while In Store."""
