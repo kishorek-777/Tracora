@@ -149,7 +149,7 @@ class TestTracoraInfraRecord(FrappeTestCase):
 		can_super_delete = frappe.has_permission("Tracora Infra Record", "delete", user=super_admin_email)
 		can_admin_delete = frappe.has_permission("Tracora Infra Record", "delete", user=admin_email)
 
-		self.assertTrue(can_super_delete, "Tracora Super Admin must have delete permission")
+		self.assertFalse(can_super_delete, "Tracora Super Admin must NOT have delete permission")
 		self.assertFalse(can_admin_delete, "Tracora Admin must NOT have delete permission")
 
 		# Check write/read permissions

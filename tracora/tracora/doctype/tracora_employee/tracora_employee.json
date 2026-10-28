@@ -229,7 +229,7 @@
  "permissions": [
   {
    "create": 1,
-   "delete": 1,
+   "delete": 0,
    "email": 1,
    "print": 1,
    "read": 1,

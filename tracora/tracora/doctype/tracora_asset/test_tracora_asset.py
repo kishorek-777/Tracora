@@ -462,5 +462,5 @@ class TestTracoraAsset(FrappeTestCase):
 			}).insert(ignore_permissions=True)
 
 		frappe.set_user(super_admin_user)
-		self.assertTrue(asset.has_permission("delete"))
+		self.assertFalse(asset.has_permission("delete"))
 		frappe.set_user("Administrator")

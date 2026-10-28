@@ -151,8 +151,8 @@ class TestTracoraInfraRecordType(FrappeTestCase):
 		self.assertIn("Other is the built-in fallback type and cannot be deleted", msg)
 		self.assertTrue(frappe.db.exists("Tracora Infra Record Type", FALLBACK_TYPE))
 
-	def test_29_admin_cannot_delete_super_admin_can(self):
-		# Test 29: Tracora Admin cannot delete a type; Tracora Super Admin can (use a throwaway test type)
+	def test_29_admin_and_super_admin_cannot_delete(self):
+		# Test 29: Neither Tracora Admin nor Tracora Super Admin can delete a type
 		super_admin_email = "test_super_admin_perm@example.com"
 		admin_email = "test_admin_perm@example.com"
 
@@ -175,10 +175,10 @@ class TestTracoraInfraRecordType(FrappeTestCase):
 		can_super_delete = frappe.has_permission("Tracora Infra Record Type", "delete", user=super_admin_email)
 		can_admin_delete = frappe.has_permission("Tracora Infra Record Type", "delete", user=admin_email)
 
-		self.assertTrue(can_super_delete, "Tracora Super Admin must have delete permission")
+		self.assertFalse(can_super_delete, "Tracora Super Admin must NOT have delete permission")
 		self.assertFalse(can_admin_delete, "Tracora Admin must NOT have delete permission")
 
-		# Prove super admin can delete a throwaway type
+		# Prove super admin cannot delete a throwaway type
 		throwaway = frappe.get_doc({
 			"doctype": "Tracora Infra Record Type",
 			"type_name": "Throwaway Perm Type"
@@ -186,10 +186,12 @@ class TestTracoraInfraRecordType(FrappeTestCase):
 
 		frappe.set_user(super_admin_email)
 		try:
-			throwaway.delete()
-			self.assertFalse(frappe.db.exists("Tracora Infra Record Type", "Throwaway Perm Type"))
+			with self.assertRaises(frappe.PermissionError):
+				throwaway.delete()
 		finally:
 			frappe.set_user("Administrator")
+			if frappe.db.exists("Tracora Infra Record Type", "Throwaway Perm Type"):
+				frappe.delete_doc("Tracora Infra Record Type", "Throwaway Perm Type", force=True, ignore_permissions=True)
 
 	def test_30_seed_patch_idempotence_and_no_overwrite(self):
 		# Test 30: The seed patch run twice creates no duplicates and does not overwrite an edited icon
