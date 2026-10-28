@@ -8,6 +8,19 @@ from frappe.model.naming import make_autoname
 FALLBACK_TYPE = "Other"
 
 
+def build_search_text(rows) -> str:
+	"""
+	Joins only the non-empty field_value strings (trimmed, lowercased) with a single space.
+	Labels are NOT included.
+	"""
+	parts = []
+	for row in rows or []:
+		val = row.get("field_value") if isinstance(row, dict) else getattr(row, "field_value", None)
+		if val and str(val).strip():
+			parts.append(str(val).strip().lower())
+	return " ".join(parts)
+
+
 class TracoraInfraRecord(Document):
 	def autoname(self):
 		self.name = make_autoname("INF-.#####")
@@ -24,7 +37,6 @@ class TracoraInfraRecord(Document):
 			self.record_type = clean_type
 
 		cleaned_rows = []
-		text_parts = []
 
 		priority_labels = {
 			"name",
@@ -65,11 +77,6 @@ class TracoraInfraRecord(Document):
 				if first_non_empty_value is None:
 					first_non_empty_value = first_line
 
-			if label:
-				text_parts.append(label)
-			if val:
-				text_parts.append(val)
-
 		# Re-index remaining rows sequentially
 		for idx, row in enumerate(cleaned_rows, start=1):
 			row.idx = idx
@@ -84,5 +91,5 @@ class TracoraInfraRecord(Document):
 		else:
 			self.title = "Untitled"
 
-		# e) search_text computation
-		self.search_text = " ".join(text_parts).lower()
+		# e) search_text computation (values only)
+		self.search_text = build_search_text(self.field_rows)

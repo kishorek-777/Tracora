@@ -30,12 +30,87 @@ function has_record_type_selected(listview) {
 	});
 }
 
+function escape_like_term(word) {
+	return word
+		.replace(/\\/g, "\\\\")
+		.replace(/%/g, "\\%")
+		.replace(/_/g, "\\_");
+}
+
+function rewrite_filters_for_request(filters) {
+	if (!filters || !Array.isArray(filters)) {
+		return filters;
+	}
+
+	const rewritten = [];
+	for (const f of filters) {
+		if (Array.isArray(f)) {
+			const doctype = f[0];
+			const fieldname = f[1];
+			const operator = (f[2] || "").toString().toLowerCase();
+			const value = f[3];
+
+			if (fieldname === "title" && operator === "like") {
+				let text = String(value || "");
+				if (text.startsWith("%") && text.endsWith("%") && text.length >= 2) {
+					text = text.slice(1, -1);
+				}
+				const words = text.trim().split(/\s+/).filter(Boolean);
+				for (const word of words) {
+					const escaped = escape_like_term(word);
+					rewritten.push([
+						doctype || "Tracora Infra Record",
+						"search_text",
+						"like",
+						"%" + escaped + "%",
+					]);
+				}
+				continue;
+			}
+			rewritten.push(f);
+		} else if (f && typeof f === "object") {
+			const fieldname = f.fieldname;
+			const operator = (f.operator || f.condition || "").toString().toLowerCase();
+			const value = f.value;
+
+			if (fieldname === "title" && operator === "like") {
+				let text = String(value || "");
+				if (text.startsWith("%") && text.endsWith("%") && text.length >= 2) {
+					text = text.slice(1, -1);
+				}
+				const words = text.trim().split(/\s+/).filter(Boolean);
+				for (const word of words) {
+					const escaped = escape_like_term(word);
+					rewritten.push({
+						...f,
+						fieldname: "search_text",
+						operator: "like",
+						condition: "like",
+						value: "%" + escaped + "%",
+					});
+				}
+				continue;
+			}
+			rewritten.push(f);
+		} else {
+			rewritten.push(f);
+		}
+	}
+	return rewritten;
+}
+
 frappe.listview_settings["Tracora Infra Record"] = {
 	onload(listview) {
-		// Wrap get_args to enforce zero rows when no Record Type is selected
+		// Cosmetic relabeling of Title filter to Search via documented set_label API
+		if (listview.page?.fields_dict?.title?.set_label) {
+			listview.page.fields_dict.title.set_label(__("Search"));
+		}
+
+		// Wrap get_args to rewrite title like filters and enforce record_type selection
 		const standard_get_args = listview.get_args.bind(listview);
 		listview.get_args = function () {
 			const args = standard_get_args();
+			args.filters = rewrite_filters_for_request(args.filters);
 			if (!has_record_type_selected(listview)) {
 				args.filters = args.filters || [];
 				const has_impossible_filter = args.filters.some(
@@ -48,11 +123,12 @@ frappe.listview_settings["Tracora Infra Record"] = {
 			return args;
 		};
 
-		// Wrap get_filters_for_args so count query also reflects 0 rows
+		// Wrap get_filters_for_args so count query also reflects rewritten filters & 0 rows rule
 		if (listview.get_filters_for_args) {
 			const standard_get_filters_for_args = listview.get_filters_for_args.bind(listview);
 			listview.get_filters_for_args = function () {
-				const filters = standard_get_filters_for_args();
+				let filters = standard_get_filters_for_args();
+				filters = rewrite_filters_for_request(filters);
 				if (!has_record_type_selected(listview)) {
 					const has_impossible_filter = filters.some(
 						(f) => Array.isArray(f) && f[1] === "name" && f[3] === "__select_record_type__"
@@ -80,5 +156,11 @@ frappe.listview_settings["Tracora Infra Record"] = {
 			}
 			return standard_get_no_result_message();
 		};
+	},
+
+	refresh(listview) {
+		if (listview.page?.fields_dict?.title?.set_label) {
+			listview.page.fields_dict.title.set_label(__("Search"));
+		}
 	},
 };

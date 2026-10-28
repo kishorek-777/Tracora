@@ -22,7 +22,7 @@ class TestTracoraInfraRecord(FrappeTestCase):
 		self.assertTrue(rec.name.startswith("INF-"))
 		self.assertEqual(rec.title, "10.0.0.1")
 		self.assertIn("10.0.0.1", rec.search_text)
-		self.assertIn("ip address", rec.search_text)
+		self.assertNotIn("ip address", rec.search_text)
 
 		rec.delete()
 
@@ -101,7 +101,8 @@ class TestTracoraInfraRecord(FrappeTestCase):
 
 		rec.reload()
 		self.assertEqual(rec.field_rows[0].field_label, "Renamed Custom Label")
-		self.assertIn("renamed custom label", rec.search_text)
+		self.assertIn("initial value", rec.search_text)
+		self.assertNotIn("renamed custom label", rec.search_text)
 
 		rec.delete()
 
@@ -367,3 +368,71 @@ class TestTracoraInfraRecord(FrappeTestCase):
 		# Test 22b: search_records with a record_type that does not exist throws a clear error
 		with self.assertRaises(frappe.ValidationError):
 			search_records(record_type="NonExistentType_99999")
+
+	def test_33_searching_label_alone_does_not_match(self):
+		# Test 33: Searching a label name alone (e.g. "Serial Number") does not match a record whose values do not contain that text
+		rec = frappe.get_doc({
+			"doctype": "Tracora Infra Record",
+			"field_rows": [
+				{"field_label": "Serial Number", "field_value": "SN-XYZ-987654"}
+			]
+		}).insert()
+
+		self.assertNotIn("serial number", rec.search_text)
+		self.assertIn("sn-xyz-987654", rec.search_text)
+
+		res = search_records(query="Serial Number")
+		matched_names = [r["name"] for r in res["records"]]
+		self.assertNotIn(rec.name, matched_names)
+
+		rec.delete()
+
+	def test_34_rebuild_patch_idempotence_and_fixes_old_format(self):
+		# Test 34: The patch run twice changes nothing the second time and fixes a record whose search_text was set to the old label+value format
+		from tracora.patches.v1_0.rebuild_infra_search_text import execute as rebuild_execute
+
+		rec = frappe.get_doc({
+			"doctype": "Tracora Infra Record",
+			"field_rows": [
+				{"field_label": "OldLabelHeader", "field_value": "OldValueContent"}
+			]
+		}).insert()
+
+		# Simulate old search_text format: label + value
+		old_format = "oldlabelheader oldvaluecontent"
+		frappe.db.set_value("Tracora Infra Record", rec.name, "search_text", old_format, update_modified=False)
+		frappe.db.commit()
+
+		self.assertEqual(frappe.db.get_value("Tracora Infra Record", rec.name, "search_text"), old_format)
+
+		# First run of patch
+		rebuild_execute()
+		frappe.db.commit()
+
+		fixed_val = frappe.db.get_value("Tracora Infra Record", rec.name, "search_text")
+		self.assertEqual(fixed_val, "oldvaluecontent")
+
+		# Second run of patch
+		rebuild_execute()
+		frappe.db.commit()
+
+		rechecked_val = frappe.db.get_value("Tracora Infra Record", rec.name, "search_text")
+		self.assertEqual(rechecked_val, "oldvaluecontent")
+
+		rec.delete()
+		frappe.db.commit()
+
+	def test_35_build_search_text_helper(self):
+		# Test 35: The helper ignores empty values and trims whitespace
+		from tracora.tracora.doctype.tracora_infra_record.tracora_infra_record import build_search_text
+
+		rows = [
+			{"field_label": "Label 1", "field_value": "   TrimValOne   "},
+			{"field_label": "Label 2", "field_value": ""},
+			{"field_label": "Label 3", "field_value": "   "},
+			{"field_label": "Label 4", "field_value": None},
+			{"field_label": "Label 5", "field_value": "TrimValTwo"},
+		]
+
+		result = build_search_text(rows)
+		self.assertEqual(result, "trimvalone trimvaltwo")
