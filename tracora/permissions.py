@@ -54,7 +54,10 @@ def has_data_import_permission(doc, ptype="read", user=None, debug=False) -> boo
 		if ptype == "delete":
 			return False
 
-		ref_dt = getattr(doc, "reference_doctype", None)
+		if isinstance(doc, str):
+			ref_dt = frappe.db.get_value("Data Import", doc, "reference_doctype")
+		else:
+			ref_dt = getattr(doc, "reference_doctype", None)
 		if ref_dt:
 			module = frappe.db.get_value("DocType", ref_dt, "module")
 			if module != "Tracora":
@@ -90,3 +93,23 @@ def get_allowed_import_doctypes() -> list[str]:
 	Whitelisted helper returning the list of Tracora doctypes allowed for Data Import.
 	"""
 	return ALLOWED_IMPORT_DOCTYPES
+
+
+def has_asset_audit_log_permission(doc, ptype="read", user=None, debug=False) -> bool:
+	"""
+	Audit logs are append-only.
+	Creation/insertion is allowed, but once an audit log document exists (persisted/not new),
+	'write' and 'delete' are strictly disallowed across all non-system roles.
+	"""
+	if ptype in ("write", "delete"):
+		user = user or frappe.session.user
+		if user and user != "Administrator":
+			is_new = False
+			if hasattr(doc, "is_new"):
+				is_new = doc.is_new()
+			elif isinstance(doc, str):
+				is_new = False
+			if not is_new:
+				return False
+	return True
+

@@ -125,13 +125,22 @@ frappe.ui.form.on('Tracora Asset', {
 				frm.events.show_transfer_ownership_dialog(frm);
 			}, __('Actions'));
 
+			frm.add_custom_button(__('Audit Asset'), function() {
+				frm.events.show_audit_dialog(frm);
+			}, __('Actions'));
+
 			frm.add_custom_button(__('View Movement History'), function() {
 				frappe.set_route('List', 'Tracora Asset Movement', { asset: frm.doc.name });
 			}, __('Actions'));
 
-			// Narrative Movement Timeline
+			frm.add_custom_button(__('View Audit Logs'), function() {
+				frappe.set_route('List', 'Tracora Asset Audit Log', { asset: frm.doc.name });
+			}, __('Actions'));
+
+			// Timelines
 			frm.events.render_movement_timeline(frm);
 			frm.events.render_installed_licences(frm);
+			frm.events.render_audit_history(frm);
 		}
 	},
 
@@ -725,6 +734,130 @@ frappe.ui.form.on('Tracora Asset', {
 					frm.dashboard.wrapper.append(frm.software_licences_wrapper);
 				}
 				frm.software_licences_wrapper.html(licences_html);
+			}
+		});
+	},
+
+	show_audit_dialog: function(frm) {
+		const d = new frappe.ui.Dialog({
+			title: __('Audit Asset: {0}', [frm.doc.asset_tag || frm.doc.name]),
+			fields: [
+				{
+					label: __('Audit Status'),
+					fieldname: 'audit_status',
+					fieldtype: 'Select',
+					options: ['Verified', 'Discrepancy', 'Missing'],
+					default: 'Verified',
+					reqd: 1
+				},
+				{
+					label: __('Asset Condition'),
+					fieldname: 'condition',
+					fieldtype: 'Select',
+					options: ['', 'New', 'Good', 'Fair', 'Poor', 'Not Working'],
+					default: frm.doc.condition || ''
+				},
+				{
+					fieldtype: 'Section Break'
+				},
+				{
+					label: __('Audit Remarks'),
+					fieldname: 'remarks',
+					fieldtype: 'Small Text',
+					reqd: 1,
+					description: __('Enter verification notes, discrepancy details, or physical inspection findings.')
+				}
+			],
+			primary_action_label: __('Submit Audit'),
+			primary_action: function(values) {
+				d.hide();
+				frappe.call({
+					method: 'tracora.api.audit.submit_asset_audit',
+					args: {
+						asset: frm.doc.name,
+						audit_status: values.audit_status,
+						condition: values.condition,
+						remarks: values.remarks,
+						location: frm.doc.location
+					},
+					freeze: true,
+					freeze_message: __('Recording Audit...'),
+					callback: function(r) {
+						if (r.message && r.message.success) {
+							frappe.show_alert({
+								message: __('Audit recorded successfully: {0}', [r.message.audit_log]),
+								indicator: 'green'
+							});
+							frm.reload_doc();
+						}
+					}
+				});
+			}
+		});
+		d.show();
+	},
+
+	render_audit_history: function(frm) {
+		if (frm.is_new()) return;
+		frappe.call({
+			method: 'tracora.api.audit.get_asset_audit_history',
+			args: {
+				asset: frm.doc.name
+			},
+			callback: function(r) {
+				const logs = r.message || [];
+				if (!logs.length) {
+					if (frm.audit_history_wrapper) {
+						frm.audit_history_wrapper.html('');
+					}
+					return;
+				}
+
+				const badge_colors = {
+					'Verified': '#276749',
+					'Discrepancy': '#c05621',
+					'Missing': '#9b2c2c'
+				};
+
+				let items_html = logs.map(l => {
+					const badge_color = badge_colors[l.audit_status] || '#4a5568';
+					const cond_str = l.condition ? ` &bull; Condition: <b>${frappe.utils.escape_html(l.condition)}</b>` : '';
+					const loc_str = l.location ? ` &bull; Location: <b>${frappe.utils.escape_html(l.location)}</b>` : '';
+					return `
+						<li class="list-group-item px-3 py-2" style="border-left: 3px solid ${badge_color}; margin-bottom: 6px; border-radius: 4px; background: var(--card-bg, #f7fafc);">
+							<div class="d-flex justify-content-between align-items-center">
+								<div>
+									<span class="badge mr-2" style="background-color: ${badge_color}; color: white; font-size: 11px; padding: 4px 8px; border-radius: 4px;">${frappe.utils.escape_html(l.audit_status)}</span>
+									<span style="font-size: 13px; font-weight: 500;">
+										${frappe.utils.escape_html(l.remarks)}
+									</span>
+								</div>
+								<span class="text-muted font-mono" style="font-size: 11px;">${frappe.datetime.str_to_user(l.audit_date)}</span>
+							</div>
+							<div class="text-muted mt-1" style="font-size: 11px;">
+								Audited by: <b>${frappe.utils.escape_html(l.auditor_name || l.auditor)}</b>${cond_str}${loc_str}
+							</div>
+						</li>
+					`;
+				}).join('');
+
+				const audit_html = `
+					<div class="tracora-audit-history my-3">
+						<div class="d-flex justify-content-between align-items-center mb-2">
+							<h6 class="text-muted uppercase mb-0" style="font-size: 12px; font-weight: 600; letter-spacing: 0.5px;">Audit History (${logs.length})</h6>
+							<a href="/desk/tracora-asset-audit-log?asset=${encodeURIComponent(frm.doc.name)}" class="text-muted" style="font-size: 11px; font-weight: 500; text-decoration: underline;">View in Audit Logs &rarr;</a>
+						</div>
+						<ul class="list-group list-group-flush">
+							${items_html}
+						</ul>
+					</div>
+				`;
+
+				if (!frm.audit_history_wrapper) {
+					frm.audit_history_wrapper = $('<div class="tracora-audit-container p-3 my-2" style="background: var(--fg-color, #fff); border: 1px solid var(--border-color, #e2e8f0); border-radius: 6px;"></div>');
+					frm.dashboard.wrapper.append(frm.audit_history_wrapper);
+				}
+				frm.audit_history_wrapper.html(audit_html);
 			}
 		});
 	},

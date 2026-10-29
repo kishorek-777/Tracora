@@ -74,8 +74,9 @@ def search_records(
 		for word in words:
 			if word:
 				escaped = _escape_like_pattern(word.lower())
-				conditions.append("LOWER(search_text) LIKE %s")
-				values.append(f"%{escaped}%")
+				conditions.append("(LOWER(search_text) LIKE %s OR LOWER(name) LIKE %s OR LOWER(title) LIKE %s)")
+				pattern = f"%{escaped}%"
+				values.extend([pattern, pattern, pattern])
 
 	where_clause = " AND ".join(conditions)
 

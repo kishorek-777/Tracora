@@ -134,6 +134,14 @@ export default function MobileApp() {
   const [lastSearchedTerm, setLastSearchedTerm] = useState('');
   const [lastFailedQuery, setLastFailedQuery] = useState('');
 
+  // Asset Audit state
+  const [auditStatus, setAuditStatus] = useState('Verified');
+  const [auditCondition, setAuditCondition] = useState('');
+  const [auditRemarks, setAuditRemarks] = useState('');
+  const [auditSubmitting, setAuditSubmitting] = useState(false);
+  const [auditSuccessMessage, setAuditSuccessMessage] = useState('');
+  const [auditErrorMessage, setAuditErrorMessage] = useState('');
+
   const inputRef = useRef(null);
   const scannerRef = useRef(null);
 
@@ -330,7 +338,7 @@ export default function MobileApp() {
           if (info.user && info.user !== 'Guest') {
             authedUser = info.user;
           } else {
-            setLoginError('Access denied: You do not have permission to access Tracora Mobile. Required role: Tracora Admin or Tracora Super Admin.');
+            setLoginError('Access denied: You do not have permission to access Tracora Mobile. Required role: Tracora Admin, Tracora Super Admin, or Tracora Auditor.');
             setLoginLoading(false);
             return;
           }
@@ -442,6 +450,11 @@ export default function MobileApp() {
         setScreen('NOT_FOUND');
       } else if (payload.match_type === 'single') {
         setSingleResult(payload);
+        setAuditStatus('Verified');
+        setAuditCondition(payload.asset ? (payload.asset.condition || '') : '');
+        setAuditRemarks('');
+        setAuditErrorMessage('');
+        setAuditSuccessMessage('');
         setScreen('RESULT');
       } else if (payload.match_type === 'multiple') {
         setMultipleResults(payload.results || []);
@@ -453,6 +466,88 @@ export default function MobileApp() {
       setScreen('OFFLINE');
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Asset Audit: Submit audit record
+  const handleAuditSubmit = async () => {
+    if (!singleResult || !singleResult.asset || !singleResult.asset.name) return;
+    const cleanRemarks = auditRemarks.trim();
+    if (!cleanRemarks) {
+      setAuditErrorMessage('Audit remarks are mandatory.');
+      return;
+    }
+    setAuditErrorMessage('');
+    setAuditSuccessMessage('');
+    setAuditSubmitting(true);
+
+    try {
+      const body = new URLSearchParams({
+        asset: singleResult.asset.name,
+        audit_status: auditStatus,
+        remarks: cleanRemarks,
+        condition: auditCondition || '',
+      });
+
+      const response = await fetch('/api/method/tracora.api.audit.submit_asset_audit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          Accept: 'application/json',
+          'X-Frappe-CSRF-Token': csrfToken || '',
+        },
+        body: body.toString(),
+      });
+
+      const data = await response.json().catch(() => null);
+
+      if (!response.ok || (data && data.exc)) {
+        let errorMsg = 'Failed to submit audit';
+        if (data && data._server_messages) {
+          try {
+            const msgs = JSON.parse(data._server_messages);
+            errorMsg = msgs.map((m) => JSON.parse(m).message).join(' ');
+          } catch {}
+        } else if (data && data.exception) {
+          errorMsg = data.exception;
+        }
+        throw new Error(errorMsg);
+      }
+
+      const auditData = (data && data.message) || {};
+      setAuditSuccessMessage('Audit recorded successfully!');
+      setAuditRemarks('');
+
+      // Optimistically update singleResult
+      setSingleResult((prev) => {
+        if (!prev) return prev;
+        const newEntry = {
+          name: auditData.audit_log || ('AUD-' + Date.now()),
+          audit_date: auditData.audit_date || new Date().toISOString().slice(0, 10),
+          auditor: currentUser,
+          auditor_name: auditData.auditor || currentUser,
+          audit_status: auditData.audit_status || auditStatus,
+          remarks: auditData.remarks || cleanRemarks,
+          condition: auditCondition || (prev.asset ? prev.asset.condition : ''),
+        };
+        const updatedHistory = [newEntry, ...(prev.audit_history || [])];
+        return {
+          ...prev,
+          asset: {
+            ...prev.asset,
+            audit_date: newEntry.audit_date,
+            audit_remarks: `[${newEntry.audit_status}] ${newEntry.remarks}`,
+            condition: auditCondition || (prev.asset ? prev.asset.condition : ''),
+          },
+          audit_history: updatedHistory,
+        };
+      });
+
+      setTimeout(() => setAuditSuccessMessage(''), 4000);
+    } catch (err) {
+      setAuditErrorMessage(err.message || 'Error submitting audit');
+    } finally {
+      setAuditSubmitting(false);
     }
   };
 
@@ -471,6 +566,9 @@ export default function MobileApp() {
     setSingleResult(null);
     setMultipleResults([]);
     setSearchQuery('');
+    setAuditRemarks('');
+    setAuditErrorMessage('');
+    setAuditSuccessMessage('');
     setScreen('SCAN');
     if (activeTab === 'scan' && startCamera) {
       setCameraActive(true);
@@ -979,6 +1077,148 @@ export default function MobileApp() {
                     </p>
                   </div>
                 ))}
+              </div>
+            </div>
+          )}
+
+          {/* Asset Audit Action Card */}
+          <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2 text-xs font-bold text-slate-700 uppercase tracking-wider">
+                <ShieldCheck className="w-4 h-4 text-emerald-600" />
+                <span>Mark Asset Audit</span>
+              </div>
+              {singleResult.asset.audit_date && (
+                <span className="text-[10px] text-slate-400 font-mono">
+                  Last: {singleResult.asset.audit_date}
+                </span>
+              )}
+            </div>
+
+            {/* Audit Status selection */}
+            <div>
+              <label className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider block mb-1.5">
+                Audit Status
+              </label>
+              <div className="grid grid-cols-3 gap-2">
+                {['Verified', 'Discrepancy', 'Missing'].map((st) => {
+                  const isSelected = auditStatus === st;
+                  const activeClass =
+                    st === 'Verified'
+                      ? 'bg-emerald-50 text-emerald-700 border-emerald-500 ring-1 ring-emerald-500'
+                      : st === 'Discrepancy'
+                      ? 'bg-amber-50 text-amber-700 border-amber-500 ring-1 ring-amber-500'
+                      : 'bg-rose-50 text-rose-700 border-rose-500 ring-1 ring-rose-500';
+                  return (
+                    <button
+                      key={st}
+                      type="button"
+                      onClick={() => setAuditStatus(st)}
+                      className={`px-2.5 py-1.5 rounded-xl text-xs font-semibold border transition text-center ${
+                        isSelected ? activeClass : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100'
+                      }`}
+                    >
+                      {st}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Condition update (optional) */}
+            <div>
+              <label className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider block mb-1">
+                Asset Condition
+              </label>
+              <select
+                value={auditCondition}
+                onChange={(e) => setAuditCondition(e.target.value)}
+                className="w-full text-xs bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              >
+                <option value="">Keep current ({singleResult.asset.condition || 'N/A'})</option>
+                <option value="New">New</option>
+                <option value="Good">Good</option>
+                <option value="Fair">Fair</option>
+                <option value="Poor">Poor</option>
+                <option value="Not Working">Not Working</option>
+              </select>
+            </div>
+
+            {/* Remarks textarea */}
+            <div>
+              <label className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider block mb-1">
+                Audit Remarks <span className="text-rose-500">*</span>
+              </label>
+              <textarea
+                value={auditRemarks}
+                onChange={(e) => {
+                  setAuditRemarks(e.target.value);
+                  if (auditErrorMessage) setAuditErrorMessage('');
+                }}
+                rows={2}
+                placeholder="Physical tags inspected, serial verified..."
+                className="w-full text-xs bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 resize-none"
+              />
+            </div>
+
+            {/* Messages */}
+            {auditErrorMessage && (
+              <p className="text-xs text-rose-600 font-medium">{auditErrorMessage}</p>
+            )}
+            {auditSuccessMessage && (
+              <p className="text-xs text-emerald-600 font-semibold">{auditSuccessMessage}</p>
+            )}
+
+            {/* Submit button */}
+            <button
+              type="button"
+              disabled={auditSubmitting || !isOnline}
+              onClick={handleAuditSubmit}
+              className="w-full py-2.5 px-4 rounded-xl text-xs font-semibold bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            >
+              {auditSubmitting ? (
+                <>
+                  <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                  <span>Submitting Audit...</span>
+                </>
+              ) : (
+                <span>Submit Audit</span>
+              )}
+            </button>
+          </div>
+
+          {/* Audit History Log */}
+          {singleResult.audit_history && singleResult.audit_history.length > 0 && (
+            <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 space-y-2.5">
+              <div className="flex items-center gap-2 text-xs font-bold text-slate-700 uppercase tracking-wider">
+                <Clock className="w-4 h-4 text-emerald-600" />
+                <span>Audit History ({singleResult.audit_history.length})</span>
+              </div>
+              <div className="divide-y divide-slate-100 text-xs">
+                {singleResult.audit_history.slice(0, 5).map((log) => {
+                  const st = log.audit_status || 'Verified';
+                  const badgeColor =
+                    st === 'Verified'
+                      ? 'bg-emerald-100 text-emerald-800'
+                      : st === 'Discrepancy'
+                      ? 'bg-amber-100 text-amber-800'
+                      : 'bg-rose-100 text-rose-800';
+                  return (
+                    <div key={log.name || log.creation} className="py-2 first:pt-0 last:pb-0 space-y-1">
+                      <div className="flex items-center justify-between">
+                        <span className={`px-2 py-0.5 rounded text-[10px] font-semibold ${badgeColor}`}>
+                          {st}
+                        </span>
+                        <span className="text-[10px] text-slate-400 font-mono">{log.audit_date}</span>
+                      </div>
+                      <p className="text-xs text-slate-800 font-medium">{log.remarks}</p>
+                      <p className="text-[10px] text-slate-400">
+                        Audited by: {log.auditor_name || log.auditor}
+                        {log.condition ? ` • Condition: ${log.condition}` : ''}
+                      </p>
+                    </div>
+                  );
+                })}
               </div>
             </div>
           )}

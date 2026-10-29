@@ -25,7 +25,8 @@ def advance_date_by_cycle(base_date, cycle: str):
 def calculate_next_renewal(start_date, cycle, reference_date=None):
 	"""Given when the licence started and its renewal cycle, return the
 	next renewal checkpoint on or after reference_date (defaults to today)."""
-	if not start_date or cycle == "One-time":
+	valid_cycles = ("Monthly", "Quarterly", "Half-yearly", "Yearly")
+	if not start_date or not cycle or cycle not in valid_cycles:
 		return None
 	reference_date = getdate(reference_date or today())
 	next_date = getdate(start_date)

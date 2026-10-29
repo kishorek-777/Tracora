@@ -1,9 +1,18 @@
-﻿# Copyright (c) 2026, Kishore and contributors
+# Copyright (c) 2026, Kishore and contributors
 # For license information, please see license.txt
 
 import frappe
 from frappe import _
 from frappe.utils import format_datetime, pretty_date, now_datetime
+from tracora.api.lookup import _has_tracora_access
+
+
+def _escape_like_pattern(text: str) -> str:
+	"""
+	Escape backslash, percent, and underscore characters for SQL LIKE clauses
+	so user query terms act as literal strings rather than wildcards.
+	"""
+	return text.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_")
 
 
 def _derive_category(asset_name, brand, model_number):
@@ -30,9 +39,12 @@ def get_dashboard_summary():
 	Returns summary metrics, category distribution, location intelligence,
 	recent assets, recent movements, and attention alerts in a single payload.
 	"""
+	if not _has_tracora_access(frappe.session.user):
+		frappe.throw(_("Access denied: Tracora role required"), frappe.PermissionError)
+
 	# 1. Summary Metrics
 	total_assets = frappe.db.count("Tracora Asset") or 0
-	assigned_assets = frappe.db.count("Tracora Asset", filters={"status": "In Circulation"}) or 0
+	assigned_assets = frappe.db.count("Tracora Asset", filters={"status": "Assigned"}) or 0
 	available_assets = frappe.db.count("Tracora Asset", filters={"status": "In Store"}) or 0
 	maintenance_assets = frappe.db.count("Tracora Asset", filters={"status": "Under Maintenance"}) or 0
 	lost_assets = frappe.db.count("Tracora Asset", filters={"status": "Lost"}) or 0
@@ -134,36 +146,38 @@ def get_dashboard_summary():
 			"name": asset.name,
 			"asset_tag": asset.asset_tag or asset.name,
 			"asset_name": asset.asset_name,
-			"brand": asset.brand or "",
-			"model_number": asset.model_number or "",
-			"category": cat,
-			"serial_no": asset.serial_no or "—",
+			"brand": asset.brand or "Generic",
+			"model_number": asset.model_number or "N/A",
+			"serial_no": asset.serial_no or "N/A",
 			"assigned_to": asset.assigned_to,
-			"assigned_to_name": emp_name or "Unassigned",
-			"location": loc_name or asset.location or "HQ Storage",
-			"status": asset.status or "In Store",
-			"condition": asset.condition or "New",
-			"owner_company": asset.owner_company or "Aionion Capital",
-			"created_time_ago": pretty_date(asset.creation)
+			"assigned_to_name": emp_name or "In Stock",
+			"location": loc_name or asset.location or "Main Facility",
+			"status": asset.status,
+			"condition": asset.condition,
+			"company": asset.owner_company,
+			"category": cat
 		})
 
-	# 5. Recent Movements (Timeline Feed)
-	movements_raw = frappe.get_all(
+	# 5. Recent Movements (6 latest)
+	recent_movements_raw = frappe.get_all(
 		"Tracora Asset Movement",
-		fields=["name", "asset", "movement_type", "from_employee", "to_employee", "from_status", "to_status", "from_location", "to_location", "recorded_by", "remarks", "creation"],
+		fields=["name", "asset", "movement_type", "from_employee", "to_employee", "from_location", "to_location", "from_status", "to_status", "recorded_by", "remarks", "creation"],
 		order_by="creation desc",
-		limit=8
+		limit=6
 	)
 
 	recent_movements = []
-	for m in movements_raw:
+	for m in recent_movements_raw:
 		asset_tag = frappe.db.get_value("Tracora Asset", m.asset, "asset_tag") or m.asset
-		asset_name = frappe.db.get_value("Tracora Asset", m.asset, "asset_name") or ""
-		to_emp = frappe.db.get_value("Tracora Employee", m.to_employee, "employee_name") if m.to_employee else None
+		asset_name = frappe.db.get_value("Tracora Asset", m.asset, "asset_name") or m.asset
+
 		from_emp = frappe.db.get_value("Tracora Employee", m.from_employee, "employee_name") if m.from_employee else None
+		to_emp = frappe.db.get_value("Tracora Employee", m.to_employee, "employee_name") if m.to_employee else None
+
 		recorder = frappe.db.get_value("User", m.recorded_by, "full_name") if m.recorded_by else m.recorded_by
-		loc = m.to_location or m.from_location or "Main Facility"
-		loc_name = frappe.db.get_value("Tracora Location", loc, "location_name") if loc else loc
+
+		loc = m.to_location or m.from_location
+		loc_name = frappe.db.get_value("Tracora Location", loc, "location_name") if loc else None
 
 		recent_movements.append({
 			"name": m.name,
@@ -171,10 +185,13 @@ def get_dashboard_summary():
 			"asset_tag": asset_tag,
 			"asset_name": asset_name,
 			"movement_type": m.movement_type,
-			"to_employee": m.to_employee,
-			"to_employee_name": to_emp or m.to_employee,
 			"from_employee": m.from_employee,
-			"from_employee_name": from_emp or m.from_employee,
+			"from_employee_name": from_emp or m.from_employee or "None",
+			"to_employee": m.to_employee,
+			"to_employee_name": to_emp or m.to_employee or "Store",
+			"from_status": m.from_status,
+			"to_status": m.to_status,
+			"recorded_by": m.recorded_by,
 			"recorded_by_name": recorder or "System",
 			"location": loc_name or loc or "Main Facility",
 			"remarks": m.remarks or "",
@@ -228,6 +245,9 @@ def scan_asset(code):
 	First-class barcode/QR code resolution endpoint.
 	Looks up an asset by serial_no, asset_tag, or name.
 	"""
+	if not _has_tracora_access(frappe.session.user):
+		frappe.throw(_("Access denied: Tracora role required"), frappe.PermissionError)
+
 	if not code:
 		frappe.throw(_("Scan query or asset ID is required"))
 
@@ -313,10 +333,14 @@ def search_assets(query):
 	"""
 	Command bar search endpoint (Cmd+K) returning matched assets, employees, and locations.
 	"""
+	if not _has_tracora_access(frappe.session.user):
+		frappe.throw(_("Access denied: Tracora role required"), frappe.PermissionError)
+
 	if not query or len(query.strip()) < 1:
 		return {"assets": [], "employees": [], "locations": []}
 
-	q = f"%{query.strip()}%"
+	clean_query = _escape_like_pattern(query.strip())
+	q = f"%{clean_query}%"
 
 	assets = frappe.db.sql("""
 		SELECT name, asset_tag, asset_name, brand, model_number, serial_no, status, assigned_to, location

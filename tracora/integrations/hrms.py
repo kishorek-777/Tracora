@@ -196,7 +196,7 @@ def apply_hrms_employee(doc, dry_run: bool = False) -> dict:
 	"""Core sync logic for HRMS Employee record."""
 	emp_code = doc.name
 	hrms_company = doc.company
-	mobile = getattr(doc, "cell_number", None) or getattr(doc, "mobile", None) or getattr(doc, "prefered_contact_email", "") or "0000000000"
+	mobile = getattr(doc, "cell_number", None) or getattr(doc, "mobile", None) or getattr(doc, "phone", None) or getattr(doc, "contact_no", None) or "0000000000"
 	email = getattr(doc, "company_email", None) or getattr(doc, "prefered_email", None) or getattr(doc, "personal_email", None) or ""
 	dob = str(doc.date_of_birth) if getattr(doc, "date_of_birth", None) else None
 	perm_addr = getattr(doc, "permanent_address", None) or ""

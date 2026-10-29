@@ -1,5 +1,6 @@
 {
  "actions": [],
+ "allow_import": 0,
  "autoname": "field:location_name",
  "creation": "2026-09-03 12:00:00.000000",
  "doctype": "DocType",
@@ -81,10 +82,10 @@
    "email": 1,
    "print": 1,
    "read": 1,
+   "report": 1,
    "role": "Tracora Super Admin",
    "share": 1,
-   "write": 1,
-   "report": 1
+   "write": 1
   },
   {
    "create": 1,
@@ -92,10 +93,22 @@
    "email": 1,
    "print": 1,
    "read": 1,
+   "report": 1,
    "role": "Tracora Admin",
    "share": 1,
-   "write": 1,
-   "report": 1
+   "write": 1
+  },
+  {
+   "create": 0,
+   "delete": 0,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Tracora Auditor",
+   "share": 0,
+   "write": 0
   }
  ],
  "quick_entry": 0,
@@ -103,6 +116,5 @@
  "sort_order": "ASC",
  "states": [],
  "title_field": "location_name",
- "track_changes": 1,
- "allow_import": 0
+ "track_changes": 1
 }

@@ -254,15 +254,16 @@ class TestTracoraLabels(FrappeTestCase):
 		png_bytes = base64.b64decode(raw_b64)
 
 		# 2. Save physical PNG artifact
-		artifact_dir = Path("/mnt/c/Users/kishore.k_aionioncap/.gemini/antigravity-ide/brain/fffa2261-4c74-450f-9619-1d8bea33326f")
-		qr_img_path = artifact_dir / "scanned_asset_qr.png"
+		qr_img_path = Path("/tmp/scanned_asset_qr.png")
 		qr_img_path.write_bytes(png_bytes)
 
-		# 3. Convert to grayscale raw buffer
+		# 3. Convert to grayscale raw buffer simulating camera acquisition
 		img = Image.open(io.BytesIO(png_bytes)).convert("L")
-		w, h = img.size
+		smoothed = img.resize((img.width // 2, img.height // 2), Image.Resampling.BILINEAR)
+		smoothed = smoothed.resize((img.width, img.height), Image.Resampling.BILINEAR)
+		w, h = smoothed.size
 		raw_path = Path("/tmp/qr_test_gray.raw")
-		raw_path.write_bytes(img.tobytes())
+		raw_path.write_bytes(smoothed.tobytes())
 
 		# 4. Invoke ZXing scanner
 		node_script = f"""

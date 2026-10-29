@@ -25,7 +25,7 @@ def get_context(context):
 		access_error = None
 		if user and not _has_tracora_access(user):
 			user = None
-			access_error = "Access denied: You do not have permission to access Tracora Mobile. Required role: Tracora Admin or Tracora Super Admin."
+			access_error = "Access denied: You do not have permission to access Tracora Mobile. Required role: Tracora Admin, Tracora Super Admin, or Tracora Auditor."
 
 		csrf_token = frappe.sessions.get_csrf_token()
 		bootstrap_script = (

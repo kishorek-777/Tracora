@@ -12,7 +12,7 @@ def _has_tracora_access(user: str | None = None) -> bool:
 	if user == "Administrator":
 		return True
 	user_roles = set(frappe.get_roles(user))
-	return bool(user_roles & {"Tracora Super Admin", "Tracora Admin"})
+	return bool(user_roles & {"Tracora Super Admin", "Tracora Admin", "Tracora Auditor"})
 
 
 import frappe
@@ -40,7 +40,7 @@ def find_asset(q: str | None = None) -> dict:
 
 	if not _has_tracora_access(frappe.session.user):
 		frappe.throw(
-			_("Access denied: Tracora Admin or Tracora Super Admin role required"),
+			_("Access denied: Tracora Admin or Tracora Super Admin or Tracora Auditor role required"),
 			frappe.PermissionError,
 		)
 
@@ -227,6 +227,15 @@ def _build_single_match_payload(asset_name: str, query: str) -> dict:
 		limit=20,
 	)
 
+	# Recent audit history
+	audit_history = frappe.get_all(
+		"Tracora Asset Audit Log",
+		filters={"asset": asset_doc.name},
+		fields=["name", "audit_date", "auditor", "auditor_name", "audit_status", "remarks", "condition", "location", "creation"],
+		order_by="audit_date desc, creation desc",
+		limit=10,
+	) if frappe.db.exists("DocType", "Tracora Asset Audit Log") else []
+
 	return {
 		"match_type": "single",
 		"query": query,
@@ -235,6 +244,7 @@ def _build_single_match_payload(asset_name: str, query: str) -> dict:
 		"open_maintenance": open_maintenance,
 		"licence_seats": licence_seats,
 		"recent_movements": recent_movements,
+		"audit_history": audit_history,
 	}
 
 
@@ -290,7 +300,7 @@ def mobile_login(usr: str | None = None, pwd: str | None = None) -> dict:
 		else:
 			frappe.set_user("Guest")
 		frappe.throw(
-			_("Access denied: You do not have permission to access Tracora Mobile. Required role: Tracora Admin or Tracora Super Admin."),
+			_("Access denied: You do not have permission to access Tracora Mobile. Required role: Tracora Admin or Tracora Super Admin or Tracora Auditor."),
 			frappe.PermissionError,
 		)
 

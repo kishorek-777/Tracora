@@ -48,6 +48,18 @@
   },
   {
    "dependencies": "",
+   "description": "Chronological audit trail of physical asset verifications and discrepancy notes.",
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Asset Audit Logs",
+   "link_count": 0,
+   "link_to": "Tracora Asset Audit Log",
+   "link_type": "DocType",
+   "onboard": 1,
+   "type": "Link"
+  },
+  {
+   "dependencies": "",
    "description": "Equipment repair lifecycle, diagnosis, vendor tracking, and restoration records.",
    "hidden": 0,
    "is_query_report": 0,
@@ -248,6 +260,9 @@
   },
   {
    "role": "Tracora Admin"
+  },
+  {
+   "role": "Tracora Auditor"
   }
  ],
  "sequence_id": 1.0,

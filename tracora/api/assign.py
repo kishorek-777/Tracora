@@ -46,14 +46,16 @@ def _execute_asset_assignment(asset_name, employee_name, assignment_date=None, r
 	from_company = asset_doc.holding_company
 
 	frappe.flags.in_tracora_assign = True
-	asset_doc.assigned_to = emp_doc.name
-	asset_doc.assigned_on = assignment_date or frappe.utils.today()
-	asset_doc.status = "Assigned"
-	asset_doc.holding_company = emp_doc.company
-	if emp_doc.branch:
-		asset_doc.branch = emp_doc.branch
-	asset_doc.save()
-	frappe.flags.in_tracora_assign = False
+	try:
+		asset_doc.assigned_to = emp_doc.name
+		asset_doc.assigned_on = assignment_date or frappe.utils.today()
+		asset_doc.status = "Assigned"
+		asset_doc.holding_company = emp_doc.company
+		if emp_doc.branch:
+			asset_doc.branch = emp_doc.branch
+		asset_doc.save()
+	finally:
+		frappe.flags.in_tracora_assign = False
 
 	movement = frappe.get_doc({
 		"doctype": "Tracora Asset Movement",
@@ -161,13 +163,15 @@ def unassign_asset(asset, location, remarks, condition=None, status=None):
 	target_condition = condition or asset_doc.condition
 
 	frappe.flags.in_tracora_assign = True
-	asset_doc.assigned_to = None
-	asset_doc.assigned_on = None
-	asset_doc.location = location
-	asset_doc.status = target_status
-	asset_doc.condition = target_condition
-	asset_doc.save()
-	frappe.flags.in_tracora_assign = False
+	try:
+		asset_doc.assigned_to = None
+		asset_doc.assigned_on = None
+		asset_doc.location = location
+		asset_doc.status = target_status
+		asset_doc.condition = target_condition
+		asset_doc.save()
+	finally:
+		frappe.flags.in_tracora_assign = False
 
 	movement = frappe.get_doc({
 		"doctype": "Tracora Asset Movement",
@@ -222,9 +226,11 @@ def transfer_ownership(asset, to_owner, reason):
 
 	from_owner = asset_doc.owner_company
 	frappe.flags.in_tracora_transfer = True
-	asset_doc.owner_company = to_owner
-	asset_doc.save()
-	frappe.flags.in_tracora_transfer = False
+	try:
+		asset_doc.owner_company = to_owner
+		asset_doc.save()
+	finally:
+		frappe.flags.in_tracora_transfer = False
 
 	movement = frappe.get_doc({
 		"doctype": "Tracora Asset Movement",

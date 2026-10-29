@@ -1,0 +1,168 @@
+{
+ "actions": [],
+ "allow_rename": 0,
+ "autoname": "AUD-.#####",
+ "creation": "2026-10-29 01:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "asset",
+  "asset_name",
+  "audit_date",
+  "audit_status",
+  "column_break_details",
+  "auditor",
+  "auditor_name",
+  "condition",
+  "location",
+  "section_break_remarks",
+  "remarks"
+ ],
+ "fields": [
+  {
+   "fieldname": "asset",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Asset",
+   "options": "Tracora Asset",
+   "reqd": 1,
+   "search_index": 1
+  },
+  {
+   "fetch_from": "asset.asset_name",
+   "fieldname": "asset_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Asset Name",
+   "read_only": 1
+  },
+  {
+   "default": "Today",
+   "fieldname": "audit_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Audit Date",
+   "reqd": 1,
+   "search_index": 1
+  },
+  {
+   "default": "Verified",
+   "fieldname": "audit_status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Audit Status",
+   "options": "Verified\nDiscrepancy\nMissing",
+   "reqd": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "column_break_details",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "__user",
+   "fieldname": "auditor",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Auditor",
+   "options": "User",
+   "reqd": 1
+  },
+  {
+   "fieldname": "auditor_name",
+   "fieldtype": "Data",
+   "label": "Auditor Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "condition",
+   "fieldtype": "Select",
+   "label": "Condition",
+   "options": "\nNew\nGood\nFair\nPoor\nNot Working"
+  },
+  {
+   "fieldname": "location",
+   "fieldtype": "Link",
+   "label": "Location",
+   "options": "Tracora Location"
+  },
+  {
+   "fieldname": "section_break_remarks",
+   "fieldtype": "Section Break",
+   "label": "Remarks"
+  },
+  {
+   "fieldname": "remarks",
+   "fieldtype": "Small Text",
+   "label": "Audit Remarks",
+   "reqd": 1
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-10-29 01:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Tracora",
+ "name": "Tracora Asset Audit Log",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 0,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Administrator",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 0,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Tracora Super Admin",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 0,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Tracora Admin",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 0,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Tracora Auditor",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "quick_entry": 0,
+ "sort_field": "audit_date",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 0
+}

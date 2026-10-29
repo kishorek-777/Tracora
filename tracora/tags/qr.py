@@ -30,7 +30,7 @@ def qr_base64(tag: str) -> str:
 		version=None,
 		error_correction=ERROR_CORRECT_M,
 		box_size=10,
-		border=2,  # Intact quiet zone
+		border=4,  # Standard ISO/IEC 18004 quiet zone
 	)
 	qr.add_data(clean_tag)
 	qr.make(fit=True)

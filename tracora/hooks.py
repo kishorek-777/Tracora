@@ -80,6 +80,7 @@ permission_query_conditions = {
 
 has_permission = {
 	"Data Import": "tracora.permissions.has_data_import_permission",
+	"Tracora Asset Audit Log": "tracora.permissions.has_asset_audit_log_permission",
 }
 
 doctype_js = {

@@ -1,5 +1,6 @@
 {
  "actions": [],
+ "allow_import": 0,
  "allow_rename": 0,
  "autoname": "TML-.YYYY.-.######",
  "creation": "2026-09-07 12:00:00.000000",
@@ -144,6 +145,18 @@
    "role": "Tracora Admin",
    "share": 1,
    "write": 1
+  },
+  {
+   "create": 0,
+   "delete": 0,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Tracora Auditor",
+   "share": 0,
+   "write": 0
   }
  ],
  "quick_entry": 0,
@@ -151,6 +164,5 @@
  "sort_field": "date_sent",
  "sort_order": "DESC",
  "states": [],
- "track_changes": 1,
- "allow_import": 0
+ "track_changes": 1
 }

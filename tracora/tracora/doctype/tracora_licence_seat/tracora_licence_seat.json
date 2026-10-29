@@ -18,14 +18,16 @@
    "in_list_view": 1,
    "label": "Device",
    "options": "Tracora Asset",
-   "reqd": 1
+   "reqd": 1,
+   "search_index": 1
   },
   {
    "fieldname": "user",
    "fieldtype": "Link",
    "in_list_view": 1,
    "label": "User",
-   "options": "Tracora Employee"
+   "options": "Tracora Employee",
+   "search_index": 1
   },
   {
    "default": "Active",

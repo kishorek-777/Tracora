@@ -260,6 +260,26 @@ class TracoraAsset(Document):
 						"recorded_by": frappe.session.user
 					}).insert(ignore_permissions=True)
 
+			# Auto-create Audit Log when audit fields are updated directly on Asset record
+			if before_doc and (before_doc.audit_remarks != self.audit_remarks or before_doc.audit_date != self.audit_date):
+				if not getattr(frappe.flags, "in_tracora_audit_sync", False) and (self.audit_remarks or self.audit_date):
+					status = "Verified"
+					for st in ("Verified", "Discrepancy", "Missing"):
+						if self.audit_remarks and self.audit_remarks.startswith(f"[{st}]"):
+							status = st
+							break
+					frappe.get_doc({
+						"doctype": "Tracora Asset Audit Log",
+						"asset": self.name,
+						"audit_date": self.audit_date or frappe.utils.today(),
+						"auditor": frappe.session.user if frappe.session.user and frappe.session.user != "Guest" else "Administrator",
+						"auditor_name": frappe.utils.get_fullname(frappe.session.user) or frappe.session.user,
+						"audit_status": status,
+						"remarks": self.audit_remarks or _("Audit updated from Asset form"),
+						"condition": self.condition,
+						"location": self.location,
+					}).insert(ignore_permissions=True)
+
 	def on_trash(self):
 		# Deliberate deviation from FR-59: deletion is blocked, not flagged, to preserve reqd FK integrity on Tracora Licence Seat.device
 		if frappe.db.exists("DocType", "Tracora Licence Seat"):
