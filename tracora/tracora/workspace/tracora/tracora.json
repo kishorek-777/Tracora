@@ -1,7 +1,7 @@
 {
  "app": "tracora",
  "charts": [],
- "content": "[{\"id\":\"shortcuts_block\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Shortcuts\",\"col\":12}},{\"id\":\"header_assets\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Asset Management</b></span>\",\"col\":12}},{\"id\":\"card_assets\",\"type\":\"card\",\"data\":{\"card_name\":\"Assets\",\"col\":4}},{\"id\":\"card_masters\",\"type\":\"card\",\"data\":{\"card_name\":\"Masters\",\"col\":4}},{\"id\":\"card_admin\",\"type\":\"card\",\"data\":{\"card_name\":\"Administration\",\"col\":4}},{\"id\":\"card_reports\",\"type\":\"card\",\"data\":{\"card_name\":\"Reports\",\"col\":4}}]",
+ "content": "[{\"id\":\"shortcuts_block\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Shortcuts\",\"col\":12}},{\"id\":\"header_assets\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Asset Management</b></span>\",\"col\":12}},{\"id\":\"card_assets\",\"type\":\"card\",\"data\":{\"card_name\":\"Assets\",\"col\":4}},{\"id\":\"card_vendors\",\"type\":\"card\",\"data\":{\"card_name\":\"Vendors & Contracts\",\"col\":4}},{\"id\":\"card_masters\",\"type\":\"card\",\"data\":{\"card_name\":\"Masters\",\"col\":4}},{\"id\":\"card_admin\",\"type\":\"card\",\"data\":{\"card_name\":\"Administration\",\"col\":4}},{\"id\":\"card_reports\",\"type\":\"card\",\"data\":{\"card_name\":\"Reports\",\"col\":4}}]",
  "creation": "2026-09-07 00:49:53.578208",
  "custom_blocks": [],
  "docstatus": 0,
@@ -88,6 +88,39 @@
    "label": "Infra Records",
    "link_count": 0,
    "link_to": "Tracora Infra Record",
+   "link_type": "DocType",
+   "onboard": 1,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Vendors & Contracts",
+   "link_count": 0,
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "dependencies": "",
+   "description": "Master directory of suppliers, OEMs, contractors, and service providers.",
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Vendors",
+   "link_count": 0,
+   "link_to": "Tracora Vendor",
+   "link_type": "DocType",
+   "onboard": 1,
+   "type": "Link"
+  },
+  {
+   "dependencies": "",
+   "description": "Service agreements, AMCs, internet lines, SaaS renewals, and payment logs.",
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Vendor Contracts",
+   "link_count": 0,
+   "link_to": "Tracora Vendor Contract",
    "link_type": "DocType",
    "onboard": 1,
    "type": "Link"

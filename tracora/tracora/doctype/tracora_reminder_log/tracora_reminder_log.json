@@ -43,7 +43,7 @@
    "in_list_view": 1,
    "in_standard_filter": 1,
    "label": "Reminder Type",
-   "options": "Licence Expiry\nLicence Renewal",
+   "options": "Licence Expiry\nLicence Renewal\nVendor Contract Renewal",
    "reqd": 1
   },
   {

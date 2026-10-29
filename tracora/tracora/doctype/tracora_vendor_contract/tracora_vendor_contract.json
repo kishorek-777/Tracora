@@ -1,0 +1,213 @@
+{
+ "actions": [],
+ "allow_import": 1,
+ "allow_rename": 0,
+ "autoname": "TRC-VCON-.#####",
+ "creation": "2026-10-29 12:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "contract_title",
+  "vendor",
+  "company",
+  "category",
+  "column_break_renewal",
+  "renewal_frequency",
+  "expected_amount",
+  "currency",
+  "next_renewal_date",
+  "renewal_status",
+  "section_break_linked",
+  "linked_asset",
+  "linked_licence",
+  "linked_maintenance",
+  "column_break_notifications",
+  "additional_recipients",
+  "remarks",
+  "section_break_payments",
+  "payment_history"
+ ],
+ "fields": [
+  {
+   "fieldname": "contract_title",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Contract / Service Title",
+   "reqd": 1
+  },
+  {
+   "fieldname": "vendor",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Vendor",
+   "options": "Tracora Vendor",
+   "reqd": 1
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Company",
+   "options": "Tracora Company"
+  },
+  {
+   "fieldname": "category",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Category",
+   "options": "Hardware AMC\nSoftware / SaaS Subscription\nTelecom / Internet\nFacility / Maintenance\nOne-off Purchase\nOther",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_renewal",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "Annually",
+   "fieldname": "renewal_frequency",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Renewal Frequency",
+   "options": "Annually\nHalf-Yearly\nQuarterly\nMonthly\nOne-off / Non-recurring\nCustom",
+   "reqd": 1
+  },
+  {
+   "fieldname": "expected_amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Expected Renewal Amount",
+   "options": "currency"
+  },
+  {
+   "fieldname": "currency",
+   "fieldtype": "Link",
+   "label": "Currency",
+   "options": "Currency",
+   "reqd": 1
+  },
+  {
+   "fieldname": "next_renewal_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Next Renewal Due Date"
+  },
+  {
+   "default": "Upcoming",
+   "fieldname": "renewal_status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Renewal Status",
+   "options": "Upcoming\nDue Soon\nOverdue\nCompleted / One-off\nClosed / Terminated",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_break_linked",
+   "fieldtype": "Section Break",
+   "label": "Linked Records & Notifications"
+  },
+  {
+   "fieldname": "linked_asset",
+   "fieldtype": "Link",
+   "label": "Linked Asset",
+   "options": "Tracora Asset"
+  },
+  {
+   "fieldname": "linked_licence",
+   "fieldtype": "Link",
+   "label": "Linked Licence",
+   "options": "Tracora Software Licence"
+  },
+  {
+   "fieldname": "linked_maintenance",
+   "fieldtype": "Link",
+   "label": "Linked Maintenance Log",
+   "options": "Tracora Maintenance Log"
+  },
+  {
+   "fieldname": "column_break_notifications",
+   "fieldtype": "Column Break"
+  },
+  {
+   "description": "Comma-separated email addresses to receive renewal reminders.",
+   "fieldname": "additional_recipients",
+   "fieldtype": "Small Text",
+   "label": "Additional Alert Emails"
+  },
+  {
+   "fieldname": "remarks",
+   "fieldtype": "Small Text",
+   "label": "Remarks / Contract Notes"
+  },
+  {
+   "fieldname": "section_break_payments",
+   "fieldtype": "Section Break",
+   "label": "Payment History"
+  },
+  {
+   "fieldname": "payment_history",
+   "fieldtype": "Table",
+   "label": "Payment History",
+   "options": "Tracora Vendor Payment Log"
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-10-29 12:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Tracora",
+ "name": "Tracora Vendor Contract",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 0,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Tracora Super Admin",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 0,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Tracora Admin",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 0,
+   "delete": 0,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Tracora Auditor",
+   "share": 0,
+   "write": 0
+  }
+ ],
+ "quick_entry": 0,
+ "search_fields": "contract_title, vendor, category, renewal_status",
+ "sort_field": "next_renewal_date",
+ "sort_order": "ASC",
+ "states": [],
+ "title_field": "contract_title",
+ "track_changes": 1
+}
+

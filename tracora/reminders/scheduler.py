@@ -275,11 +275,170 @@ def run_daily_reminders():
 					if not already_logged:
 						dispatch_reminder_notice(lic, "Licence Renewal", renewal_date, diff, rec)
 
+	# --- Check 3: Tracora Vendor Contract Renewals ---
+	try:
+		check_vendor_contract_reminders(lead_days, recipients, today_date)
+	except Exception as e:
+		frappe.logger().error(f"Error checking vendor contract reminders: {str(e)}")
+
 	# Stamp finish timestamp
 	settings.last_reminder_run = now_datetime()
 	settings.flags.ignore_permissions = True
 	settings.save(ignore_permissions=True)
 	frappe.db.commit()
+
+
+def dispatch_vendor_contract_reminder_notice(contract, due_date, days_before, recipient):
+	"""
+	Sends individual email and records Tracora Reminder Log row for vendor contract renewals.
+	"""
+	title = contract.contract_title or contract.name
+	vendor_name = contract.vendor or "Vendor"
+	due_str = format_date(due_date)
+	currency = contract.currency or "INR"
+	amt_str = f"{currency} {contract.expected_amount:,.2f}" if contract.expected_amount else "N/A"
+
+	if days_before < 0:
+		subject = f"Vendor Contract Renewal OVERDUE: {title} ({due_str})"
+		heading = f"Vendor contract renewal for {title} ({vendor_name}) was due on {due_str} and is now OVERDUE."
+	elif days_before == 0:
+		subject = f"Vendor Contract Renewal due TODAY: {title} ({due_str})"
+		heading = f"Vendor contract renewal for {title} ({vendor_name}) is due today ({due_str})."
+	else:
+		subject = f"Vendor Contract Renewal in {days_before} days: {title} ({due_str})"
+		heading = f"Vendor contract renewal for {title} ({vendor_name}) is due in {days_before} days ({due_str})."
+
+	site_url = frappe.utils.get_url()
+	contract_link = f"{site_url}/app/tracora-vendor-contract/{contract.name}"
+
+	body = f"""
+	<div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 14px; color: #333; line-height: 1.5;">
+		<p><b>{heading}</b></p>
+		<p><b>Contract / Service:</b> <a href="{contract_link}">{frappe.utils.escape_html(title)}</a><br>
+		<b>Vendor:</b> {frappe.utils.escape_html(vendor_name)}<br>
+		<b>Due Date:</b> {due_str}<br>
+		<b>Expected Amount:</b> {frappe.utils.escape_html(amt_str)}<br>
+		<b>Frequency:</b> {frappe.utils.escape_html(contract.renewal_frequency or 'Annually')}<br>
+		<b>Status:</b> {frappe.utils.escape_html(contract.renewal_status or 'Due Soon')}</p>
+
+		<p style="margin-top: 16px;">
+			<a href="{contract_link}" style="background-color: #2b6cb0; color: #ffffff; padding: 8px 14px; text-decoration: none; border-radius: 4px; display: inline-block; font-weight: 500;">View Contract in Tracora</a>
+		</p>
+	</div>
+	"""
+
+	delivery_status = "Sent"
+	error_msg = None
+	try:
+		frappe.sendmail(
+			recipients=[recipient],
+			subject=subject,
+			message=body,
+			reference_doctype="Tracora Vendor Contract",
+			reference_name=contract.name,
+			now=False,
+		)
+	except Exception as e:
+		delivery_status = "Failed"
+		error_msg = str(e)
+		frappe.logger().error(f"Failed to dispatch reminder to {recipient} for {contract.name}: {error_msg}")
+
+	log_doc = frappe.get_doc({
+		"doctype": "Tracora Reminder Log",
+		"reference_doctype": "Tracora Vendor Contract",
+		"reference_name": contract.name,
+		"reminder_type": "Vendor Contract Renewal",
+		"due_date": due_date,
+		"days_before": days_before,
+		"recipient": recipient,
+		"sent_on": now_datetime(),
+		"delivery_status": delivery_status,
+		"error_message": error_msg,
+	})
+	log_doc.insert(ignore_permissions=True)
+	return log_doc
+
+
+def check_vendor_contract_reminders(lead_days, base_recipients, today_date):
+	"""
+	Scans Tracora Vendor Contract for upcoming and overdue renewals.
+	"""
+	if not frappe.db.exists("DocType", "Tracora Vendor Contract"):
+		return
+
+	contracts = frappe.get_all(
+		"Tracora Vendor Contract",
+		filters={
+			"renewal_frequency": ["!=", "One-off / Non-recurring"],
+			"renewal_status": ["not in", ["Completed / One-off", "Closed / Terminated"]],
+			"next_renewal_date": ["is", "set"],
+		},
+		fields=[
+			"name",
+			"contract_title",
+			"vendor",
+			"expected_amount",
+			"currency",
+			"renewal_frequency",
+			"next_renewal_date",
+			"renewal_status",
+			"additional_recipients",
+		],
+	)
+
+	for contract in contracts:
+		if not contract.next_renewal_date:
+			continue
+
+		due_date = getdate(contract.next_renewal_date)
+		diff = date_diff(due_date, today_date)
+
+		# Build combined recipient list
+		contract_recipients = list(base_recipients)
+		if contract.additional_recipients:
+			for em in contract.additional_recipients.replace("\n", ",").split(","):
+				em = em.strip()
+				if em and em not in contract_recipients:
+					contract_recipients.append(em)
+
+		if diff < 0:
+			# Overdue notice
+			if contract.renewal_status != "Overdue":
+				frappe.db.set_value("Tracora Vendor Contract", contract.name, "renewal_status", "Overdue", update_modified=False)
+
+			for rec in contract_recipients:
+				already_logged = frappe.db.exists(
+					"Tracora Reminder Log",
+					{
+						"reference_doctype": "Tracora Vendor Contract",
+						"reference_name": contract.name,
+						"reminder_type": "Vendor Contract Renewal",
+						"due_date": due_date,
+						"days_before": -1,
+						"recipient": rec,
+					},
+				)
+				if not already_logged:
+					dispatch_vendor_contract_reminder_notice(contract, due_date, -1, rec)
+
+		elif diff in lead_days:
+			if diff <= 15 and contract.renewal_status != "Due Soon":
+				frappe.db.set_value("Tracora Vendor Contract", contract.name, "renewal_status", "Due Soon", update_modified=False)
+
+			for rec in contract_recipients:
+				already_logged = frappe.db.exists(
+					"Tracora Reminder Log",
+					{
+						"reference_doctype": "Tracora Vendor Contract",
+						"reference_name": contract.name,
+						"reminder_type": "Vendor Contract Renewal",
+						"due_date": due_date,
+						"days_before": diff,
+						"recipient": rec,
+					},
+				)
+				if not already_logged:
+					dispatch_vendor_contract_reminder_notice(contract, due_date, diff, rec)
 
 
 @frappe.whitelist()

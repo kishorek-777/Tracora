@@ -19,6 +19,16 @@
   },
   {
    "child": 0,
+   "collapsible": 0,
+   "indent": 0,
+   "keep_closed": 0,
+   "label": "Assets & Operations",
+   "link_type": "DocType",
+   "show_arrow": 0,
+   "type": "Section Break"
+  },
+  {
+   "child": 0,
    "collapsible": 1,
    "icon": "box",
    "indent": 0,
@@ -79,6 +89,16 @@
   },
   {
    "child": 0,
+   "collapsible": 0,
+   "indent": 0,
+   "keep_closed": 0,
+   "label": "Software & Licences",
+   "link_type": "DocType",
+   "show_arrow": 0,
+   "type": "Section Break"
+  },
+  {
+   "child": 0,
    "collapsible": 1,
    "icon": "file-text",
    "indent": 0,
@@ -91,15 +111,47 @@
   },
   {
    "child": 0,
-   "collapsible": 1,
-   "icon": "server",
+   "collapsible": 0,
    "indent": 0,
    "keep_closed": 0,
-   "label": "Infra Records",
-   "link_to": "Tracora Infra Record",
+   "label": "Vendors & Contracts",
+   "link_type": "DocType",
+   "show_arrow": 0,
+   "type": "Section Break"
+  },
+  {
+   "child": 0,
+   "collapsible": 1,
+   "icon": "building-2",
+   "indent": 0,
+   "keep_closed": 0,
+   "label": "Vendors",
+   "link_to": "Tracora Vendor",
    "link_type": "DocType",
    "show_arrow": 0,
    "type": "Link"
+  },
+  {
+   "child": 0,
+   "collapsible": 1,
+   "icon": "file-signature",
+   "indent": 0,
+   "keep_closed": 0,
+   "label": "Vendor Contracts",
+   "link_to": "Tracora Vendor Contract",
+   "link_type": "DocType",
+   "show_arrow": 0,
+   "type": "Link"
+  },
+  {
+   "child": 0,
+   "collapsible": 0,
+   "indent": 0,
+   "keep_closed": 0,
+   "label": "Organization & Places",
+   "link_type": "DocType",
+   "show_arrow": 0,
+   "type": "Section Break"
   },
   {
    "child": 0,
@@ -157,6 +209,28 @@
    "keep_closed": 0,
    "label": "Locations",
    "link_to": "Tracora Location",
+   "link_type": "DocType",
+   "show_arrow": 0,
+   "type": "Link"
+  },
+  {
+   "child": 0,
+   "collapsible": 0,
+   "indent": 0,
+   "keep_closed": 0,
+   "label": "Infrastructure",
+   "link_type": "DocType",
+   "show_arrow": 0,
+   "type": "Section Break"
+  },
+  {
+   "child": 0,
+   "collapsible": 1,
+   "icon": "server",
+   "indent": 0,
+   "keep_closed": 0,
+   "label": "Infra Records",
+   "link_to": "Tracora Infra Record",
    "link_type": "DocType",
    "show_arrow": 0,
    "type": "Link"
@@ -266,7 +340,7 @@
    "type": "Link"
   }
  ],
- "modified": "2026-10-28 04:03:45.733766",
+ "modified": "2026-10-29 16:30:00.000000",
  "modified_by": "Administrator",
  "module": "Tracora",
  "name": "Tracora",
