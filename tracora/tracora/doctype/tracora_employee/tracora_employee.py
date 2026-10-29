@@ -41,6 +41,16 @@ class TracoraEmployee(Document):
 					frappe.ValidationError
 				)
 		elif company_type == "Internal" and self.source == "Tracora":
+			if self.branch and not frappe.db.exists("Tracora Branch", self.branch):
+				clean_branch = self.branch.split(" - ")[0].strip() if " - " in self.branch else self.branch.strip()
+				if frappe.db.exists("Tracora Branch", clean_branch):
+					self.branch = clean_branch
+
+			if self.department and not frappe.db.exists("Tracora Department", self.department):
+				clean_dept = self.department.split(" - ")[0].strip() if " - " in self.department else self.department.strip()
+				if frappe.db.exists("Tracora Department", clean_dept):
+					self.department = clean_dept
+
 			if not self.branch or not self.department:
 				frappe.throw(
 					_("Branch and Department are required on manual entry for internal company employees ({0}) (FR-72).").format(

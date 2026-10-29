@@ -1,5 +1,7 @@
 {
  "actions": [],
+ "allow_import": 0,
+ "allow_rename": 1,
  "autoname": "autoname",
  "creation": "2026-09-03 12:00:00.000000",
  "doctype": "DocType",
@@ -26,7 +28,7 @@
    "in_standard_filter": 1,
    "label": "Company",
    "options": "Tracora Company",
-   "reqd": 1
+   "reqd": 0
   },
   {
    "fieldname": "column_break_info",
@@ -50,7 +52,7 @@
   }
  ],
  "links": [],
- "modified": "2026-10-28 12:00:00.000000",
+ "modified": "2026-10-29 10:00:00.000000",
  "modified_by": "Administrator",
  "module": "Tracora",
  "name": "Tracora Branch",
@@ -63,10 +65,10 @@
    "email": 1,
    "print": 1,
    "read": 1,
+   "report": 1,
    "role": "Tracora Super Admin",
    "share": 1,
-   "write": 1,
-   "report": 1
+   "write": 1
   },
   {
    "create": 1,
@@ -74,10 +76,10 @@
    "email": 1,
    "print": 1,
    "read": 1,
+   "report": 1,
    "role": "Tracora Admin",
    "share": 1,
-   "write": 1,
-   "report": 1
+   "write": 1
   }
  ],
  "quick_entry": 0,
@@ -85,7 +87,5 @@
  "sort_order": "ASC",
  "states": [],
  "title_field": "branch_name",
- "track_changes": 1,
- "allow_rename": 1,
- "allow_import": 0
+ "track_changes": 1
 }

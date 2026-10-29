@@ -87,52 +87,44 @@ class TestTracoraMasters(FrappeTestCase):
 			doc_b.insert()
 
 	def test_branch_and_department_autoname_and_collisions(self):
-		"""Rule 7: Branch and Department named {name} - {company_abbr}."""
-		# Create two branches named Chennai under two different companies
-		if frappe.db.exists("Tracora Branch", "Chennai - TIC"):
-			frappe.delete_doc("Tracora Branch", "Chennai - TIC", force=1)
-		if frappe.db.exists("Tracora Branch", "Chennai - TEA"):
-			frappe.delete_doc("Tracora Branch", "Chennai - TEA", force=1)
+		"""Rule 7: Global shared Branch and Department named directly by name; duplicates rejected."""
+		test_branch = "Chennai Master Unique"
+		if frappe.db.exists("Tracora Branch", test_branch):
+			frappe.delete_doc("Tracora Branch", test_branch, force=1)
 
 		b1 = frappe.get_doc({
 			"doctype": "Tracora Branch",
-			"branch_name": "Chennai",
+			"branch_name": test_branch,
 			"company": "Test Internal Corp"
 		}).insert()
 
-		b2 = frappe.get_doc({
-			"doctype": "Tracora Branch",
-			"branch_name": "Chennai",
-			"company": "Test External Agency"
-		}).insert()
+		self.assertEqual(b1.name, test_branch)
 
-		self.assertEqual(b1.name, "Chennai - TIC")
-		self.assertEqual(b2.name, "Chennai - TEA")
-
-		# Attempt duplicate Chennai under TIC
+		# Attempt duplicate branch with same name raises DuplicateEntryError
 		b_dup = frappe.get_doc({
 			"doctype": "Tracora Branch",
-			"branch_name": "Chennai",
-			"company": "Test Internal Corp"
+			"branch_name": test_branch,
+			"company": "Test External Agency"
 		})
 		with self.assertRaises(frappe.DuplicateEntryError):
 			b_dup.insert()
 
 		# Same for department
-		if frappe.db.exists("Tracora Department", "Operations - TIC"):
-			frappe.delete_doc("Tracora Department", "Operations - TIC", force=1)
+		test_dept = "Operations Master Unique"
+		if frappe.db.exists("Tracora Department", test_dept):
+			frappe.delete_doc("Tracora Department", test_dept, force=1)
 
 		d1 = frappe.get_doc({
 			"doctype": "Tracora Department",
-			"department_name": "Operations",
+			"department_name": test_dept,
 			"company": "Test Internal Corp"
 		}).insert()
-		self.assertEqual(d1.name, "Operations - TIC")
+		self.assertEqual(d1.name, test_dept)
 
 		d_dup = frappe.get_doc({
 			"doctype": "Tracora Department",
-			"department_name": "Operations",
-			"company": "Test Internal Corp"
+			"department_name": test_dept,
+			"company": "Test External Agency"
 		})
 		with self.assertRaises(frappe.DuplicateEntryError):
 			d_dup.insert()
@@ -260,14 +252,14 @@ class TestTracoraMasters(FrappeTestCase):
 			emp_no_branch.insert()
 
 		# Ensure branch & dept exist for TIC
-		if not frappe.db.exists("Tracora Branch", "Chennai - TIC"):
+		if not frappe.db.exists("Tracora Branch", "Chennai"):
 			frappe.get_doc({
 				"doctype": "Tracora Branch",
 				"branch_name": "Chennai",
 				"company": "Test Internal Corp"
 			}).insert()
 
-		if not frappe.db.exists("Tracora Department", "Operations - TIC"):
+		if not frappe.db.exists("Tracora Department", "Operations"):
 			frappe.get_doc({
 				"doctype": "Tracora Department",
 				"department_name": "Operations",
@@ -279,8 +271,8 @@ class TestTracoraMasters(FrappeTestCase):
 			"doctype": "Tracora Employee",
 			"employee_code": emp_code,
 			"company": "Test Internal Corp",
-			"branch": "Chennai - TIC",
-			"department": "Operations - TIC",
+			"branch": "Chennai",
+			"department": "Operations",
 			"employee_name": "Internal Staff 1",
 			"mobile": "9700000001",
 			"source": "Tracora",

@@ -205,14 +205,14 @@ class TestHRMSIntegration(FrappeTestCase):
 				"company_address": "Chennai"
 			}).insert(ignore_permissions=True)
 
-		if not frappe.db.exists("Tracora Branch", "Chennai - TIC"):
+		if not frappe.db.exists("Tracora Branch", "Chennai"):
 			frappe.get_doc({
 				"doctype": "Tracora Branch",
 				"branch_name": "Chennai",
 				"company": "Test Internal Corp"
 			}).insert(ignore_permissions=True)
 
-		if not frappe.db.exists("Tracora Department", "Operations - TIC"):
+		if not frappe.db.exists("Tracora Department", "Operations"):
 			frappe.get_doc({
 				"doctype": "Tracora Department",
 				"department_name": "Operations",
@@ -225,8 +225,8 @@ class TestHRMSIntegration(FrappeTestCase):
 			"employee_code": emp_code,
 			"employee_name": "Manual Name",
 			"company": "Test Internal Corp",
-			"branch": "Chennai - TIC",
-			"department": "Operations - TIC",
+			"branch": "Chennai",
+			"department": "Operations",
 			"mobile": "9999999999",
 			"source": "Tracora"
 		}).insert(ignore_permissions=True)
@@ -288,7 +288,7 @@ class TestHRMSIntegration(FrappeTestCase):
 			
 			# If on_branch_rename, ensure dummy branch exists to trigger rename_doc
 			if name == "on_branch_rename":
-				if not frappe.db.exists("Tracora Branch", "FAIL-BRANCH-2 - HTC"):
+				if not frappe.db.exists("Tracora Branch", "FAIL-BRANCH-2"):
 					frappe.get_doc({
 						"doctype": "Tracora Branch",
 						"branch_name": "FAIL-BRANCH-2",

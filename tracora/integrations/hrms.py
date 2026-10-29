@@ -111,61 +111,53 @@ def _get_or_create_company(hrms_company_name: str, dry_run: bool = False):
 	return comp_doc.name
 
 
-def _get_or_create_branch(hrms_branch_name: str, company_name: str, dry_run: bool = False):
-	"""Finds or creates a Tracora Branch corresponding to HRMS Branch under company."""
-	if not hrms_branch_name or not company_name:
+def _get_or_create_branch(hrms_branch_name: str, company_name: str = None, dry_run: bool = False):
+	"""Finds or creates a Tracora Branch corresponding to HRMS Branch (global/shared across companies)."""
+	if not hrms_branch_name or not str(hrms_branch_name).strip():
 		return None
 
-	tracora_comp = _get_or_create_company(company_name, dry_run=dry_run)
-	comp_abbr = _get_company_abbr(company_name)
-	expected_name = f"{hrms_branch_name} - {comp_abbr}"
-
-	existing = frappe.db.get_value("Tracora Branch", {"hrms_branch": hrms_branch_name, "company": tracora_comp}, "name")
-	if not existing and frappe.db.exists("Tracora Branch", expected_name):
-		existing = expected_name
+	clean_name = str(hrms_branch_name).strip()
+	existing = frappe.db.get_value("Tracora Branch", {"branch_name": clean_name}, "name")
+	if not existing and frappe.db.exists("Tracora Branch", clean_name):
+		existing = clean_name
 
 	if existing:
 		return existing
 
 	if dry_run:
-		return expected_name
+		return clean_name
 
 	branch_doc = frappe.get_doc({
 		"doctype": "Tracora Branch",
-		"branch_name": hrms_branch_name,
-		"company": tracora_comp,
+		"branch_name": clean_name,
 		"source": "HRMS",
-		"hrms_branch": hrms_branch_name
+		"hrms_branch": clean_name
 	})
 	branch_doc.insert(ignore_permissions=True, ignore_links=True)
 	return branch_doc.name
 
 
-def _get_or_create_department(hrms_dept_name: str, company_name: str, dry_run: bool = False):
-	"""Finds or creates a Tracora Department corresponding to HRMS Department under company."""
-	if not hrms_dept_name or not company_name:
+def _get_or_create_department(hrms_dept_name: str, company_name: str = None, dry_run: bool = False):
+	"""Finds or creates a Tracora Department corresponding to HRMS Department (global/shared across companies)."""
+	if not hrms_dept_name or not str(hrms_dept_name).strip():
 		return None
 
-	tracora_comp = _get_or_create_company(company_name, dry_run=dry_run)
-	comp_abbr = _get_company_abbr(company_name)
-	expected_name = f"{hrms_dept_name} - {comp_abbr}"
-
-	existing = frappe.db.get_value("Tracora Department", {"hrms_department": hrms_dept_name, "company": tracora_comp}, "name")
-	if not existing and frappe.db.exists("Tracora Department", expected_name):
-		existing = expected_name
+	clean_name = str(hrms_dept_name).strip()
+	existing = frappe.db.get_value("Tracora Department", {"department_name": clean_name}, "name")
+	if not existing and frappe.db.exists("Tracora Department", clean_name):
+		existing = clean_name
 
 	if existing:
 		return existing
 
 	if dry_run:
-		return expected_name
+		return clean_name
 
 	dept_doc = frappe.get_doc({
 		"doctype": "Tracora Department",
-		"department_name": hrms_dept_name,
-		"company": tracora_comp,
+		"department_name": clean_name,
 		"source": "HRMS",
-		"hrms_department": hrms_dept_name
+		"hrms_department": clean_name
 	})
 	dept_doc.insert(ignore_permissions=True, ignore_links=True)
 	return dept_doc.name
@@ -205,8 +197,8 @@ def apply_hrms_employee(doc, dry_run: bool = False) -> dict:
 
 	# Determine company, branch, department
 	tracora_company = _get_or_create_company(hrms_company, dry_run=dry_run) if hrms_company else None
-	tracora_branch = _get_or_create_branch(doc.branch, tracora_company, dry_run=dry_run) if getattr(doc, "branch", None) and tracora_company else None
-	tracora_dept = _get_or_create_department(doc.department, tracora_company, dry_run=dry_run) if getattr(doc, "department", None) and tracora_company else None
+	tracora_branch = _get_or_create_branch(doc.branch, dry_run=dry_run) if getattr(doc, "branch", None) else None
+	tracora_dept = _get_or_create_department(doc.department, dry_run=dry_run) if getattr(doc, "department", None) else None
 	is_incomplete = 1 if (not tracora_branch or not tracora_dept) else 0
 
 	# Status calculation
@@ -390,8 +382,7 @@ def on_company_change(doc, method=None):
 @safe_subscriber("on_branch_change", "Branch")
 def on_branch_change(doc, method=None):
 	"""HRMS Branch subscriber for on_update."""
-	for comp in frappe.get_all("Tracora Company", filters={"source": "HRMS"}, pluck="name"):
-		_get_or_create_branch(doc.name, comp, dry_run=False)
+	_get_or_create_branch(doc.name, dry_run=False)
 
 
 @safe_subscriber("on_branch_rename", "Branch")
@@ -402,24 +393,17 @@ def on_branch_rename(doc, method=None, old=None, new=None, *args, **kwargs):
 	if not old_name or not new_name or old_name == new_name:
 		return
 
-	branches = frappe.get_all("Tracora Branch", filters={"hrms_branch": old_name}, fields=["name", "company"])
-	for b in branches:
-		comp_abbr = _get_company_abbr(b.company)
-		new_branch_docname = f"{new_name} - {comp_abbr}"
-		if b.name != new_branch_docname:
-			frappe.rename_doc("Tracora Branch", b.name, new_branch_docname, force=True)
-		frappe.db.set_value("Tracora Branch", new_branch_docname, {"branch_name": new_name, "hrms_branch": new_name}, update_modified=False)
+	clean_old = str(old_name).strip()
+	clean_new = str(new_name).strip()
+	if frappe.db.exists("Tracora Branch", clean_old):
+		frappe.rename_doc("Tracora Branch", clean_old, clean_new, force=True)
+		frappe.db.set_value("Tracora Branch", clean_new, {"branch_name": clean_new, "hrms_branch": clean_new}, update_modified=False)
 
 
 @safe_subscriber("on_department_change", "Department")
 def on_department_change(doc, method=None):
 	"""HRMS Department subscriber for on_update."""
-	hrms_comp = getattr(doc, "company", None)
-	if hrms_comp:
-		_get_or_create_department(doc.name, hrms_comp, dry_run=False)
-	else:
-		for comp in frappe.get_all("Tracora Company", filters={"source": "HRMS"}, pluck="name"):
-			_get_or_create_department(doc.name, comp, dry_run=False)
+	_get_or_create_department(doc.name, dry_run=False)
 
 
 @frappe.whitelist(methods=["POST"])
@@ -450,30 +434,21 @@ def bulk_import(dry_run: bool = True):
 
 	# 2. Branches
 	if frappe.db.exists("DocType", "Branch"):
-		companies = frappe.get_all("Tracora Company", pluck="name")
 		for b in frappe.get_all("Branch", fields=["name"]):
-			for comp in companies:
-				comp_abbr = _get_company_abbr(comp)
-				expected = f"{b.name} - {comp_abbr}"
-				exists = frappe.db.exists("Tracora Branch", expected) or frappe.db.exists("Tracora Branch", {"hrms_branch": b.name, "company": comp})
-				if not exists:
-					_get_or_create_branch(b.name, comp, dry_run=dry_run)
-					results["created"]["Branch"] += 1
+			clean_b = b.name.strip()
+			exists = frappe.db.exists("Tracora Branch", clean_b) or frappe.db.exists("Tracora Branch", {"branch_name": clean_b})
+			if not exists:
+				_get_or_create_branch(clean_b, dry_run=dry_run)
+				results["created"]["Branch"] += 1
 
 	# 3. Departments
 	if frappe.db.exists("DocType", "Department"):
-		for d in frappe.get_all("Department", fields=["name", "company"]):
-			d_comp = d.company
-			target_comps = [d_comp] if d_comp else frappe.get_all("Tracora Company", pluck="name")
-			for comp in target_comps:
-				if not comp:
-					continue
-				comp_abbr = _get_company_abbr(comp)
-				expected = f"{d.name} - {comp_abbr}"
-				exists = frappe.db.exists("Tracora Department", expected) or frappe.db.exists("Tracora Department", {"hrms_department": d.name, "company": comp})
-				if not exists:
-					_get_or_create_department(d.name, comp, dry_run=dry_run)
-					results["created"]["Department"] += 1
+		for d in frappe.get_all("Department", fields=["name"]):
+			clean_d = d.name.strip()
+			exists = frappe.db.exists("Tracora Department", clean_d) or frappe.db.exists("Tracora Department", {"department_name": clean_d})
+			if not exists:
+				_get_or_create_department(clean_d, dry_run=dry_run)
+				results["created"]["Department"] += 1
 
 	# 4. Employees
 	for emp_row in frappe.get_all("Employee", fields=["name"]):

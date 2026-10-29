@@ -162,16 +162,21 @@ class TracoraAsset(Document):
 						frappe.ValidationError
 					)
 				elif not frappe.db.exists("Tracora Branch", self.branch):
-					# Auto-resolve bare branch name (e.g. "royapettah 2") to ID ("royapettah 2 - AC")
-					resolved = frappe.db.get_value(
-						"Tracora Branch",
-						{"branch_name": self.branch.strip(), "company": self.holding_company},
-						"name"
-					)
+					# Auto-resolve legacy company-suffixed or bare branch name to clean global branch
+					clean_branch = self.branch.split(" - ")[0].strip() if " - " in self.branch else self.branch.strip()
+					resolved = frappe.db.get_value("Tracora Branch", {"branch_name": clean_branch}, "name")
+					if not resolved and frappe.db.exists("Tracora Branch", clean_branch):
+						resolved = clean_branch
+					if not resolved and self.holding_company:
+						resolved = frappe.db.get_value(
+							"Tracora Branch",
+							{"branch_name": clean_branch, "company": self.holding_company},
+							"name"
+						)
 					if not resolved and self.owner_company:
 						resolved = frappe.db.get_value(
 							"Tracora Branch",
-							{"branch_name": self.branch.strip(), "company": self.owner_company},
+							{"branch_name": clean_branch, "company": self.owner_company},
 							"name"
 						)
 					if resolved:

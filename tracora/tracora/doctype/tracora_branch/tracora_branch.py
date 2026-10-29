@@ -8,19 +8,23 @@ from frappe.model.document import Document
 
 class TracoraBranch(Document):
 	def autoname(self):
-		if not self.branch_name or not self.company:
-			frappe.throw(_("Branch Name and Company are required for autonaming."), frappe.ValidationError)
+		if not self.branch_name or not str(self.branch_name).strip():
+			frappe.throw(_("Branch Name is required for autonaming."), frappe.ValidationError)
 
-		company_abbr = frappe.db.get_value("Tracora Company", self.company, "company_abbr")
-		if not company_abbr:
-			frappe.throw(_("Company '{0}' does not have an abbreviation set.").format(self.company), frappe.ValidationError)
+		clean_name = str(self.branch_name).strip()
+		existing = frappe.db.get_value(
+			"Tracora Branch",
+			{"branch_name": clean_name, "name": ["!=", self.name or ""]},
+			"name"
+		)
+		if not existing and frappe.db.exists("Tracora Branch", clean_name) and self.name != clean_name:
+			existing = clean_name
 
-		qualified_name = f"{self.branch_name.strip()} - {company_abbr.strip()}"
-		if frappe.db.exists("Tracora Branch", qualified_name):
+		if existing:
 			frappe.throw(
-				_("Branch '{0}' already exists for company '{1}' ({2}).").format(
-					self.branch_name.strip(), self.company, company_abbr.strip()
-				),
+				_("Branch '{0}' already exists.").format(clean_name),
 				frappe.DuplicateEntryError
 			)
-		self.name = qualified_name
+
+		self.name = clean_name
+		self.branch_name = clean_name

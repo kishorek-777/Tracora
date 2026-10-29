@@ -30,7 +30,7 @@ class TestAssetAudit(FrappeTestCase):
 				"source": "Tracora",
 			}).insert()
 
-		if not frappe.db.exists("Tracora Branch", "HQ - TLC"):
+		if not frappe.db.exists("Tracora Branch", "HQ"):
 			frappe.get_doc({
 				"doctype": "Tracora Branch",
 				"branch_name": "HQ",
@@ -56,7 +56,7 @@ class TestAssetAudit(FrappeTestCase):
 			"serial_no": f"SN-AUD-{frappe.generate_hash(length=8).upper()}",
 			"owner_company": "Test Label Corp",
 			"holding_company": "Test Label Corp",
-			"branch": "HQ - TLC",
+			"branch": "HQ",
 			"location": "HQ Main Store",
 			"status": "In Store",
 			"condition": "Good",
