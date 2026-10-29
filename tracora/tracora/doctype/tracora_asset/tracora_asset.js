@@ -137,7 +137,8 @@ frappe.ui.form.on('Tracora Asset', {
 				frappe.set_route('List', 'Tracora Asset Audit Log', { asset: frm.doc.name });
 			}, __('Actions'));
 
-			// Timelines
+			// Modern Dashboard & Timelines
+			frm.events.render_header_banner(frm);
 			frm.events.render_movement_timeline(frm);
 			frm.events.render_installed_licences(frm);
 			frm.events.render_audit_history(frm);
@@ -612,6 +613,44 @@ frappe.ui.form.on('Tracora Asset', {
 			}
 		});
 		d.show();
+	},
+
+	render_header_banner: function(frm) {
+		if (frm.is_new()) return;
+		const holder_text = frm.doc.assigned_to ? frappe.utils.escape_html(frm.doc.assigned_to) : __('In Store (Unassigned)');
+		const holder_class = frm.doc.assigned_to ? 'green' : 'blue';
+		const loc_text = frm.doc.location ? frappe.utils.escape_html(frm.doc.location) : __('Not Assigned');
+		const comp_text = frm.doc.holding_company ? frappe.utils.escape_html(frm.doc.holding_company) : '-';
+		const cond_text = frm.doc.condition || __('Good');
+
+		const banner_html = `
+			<div class="tracora-form-header-banner">
+				<div class="tracora-banner-metric">
+					<span class="tracora-banner-label">${__('Current Custody')}</span>
+					<span class="tracora-banner-value">
+						<span class="indicator-pill ${holder_class}">${holder_text}</span>
+					</span>
+				</div>
+				<div class="tracora-banner-metric">
+					<span class="tracora-banner-label">${__('Location')}</span>
+					<span class="tracora-banner-value">📍 ${loc_text}</span>
+				</div>
+				<div class="tracora-banner-metric">
+					<span class="tracora-banner-label">${__('Holding Company')}</span>
+					<span class="tracora-banner-value">🏢 ${comp_text}</span>
+				</div>
+				<div class="tracora-banner-metric">
+					<span class="tracora-banner-label">${__('Condition')}</span>
+					<span class="tracora-banner-value">✨ ${cond_text}</span>
+				</div>
+			</div>
+		`;
+
+		if (!frm.header_banner_wrapper) {
+			frm.header_banner_wrapper = $('<div class="tracora-header-banner-container"></div>');
+			frm.dashboard.wrapper.prepend(frm.header_banner_wrapper);
+		}
+		frm.header_banner_wrapper.html(banner_html);
 	},
 
 	render_movement_timeline: function(frm) {

@@ -25,19 +25,19 @@ class TestTracoraLicences(FrappeTestCase):
 			}).insert()
 
 		# Branch
-		if not frappe.db.exists("Tracora Branch", "Dev Branch - LTC"):
+		if not frappe.db.exists("Tracora Branch", "Licence Dev Branch"):
 			frappe.get_doc({
 				"doctype": "Tracora Branch",
-				"branch_name": "Dev Branch",
+				"branch_name": "Licence Dev Branch",
 				"company": "Licence Test Corp",
 				"source": "Tracora"
 			}).insert()
 
 		# Department
-		if not frappe.db.exists("Tracora Department", "Engineering - LTC"):
+		if not frappe.db.exists("Tracora Department", "Licence Engineering"):
 			frappe.get_doc({
 				"doctype": "Tracora Department",
-				"department_name": "Engineering",
+				"department_name": "Licence Engineering",
 				"company": "Licence Test Corp",
 				"source": "Tracora"
 			}).insert()
@@ -59,8 +59,8 @@ class TestTracoraLicences(FrappeTestCase):
 			"employee_code": unique_code,
 			"employee_name": name,
 			"company": "Licence Test Corp",
-			"branch": "Dev Branch - LTC",
-			"department": "Engineering - LTC",
+			"branch": "Licence Dev Branch",
+			"department": "Licence Engineering",
 			"mobile": "9876543210",
 			"status": "Active",
 			"source": "Tracora"
@@ -76,10 +76,10 @@ class TestTracoraLicences(FrappeTestCase):
 			"model": "Latitude 5420",
 			"serial_no": unique_serial,
 			"tag_mode": "Auto-generated",
-			"category": "Laptop",
+			"asset_category": "Laptops",
 			"owner_company": "Licence Test Corp",
 			"holding_company": "Licence Test Corp",
-			"branch": "Dev Branch - LTC",
+			"branch": "Licence Dev Branch",
 			"location": "Tech Park Floor 4",
 			"condition": "Good",
 			"status": "In Store"

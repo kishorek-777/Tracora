@@ -1,0 +1,23 @@
+{
+ "color": "#10b981",
+ "creation": "2026-10-29 18:05:53.837503",
+ "docstatus": 0,
+ "doctype": "Number Card",
+ "document_type": "Tracora Asset",
+ "filters_json": "[[\"Tracora Asset\", \"status\", \"=\", \"Assigned\"]]",
+ "function": "Count",
+ "idx": 0,
+ "is_public": 1,
+ "is_standard": 1,
+ "label": "Assets in Custody",
+ "modified": "2026-10-29 18:42:15.067978",
+ "modified_by": "Administrator",
+ "module": "Tracora",
+ "name": "Assets in Custody",
+ "owner": "Administrator",
+ "report_function": "Sum",
+ "show_full_number": 0,
+ "show_percentage_stats": 0,
+ "stats_time_interval": "Daily",
+ "type": "Document Type"
+}

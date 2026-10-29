@@ -2,13 +2,13 @@
 // For license information, please see license.txt
 
 frappe.listview_settings['Tracora Asset'] = {
-	add_fields: ['status', 'brand', 'holding_company', 'location', 'assigned_to', 'is_shared', 'condition', 'label_printed_on'],
+	add_fields: ['status', 'brand', 'holding_company', 'location', 'assigned_to', 'is_shared', 'condition', 'label_printed_on', 'asset_tag', 'asset_name'],
 	get_indicator: function(doc) {
 		const colors = {
 			'In Store': 'blue',
 			'Assigned': 'green',
 			'Under Maintenance': 'orange',
-			'Damaged': 'orange',
+			'Damaged': 'red',
 			'Lost': 'red',
 			'Recovered': 'yellow',
 			'Released': 'grey',
@@ -16,8 +16,35 @@ frappe.listview_settings['Tracora Asset'] = {
 		};
 		return [__(doc.status), colors[doc.status] || 'grey', 'status,=,' + doc.status];
 	},
+	formatters: {
+		asset_tag: function(value) {
+			if (!value) return '';
+			return `<span class="tracora-tag-pill">${frappe.utils.escape_html(value)}</span>`;
+		},
+		assigned_to: function(value) {
+			if (!value) {
+				return `<span class="text-muted" style="font-size: 11px;">${__('In Store')}</span>`;
+			}
+			const initials = value.split(' ').map(p => p[0]).slice(0, 2).join('').toUpperCase();
+			return `
+				<div class="tracora-avatar-pill">
+					<span class="tracora-avatar-circle">${frappe.utils.escape_html(initials || 'A')}</span>
+					<span>${frappe.utils.escape_html(value)}</span>
+				</div>
+			`;
+		}
+	},
 	onload: function(listview) {
 		listview.page.empty_state_text = __('No assets yet. Register the first one.');
+
+		// Quick Scan Action Button
+		listview.page.add_inner_button(__('📷 Quick Scan'), function() {
+			if (window.tracora && typeof tracora.open_quick_ops === 'function') {
+				tracora.open_quick_ops();
+			} else {
+				frappe.msgprint(__('Quick Scanner is loading...'));
+			}
+		});
 
 		// Batch printing UI per P7 & FR-47: select rows -> Print labels
 		listview.page.add_actions_menu_item(__('Print Labels'), function() {

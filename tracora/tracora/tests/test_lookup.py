@@ -35,18 +35,18 @@ class TestTracoraLookup(FrappeTestCase):
 			}).insert()
 
 		# Internal Branch & Department
-		if not frappe.db.exists("Tracora Branch", "HQ - LIC"):
+		if not frappe.db.exists("Tracora Branch", "Lookup Test HQ"):
 			frappe.get_doc({
 				"doctype": "Tracora Branch",
-				"branch_name": "HQ",
+				"branch_name": "Lookup Test HQ",
 				"company": "Lookup Internal Corp",
 				"source": "Tracora",
 			}).insert()
 
-		if not frappe.db.exists("Tracora Department", "Engineering - LIC"):
+		if not frappe.db.exists("Tracora Department", "Lookup Test Engineering"):
 			frappe.get_doc({
 				"doctype": "Tracora Department",
-				"department_name": "Engineering",
+				"department_name": "Lookup Test Engineering",
 				"company": "Lookup Internal Corp",
 				"source": "Tracora",
 			}).insert()
@@ -69,8 +69,8 @@ class TestTracoraLookup(FrappeTestCase):
 				"employee_code": "EMP-LKP-INT-01",
 				"employee_name": "Internal Test Worker",
 				"company": "Lookup Internal Corp",
-				"branch": "HQ - LIC",
-				"department": "Engineering - LIC",
+				"branch": "Lookup Test HQ",
+				"department": "Lookup Test Engineering",
 				"mobile": "+91 99887 76655",
 				"email": "internal.worker@lookuptest.com",
 				"aadhaar_number": "123456789012",
@@ -118,7 +118,7 @@ class TestTracoraLookup(FrappeTestCase):
 				"model_number": "Precision 5570",
 				"owner_company": "Lookup Internal Corp",
 				"holding_company": "Lookup Internal Corp",
-				"branch": "HQ - LIC",
+				"branch": "Lookup Test HQ",
 				"location": "Lookup Warehouse 1",
 				"status": "Assigned",
 				"condition": "Good",
@@ -152,7 +152,7 @@ class TestTracoraLookup(FrappeTestCase):
 				"model_number": "P360",
 				"owner_company": "Lookup Internal Corp",
 				"holding_company": "Lookup Internal Corp",
-				"branch": "HQ - LIC",
+				"branch": "Lookup Test HQ",
 				"location": "Lookup Warehouse 1",
 				"status": "In Store",
 				"condition": "New",
@@ -183,7 +183,7 @@ class TestTracoraLookup(FrappeTestCase):
 				"model_number": "XPS 15",
 				"owner_company": "Lookup Internal Corp",
 				"holding_company": "Lookup Internal Corp",
-				"branch": "HQ - LIC",
+				"branch": "Lookup Test HQ",
 				"location": "Lookup Warehouse 1",
 				"status": "In Store",
 				"condition": "Good",
@@ -203,7 +203,7 @@ class TestTracoraLookup(FrappeTestCase):
 					"model_number": "Latitude 5420",
 					"owner_company": "Lookup Internal Corp",
 					"holding_company": "Lookup Internal Corp",
-					"branch": "HQ - LIC",
+					"branch": "Lookup Test HQ",
 					"location": "Lookup Warehouse 1",
 					"status": "In Store",
 					"condition": "Good",
@@ -235,7 +235,7 @@ class TestTracoraLookup(FrappeTestCase):
 					"model_number": f"EliteBook 840 G{i}",
 					"owner_company": "Lookup Internal Corp",
 					"holding_company": "Lookup Internal Corp",
-					"branch": "HQ - LIC",
+					"branch": "Lookup Test HQ",
 					"location": "Lookup Warehouse 1",
 					"status": "In Store",
 					"condition": "Good",
@@ -284,7 +284,7 @@ class TestTracoraLookup(FrappeTestCase):
 				"model_number": "MacBook Air",
 				"owner_company": "Lookup Internal Corp",
 				"holding_company": "Lookup Internal Corp",
-				"branch": "HQ - LIC",
+				"branch": "Lookup Test HQ",
 				"location": "Lookup Warehouse 1",
 				"status": "Assigned",
 				"condition": "Good",
@@ -298,8 +298,8 @@ class TestTracoraLookup(FrappeTestCase):
 		# Required internal fields
 		self.assertEqual(holder.get("employee_code"), "EMP-LKP-INT-01")
 		self.assertEqual(holder.get("company_type"), "Internal")
-		self.assertEqual(holder.get("branch"), "HQ - LIC")
-		self.assertEqual(holder.get("department"), "Engineering - LIC")
+		self.assertEqual(holder.get("branch"), "Lookup Test HQ")
+		self.assertEqual(holder.get("department"), "Lookup Test Engineering")
 
 		# Strictly forbidden fields
 		self.assertNotIn("mobile", holder)
@@ -324,7 +324,7 @@ class TestTracoraLookup(FrappeTestCase):
 				"model_number": "MacBook Pro",
 				"owner_company": "Lookup Internal Corp",
 				"holding_company": "Lookup External Partner",
-				"branch": "HQ - LIC",
+				"branch": "Lookup Test HQ",
 				"location": "Lookup Warehouse 1",
 				"status": "Assigned",
 				"condition": "Good",

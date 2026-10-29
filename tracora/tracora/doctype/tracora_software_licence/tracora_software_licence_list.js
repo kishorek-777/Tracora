@@ -19,13 +19,13 @@ frappe.listview_settings['Tracora Software Licence'] = {
 			const diff = frappe.datetime.get_diff(value, frappe.datetime.get_today());
 			const formatted_date = frappe.datetime.str_to_user(value);
 			if (diff < 0) {
-				return `<span style="color: #e53e3e; font-weight: 600;">${formatted_date} (Expired ${Math.abs(diff)}d ago)</span>`;
+				return `<span>${formatted_date}</span> <span class="indicator-pill red">${Math.abs(diff)}d ago</span>`;
 			} else if (diff < 7) {
-				return `<span style="color: #e53e3e; font-weight: 600;">${formatted_date} (${diff}d left)</span>`;
-			} else if (diff < 30) {
-				return `<span style="color: #dd6b20; font-weight: 600;">${formatted_date} (${diff}d left)</span>`;
+				return `<span>${formatted_date}</span> <span class="indicator-pill red">${diff}d left</span>`;
+			} else if (diff <= 30) {
+				return `<span>${formatted_date}</span> <span class="indicator-pill orange">${diff}d left</span>`;
 			}
-			return `<span>${formatted_date} (${diff}d left)</span>`;
+			return `<span>${formatted_date}</span> <span class="indicator-pill green">${diff}d left</span>`;
 		},
 		next_renewal_date: function(value, df, doc) {
 			if (!value) {
@@ -33,18 +33,18 @@ frappe.listview_settings['Tracora Software Licence'] = {
 					return `<span class="text-muted" style="font-size: 11px;">${__('N/A (One-time)')}</span>`;
 				}
 				if (!doc.licence_start_date) {
-					return `<span class="indicator-pill orange" style="font-size: 11px; padding: 2px 6px; font-weight: 500;" title="${__('Missing Licence Start Date: auto-calculation disabled')}">${__('No Start Date')}</span>`;
+					return `<span class="indicator-pill orange" style="font-size: 11px;" title="${__('Missing Start Date')}">${__('No Start Date')}</span>`;
 				}
 				return '<span class="text-muted">-</span>';
 			}
 			const diff = frappe.datetime.get_diff(value, frappe.datetime.get_today());
 			const formatted_date = frappe.datetime.str_to_user(value);
 			if (diff < 0) {
-				return `<span style="color: #e53e3e; font-weight: 600;">${formatted_date} (Due ${Math.abs(diff)}d ago)</span>`;
-			} else if (diff < 7) {
-				return `<span style="color: #dd6b20; font-weight: 600;">${formatted_date} (In ${diff}d)</span>`;
+				return `<span>${formatted_date}</span> <span class="indicator-pill red">${Math.abs(diff)}d overdue</span>`;
+			} else if (diff <= 30) {
+				return `<span>${formatted_date}</span> <span class="indicator-pill orange">In ${diff}d</span>`;
 			}
-			return `<span>${formatted_date} (In ${diff}d)</span>`;
+			return `<span>${formatted_date}</span>`;
 		}
 	}
 };

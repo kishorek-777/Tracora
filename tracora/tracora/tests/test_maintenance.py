@@ -24,18 +24,18 @@ class TestTracoraMaintenance(FrappeTestCase):
 			}).insert()
 
 		# 2. Branch & Department
-		if not frappe.db.exists("Tracora Branch", "HQ - TIC"):
+		if not frappe.db.exists("Tracora Branch", "Maintenance Test HQ"):
 			frappe.get_doc({
 				"doctype": "Tracora Branch",
-				"branch_name": "HQ",
+				"branch_name": "Maintenance Test HQ",
 				"company": "Test Internal Corp",
 				"source": "Tracora"
 			}).insert()
 
-		if not frappe.db.exists("Tracora Department", "IT - TIC"):
+		if not frappe.db.exists("Tracora Department", "Maintenance Test IT"):
 			frappe.get_doc({
 				"doctype": "Tracora Department",
-				"department_name": "IT",
+				"department_name": "Maintenance Test IT",
 				"company": "Test Internal Corp",
 				"source": "Tracora"
 			}).insert()
@@ -58,8 +58,8 @@ class TestTracoraMaintenance(FrappeTestCase):
 				"employee_name": "Alice Maint",
 				"mobile": "9876540101",
 				"company": "Test Internal Corp",
-				"branch": "HQ - TIC",
-				"department": "IT - TIC",
+				"branch": "Maintenance Test HQ",
+				"department": "Maintenance Test IT",
 				"status": "Active",
 				"source": "Tracora"
 			}).insert()
@@ -71,8 +71,8 @@ class TestTracoraMaintenance(FrappeTestCase):
 				"employee_name": "Bob Maint",
 				"mobile": "9876540102",
 				"company": "Test Internal Corp",
-				"branch": "HQ - TIC",
-				"department": "IT - TIC",
+				"branch": "Maintenance Test HQ",
+				"department": "Maintenance Test IT",
 				"status": "Active",
 				"source": "Tracora"
 			}).insert()
@@ -88,7 +88,7 @@ class TestTracoraMaintenance(FrappeTestCase):
 			"serial_no": unique_serial,
 			"owner_company": "Test Internal Corp",
 			"holding_company": "Test Internal Corp",
-			"branch": "HQ - TIC",
+			"branch": "Maintenance Test HQ",
 			"location": "Main Office",
 			"is_shared": 0,
 			"status": status,

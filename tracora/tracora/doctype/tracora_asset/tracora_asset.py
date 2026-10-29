@@ -30,6 +30,23 @@ class TracoraAsset(Document):
 		self.name = self.asset_tag
 
 	def validate(self):
+		# Default category fallback
+		if not self.asset_category:
+			if self.get("category"):
+				cat_val = str(self.get("category")).strip()
+				if "laptop" in cat_val.lower():
+					self.asset_category = "Laptops"
+				elif "desktop" in cat_val.lower():
+					self.asset_category = "Desktops"
+				elif "monitor" in cat_val.lower():
+					self.asset_category = "Monitors"
+				elif "network" in cat_val.lower():
+					self.asset_category = "Network Equipment"
+				else:
+					self.asset_category = cat_val if frappe.db.exists("Tracora Asset Category", cat_val) else "Laptops"
+			else:
+				self.asset_category = "Laptops"
+
 		# Purchase, Warranty, and Audit date validations
 		if self.purchase_date and self.warranty_expiry:
 			if getdate(self.warranty_expiry) < getdate(self.purchase_date):

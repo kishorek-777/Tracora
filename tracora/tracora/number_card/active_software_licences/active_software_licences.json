@@ -1,0 +1,23 @@
+{
+ "color": "#8b5cf6",
+ "creation": "2026-10-29 18:05:54.327965",
+ "docstatus": 0,
+ "doctype": "Number Card",
+ "document_type": "Tracora Software Licence",
+ "filters_json": "[[\"Tracora Software Licence\", \"licence_status\", \"=\", \"Active\"]]",
+ "function": "Count",
+ "idx": 0,
+ "is_public": 1,
+ "is_standard": 1,
+ "label": "Active Software Licences",
+ "modified": "2026-10-29 18:42:14.760107",
+ "modified_by": "Administrator",
+ "module": "Tracora",
+ "name": "Active Software Licences",
+ "owner": "Administrator",
+ "report_function": "Sum",
+ "show_full_number": 0,
+ "show_percentage_stats": 0,
+ "stats_time_interval": "Daily",
+ "type": "Document Type"
+}

@@ -1,3 +1,520 @@
+/* Copyright (c) 2026, Kishore and contributors */
+/* Tracora Modern Enterprise Design System for Frappe Desk */
+
+/* ==========================================================================
+   1. Typography & Global Polish
+   ========================================================================== */
+.desk-sidebar,
+.layout-main-section,
+.widget-box {
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
 .body-sidebar-container:not(.expanded) .body-sidebar-top {
 	overflow-y: hidden;
+}
+
+/* ==========================================================================
+   2. Workspace Dashboard & Cards Polish
+   ========================================================================== */
+.widget.card-widget-box,
+.widget.shortcut-widget-box,
+.widget.number-card-widget-box,
+.widget.number-widget-box,
+.widget.dashboard-widget-box,
+[data-widget-type="number_card"],
+[data-widget-type="chart"],
+[data-widget-type="card"],
+[data-widget-type="shortcut"] {
+	border-radius: 12px !important;
+	border: 1px solid #e2e8f0 !important;
+	background: #ffffff !important;
+	box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 1px 2px -1px rgba(0, 0, 0, 0.03) !important;
+	transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+[data-theme="dark"] .widget.card-widget-box,
+[data-theme="dark"] .widget.shortcut-widget-box,
+[data-theme="dark"] .widget.number-card-widget-box,
+[data-theme="dark"] .widget.number-widget-box,
+[data-theme="dark"] .widget.dashboard-widget-box,
+[data-theme="dark"] [data-widget-type="number_card"],
+[data-theme="dark"] [data-widget-type="chart"],
+[data-theme="dark"] [data-widget-type="card"],
+[data-theme="dark"] [data-widget-type="shortcut"] {
+	border-color: #334155 !important;
+	background: #1e293b !important;
+	box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2) !important;
+}
+
+.widget.card-widget-box:hover,
+.widget.shortcut-widget-box:hover,
+.widget.number-card-widget-box:hover,
+.widget.number-widget-box:hover,
+.widget.dashboard-widget-box:hover,
+[data-widget-type="number_card"]:hover,
+[data-widget-type="chart"]:hover,
+[data-widget-type="card"]:hover,
+[data-widget-type="shortcut"]:hover {
+	border-color: #cbd5e1 !important;
+	box-shadow: 0 6px 12px -2px rgba(0, 0, 0, 0.08), 0 3px 6px -2px rgba(0, 0, 0, 0.04) !important;
+	transform: translateY(-2px);
+}
+
+/* Number Cards */
+.widget.number-widget-box,
+[data-widget-type="number_card"] {
+	padding: 16px 20px !important;
+	position: relative !important;
+	overflow: hidden !important;
+}
+
+.widget.number-widget-box .widget-title,
+[data-widget-type="number_card"] .widget-title {
+	font-size: 13px !important;
+	font-weight: 600 !important;
+	color: #64748b !important;
+	margin-bottom: 4px !important;
+	letter-spacing: -0.1px !important;
+}
+
+.widget.number-widget-box .number,
+[data-widget-type="number_card"] .number {
+	font-size: 32px !important;
+	font-weight: 700 !important;
+	letter-spacing: -0.8px !important;
+	line-height: 1.1 !important;
+	margin-top: 6px !important;
+	font-feature-settings: "cv02", "cv03", "cv04", "cv11" !important;
+}
+
+/* Accent Card Indicators */
+[number_card_name="Assets in Custody"] .widget,
+[data-widget-name="Assets in Custody"] {
+	border-top: 3.5px solid #10b981 !important;
+}
+[number_card_name="Assets in Custody"] .number,
+[data-widget-name="Assets in Custody"] .number {
+	color: #059669 !important;
+}
+
+[number_card_name="Available in Store"] .widget,
+[data-widget-name="Available in Store"] {
+	border-top: 3.5px solid #3b82f6 !important;
+}
+[number_card_name="Available in Store"] .number,
+[data-widget-name="Available in Store"] .number {
+	color: #2563eb !important;
+}
+
+[number_card_name="Under Maintenance"] .widget,
+[data-widget-name="Under Maintenance"] {
+	border-top: 3.5px solid #f59e0b !important;
+}
+[number_card_name="Under Maintenance"] .number,
+[data-widget-name="Under Maintenance"] .number {
+	color: #d97706 !important;
+}
+
+[number_card_name="Active Software Licences"] .widget,
+[data-widget-name="Active Software Licences"] {
+	border-top: 3.5px solid #8b5cf6 !important;
+}
+[number_card_name="Active Software Licences"] .number,
+[data-widget-name="Active Software Licences"] .number {
+	color: #7c3aed !important;
+}
+
+/* Dashboard Charts */
+.widget.dashboard-widget-box,
+[data-widget-type="chart"] {
+	padding: 18px 20px !important;
+	min-height: 340px !important;
+}
+
+.widget.dashboard-widget-box .widget-title,
+[data-widget-type="chart"] .widget-title {
+	font-size: 14px !important;
+	font-weight: 600 !important;
+	color: #1e293b !important;
+	letter-spacing: -0.2px !important;
+}
+
+/* SVG Chart Legends: clear text, no overlap, crisp typography */
+.frappe-chart .legend-dataset-label {
+	font-size: 11px !important;
+	font-weight: 500 !important;
+	fill: #334155 !important;
+}
+
+.frappe-chart .legend-dataset-value {
+	font-size: 11px !important;
+	font-weight: 700 !important;
+	fill: #64748b !important;
+}
+
+.frappe-chart .legend-dot {
+	rx: 3px !important;
+}
+
+/* Module Cards / Quick Links */
+.widget.card-widget-box .widget-title,
+[data-widget-type="card"] .widget-title {
+	font-size: 14px !important;
+	font-weight: 700 !important;
+	color: #0f172a !important;
+	letter-spacing: -0.2px !important;
+	padding-bottom: 8px !important;
+	border-bottom: 1px solid #f1f5f9 !important;
+	margin-bottom: 8px !important;
+}
+
+.widget.card-widget-box .link-item,
+[data-widget-type="card"] .link-item {
+	padding: 7px 10px !important;
+	border-radius: 6px !important;
+	margin: 2px 0 !important;
+	font-size: 13px !important;
+	font-weight: 500 !important;
+	color: #334155 !important;
+	transition: all 0.15s ease !important;
+	display: flex !important;
+	align-items: center !important;
+	justify-content: space-between !important;
+}
+
+.widget.card-widget-box .link-item:hover,
+[data-widget-type="card"] .link-item:hover {
+	background-color: #f1f5f9 !important;
+	color: #2563eb !important;
+	transform: translateX(3px) !important;
+}
+
+.widget.card-widget-box .link-item a,
+[data-widget-type="card"] .link-item a {
+	color: inherit !important;
+	text-decoration: none !important;
+}
+
+/* Shortcuts */
+.widget.shortcut-widget-box,
+[data-widget-type="shortcut"] {
+	padding: 12px 16px !important;
+	display: flex !important;
+	align-items: center !important;
+	justify-content: space-between !important;
+	font-weight: 600 !important;
+	font-size: 13.5px !important;
+	color: #1e293b !important;
+	border-radius: 10px !important;
+	cursor: pointer !important;
+	min-height: 48px !important;
+}
+
+.widget.shortcut-widget-box .shortcut-icon {
+	margin-right: 10px !important;
+	color: #3b82f6 !important;
+}
+
+[shortcut_name="Handover Asset"] .shortcut-icon,
+[data-widget-name="Handover Asset"] .shortcut-icon {
+	color: #10b981 !important;
+}
+
+[shortcut_name="Log Repair"] .shortcut-icon,
+[data-widget-name="Log Repair"] .shortcut-icon {
+	color: #f59e0b !important;
+}
+
+[shortcut_name="Vendor Contracts"] .shortcut-icon,
+[data-widget-name="Vendor Contracts"] .shortcut-icon {
+	color: #3b82f6 !important;
+}
+
+[shortcut_name="Reports"] .shortcut-icon,
+[data-widget-name="Reports"] .shortcut-icon {
+	color: #8b5cf6 !important;
+}
+
+/* ==========================================================================
+   3. Modern Status Badges & Indicator Pills
+   ========================================================================== */
+.indicator-pill {
+	font-size: 11px !important;
+	font-weight: 600 !important;
+	padding: 3px 8px !important;
+	border-radius: 9999px !important;
+	display: inline-flex !important;
+	align-items: center !important;
+	gap: 5px !important;
+	line-height: 1.2 !important;
+}
+
+.indicator-pill::before {
+	content: "";
+	display: inline-block;
+	width: 6px;
+	height: 6px;
+	border-radius: 50%;
+}
+
+/* Emerald / Green (In Service, Available, Active, Verified) */
+.indicator-pill.green {
+	background-color: #ecfdf5 !important;
+	color: #065f46 !important;
+}
+.indicator-pill.green::before {
+	background-color: #10b981;
+}
+
+/* Blue / Indigo (Assigned, In Custody, In Store) */
+.indicator-pill.blue {
+	background-color: #eff6ff !important;
+	color: #1e40af !important;
+}
+.indicator-pill.blue::before {
+	background-color: #3b82f6;
+}
+
+/* Amber / Orange (Under Maintenance, Renewal Due, Warning) */
+.indicator-pill.orange,
+.indicator-pill.yellow {
+	background-color: #fffbeb !important;
+	color: #92400e !important;
+}
+.indicator-pill.orange::before,
+.indicator-pill.yellow::before {
+	background-color: #f59e0b;
+}
+
+/* Crimson / Red (Overdue, Expired, Damaged, Lost) */
+.indicator-pill.red {
+	background-color: #fef2f2 !important;
+	color: #991b1b !important;
+}
+.indicator-pill.red::before {
+	background-color: #ef4444;
+}
+
+/* Slate / Gray (Retired, Scrapped, Completed) */
+.indicator-pill.gray,
+.indicator-pill.grey {
+	background-color: #f1f5f9 !important;
+	color: #475569 !important;
+}
+.indicator-pill.gray::before,
+.indicator-pill.grey::before {
+	background-color: #94a3b8;
+}
+
+/* ==========================================================================
+   4. Custom Tracora UI Micro-Components
+   ========================================================================== */
+
+/* Hardware Tag Pill */
+.tracora-tag-pill {
+	font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
+	font-size: 11px !important;
+	font-weight: 600 !important;
+	background: #f1f5f9;
+	color: #0f172a;
+	border: 1px solid #cbd5e1;
+	padding: 2px 7px;
+	border-radius: 4px;
+	display: inline-flex;
+	align-items: center;
+	letter-spacing: 0.3px;
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="dark"] .tracora-tag-pill {
+	background: #334155;
+	color: #f8fafc;
+	border-color: #475569;
+}
+
+/* Holder Avatar Pill */
+.tracora-avatar-pill {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	font-size: 12px;
+	font-weight: 500;
+	color: #1e293b;
+}
+
+.tracora-avatar-circle {
+	width: 22px;
+	height: 22px;
+	border-radius: 50%;
+	background: #3b82f6;
+	color: #ffffff;
+	font-size: 10px;
+	font-weight: 700;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	text-transform: uppercase;
+}
+
+/* Seat Utilization Bar */
+.tracora-progress-bar-container {
+	width: 100%;
+	max-width: 130px;
+	height: 6px;
+	background: #e2e8f0;
+	border-radius: 9999px;
+	overflow: hidden;
+	display: inline-block;
+	vertical-align: middle;
+	margin-right: 6px;
+}
+
+.tracora-progress-bar-fill {
+	height: 100%;
+	border-radius: 9999px;
+	transition: width 0.3s ease;
+}
+
+.tracora-progress-bar-fill.safe {
+	background-color: #10b981;
+}
+
+.tracora-progress-bar-fill.warning {
+	background-color: #f59e0b;
+}
+
+.tracora-progress-bar-fill.danger {
+	background-color: #ef4444;
+}
+
+/* ==========================================================================
+   5. Form View Dashboard Header Banner
+   ========================================================================== */
+.tracora-form-header-banner {
+	background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+	border: 1px solid #e2e8f0;
+	border-radius: 8px;
+	padding: 12px 16px;
+	margin-bottom: 16px;
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+}
+
+[data-theme="dark"] .tracora-form-header-banner {
+	background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+	border-color: #334155;
+}
+
+.tracora-banner-metric {
+	display: flex;
+	flex-direction: column;
+}
+
+.tracora-banner-label {
+	font-size: 11px;
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+	color: #64748b;
+	margin-bottom: 2px;
+}
+
+.tracora-banner-value {
+	font-size: 13px;
+	font-weight: 600;
+	color: #0f172a;
+}
+
+[data-theme="dark"] .tracora-banner-value {
+	color: #f8fafc;
+}
+
+/* Vertical Custody Timeline Stepper */
+.tracora-stepper {
+	position: relative;
+	padding-left: 24px;
+	margin: 12px 0;
+}
+
+.tracora-stepper::before {
+	content: "";
+	position: absolute;
+	left: 8px;
+	top: 6px;
+	bottom: 6px;
+	width: 2px;
+	background: #e2e8f0;
+}
+
+[data-theme="dark"] .tracora-stepper::before {
+	background: #334155;
+}
+
+.tracora-stepper-item {
+	position: relative;
+	margin-bottom: 16px;
+}
+
+.tracora-stepper-item:last-child {
+	margin-bottom: 0;
+}
+
+.tracora-stepper-item::before {
+	content: "";
+	position: absolute;
+	left: -20px;
+	top: 4px;
+	width: 10px;
+	height: 10px;
+	border-radius: 50%;
+	background: #3b82f6;
+	border: 2px solid #ffffff;
+}
+
+.tracora-stepper-title {
+	font-size: 12px;
+	font-weight: 600;
+	color: #1e293b;
+}
+
+[data-theme="dark"] .tracora-stepper-title {
+	color: #f8fafc;
+}
+
+.tracora-stepper-desc {
+	font-size: 11px;
+	color: #64748b;
+}
+
+/* ==========================================================================
+   6. Global Quick Operations Scanner Dialog
+   ========================================================================== */
+.tracora-scanner-preview {
+	border-radius: 8px;
+	overflow: hidden;
+	background: #0f172a;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	min-height: 200px;
+	margin-bottom: 12px;
+	position: relative;
+}
+
+.tracora-asset-card-found {
+	background: #f8fafc;
+	border: 1px solid #cbd5e1;
+	border-radius: 8px;
+	padding: 14px;
+	margin-top: 10px;
+}
+
+[data-theme="dark"] .tracora-asset-card-found {
+	background: #1e293b;
+	border-color: #475569;
 }

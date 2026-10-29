@@ -20,6 +20,9 @@ frappe.query_reports["Tracora Report"] = {
 			default: "Assets Owned",
 			reqd: 1,
 			on_change: function() {
+				if (frappe.query_report && typeof frappe.query_report.toggle_contextual_filters === "function") {
+					frappe.query_report.toggle_contextual_filters();
+				}
 				frappe.query_report.refresh();
 			}
 		},
@@ -107,6 +110,82 @@ frappe.query_reports["Tracora Report"] = {
 			}
 		}
 	],
+
+	onload: function(report) {
+		report.toggle_contextual_filters = function() {
+			const view = report.get_filter_value("primary_view") || "Assets Owned";
+			const is_licence = (view === "Licence Expiry" || view === "Licence Renewal Due");
+			const is_emp_view = (view === "Assets by Employee");
+			const is_external = (view === "External Custody");
+
+			// 1. Licence filters
+			["licence_type", "renewal_cycle", "include_non_renewing"].forEach(fn => {
+				const f = report.get_filter(fn);
+				if (f && f.$wrapper) {
+					f.df.hidden = is_licence ? 0 : 1;
+					f.$wrapper.toggle(Boolean(is_licence));
+					if (!is_licence && typeof f.set_value === "function" && f.get_value && f.get_value()) {
+						if (fn === "include_non_renewing") {
+							f.set_value(0);
+						} else {
+							f.set_value("");
+						}
+					}
+				}
+			});
+
+			// 2. Hardware Asset Status & Condition filters
+			["status", "condition"].forEach(fn => {
+				const f = report.get_filter(fn);
+				if (f && f.$wrapper) {
+					const show = !is_licence;
+					f.df.hidden = show ? 0 : 1;
+					f.$wrapper.toggle(Boolean(show));
+					if (!show && typeof f.set_value === "function" && f.get_value && f.get_value()) {
+						f.set_value([]);
+					}
+				}
+			});
+
+			// 3. Branch & Department filters
+			["branch", "department"].forEach(fn => {
+				const f = report.get_filter(fn);
+				if (f && f.$wrapper) {
+					const show = !is_licence && !is_external;
+					f.df.hidden = show ? 0 : 1;
+					f.$wrapper.toggle(Boolean(show));
+					if (!show && typeof f.set_value === "function" && f.get_value && f.get_value()) {
+						f.set_value([]);
+					}
+				}
+			});
+
+			// 4. Employee filter: only relevant for "Assets by Employee"
+			const emp_filter = report.get_filter("employee");
+			if (emp_filter && emp_filter.$wrapper) {
+				const show = is_emp_view;
+				emp_filter.df.hidden = show ? 0 : 1;
+				emp_filter.$wrapper.toggle(Boolean(show));
+				if (!show && typeof emp_filter.set_value === "function" && emp_filter.get_value && emp_filter.get_value()) {
+					emp_filter.set_value("");
+				}
+			}
+		};
+
+		// Run immediately and after DOM stabilizes
+		report.toggle_contextual_filters();
+		setTimeout(() => {
+			if (typeof report.toggle_contextual_filters === "function") {
+				report.toggle_contextual_filters();
+			}
+		}, 100);
+	},
+
+	after_refresh: function(report) {
+		if (report && typeof report.toggle_contextual_filters === "function") {
+			report.toggle_contextual_filters();
+		}
+	},
 
 	formatter: function(value, row, column, data, default_formatter) {
 		value = default_formatter(value, row, column, data);

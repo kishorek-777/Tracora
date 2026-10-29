@@ -259,7 +259,9 @@ class TestTracoraReminders(FrappeTestCase):
 		lic = self._create_licence(licence_expiry_date=add_days(today(), 1))
 		run_daily_reminders()
 
-		log = frappe.get_last_doc("Tracora Reminder Log", filters={"reference_name": lic.name})
+		log_names = frappe.get_all("Tracora Reminder Log", filters={"reference_name": lic.name}, order_by="creation desc", limit=1, pluck="name")
+		self.assertTrue(log_names)
+		log = frappe.get_doc("Tracora Reminder Log", log_names[0])
 		self.assertIsNotNone(log)
 
 		# Edit attempt -> ValidationError

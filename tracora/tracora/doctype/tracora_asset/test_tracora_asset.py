@@ -31,28 +31,28 @@ class TestTracoraAsset(FrappeTestCase):
 			}).insert()
 
 		# Base branch
-		if not frappe.db.exists("Tracora Branch", "HQ - TIC"):
+		if not frappe.db.exists("Tracora Branch", "Asset Test HQ"):
 			frappe.get_doc({
 				"doctype": "Tracora Branch",
-				"branch_name": "HQ",
+				"branch_name": "Asset Test HQ",
 				"company": "Test Internal Corp",
 				"source": "Tracora"
 			}).insert()
 
 		# Base branch 2
-		if not frappe.db.exists("Tracora Branch", "North - TIC"):
+		if not frappe.db.exists("Tracora Branch", "Asset Test North"):
 			frappe.get_doc({
 				"doctype": "Tracora Branch",
-				"branch_name": "North",
+				"branch_name": "Asset Test North",
 				"company": "Test Internal Corp",
 				"source": "Tracora"
 			}).insert()
 
 		# Base department
-		if not frappe.db.exists("Tracora Department", "IT - TIC"):
+		if not frappe.db.exists("Tracora Department", "Asset Test IT"):
 			frappe.get_doc({
 				"doctype": "Tracora Department",
-				"department_name": "IT",
+				"department_name": "Asset Test IT",
 				"company": "Test Internal Corp",
 				"source": "Tracora"
 			}).insert()
@@ -75,8 +75,8 @@ class TestTracoraAsset(FrappeTestCase):
 				"employee_name": "Active Tech",
 				"mobile": "9876543210",
 				"company": "Test Internal Corp",
-				"branch": "HQ - TIC",
-				"department": "IT - TIC",
+				"branch": "Asset Test HQ",
+				"department": "Asset Test IT",
 				"status": "Active",
 				"source": "Tracora"
 			}).insert()
@@ -89,8 +89,8 @@ class TestTracoraAsset(FrappeTestCase):
 				"employee_name": "Former Staff",
 				"mobile": "9876543211",
 				"company": "Test Internal Corp",
-				"branch": "HQ - TIC",
-				"department": "IT - TIC",
+				"branch": "Asset Test HQ",
+				"department": "Asset Test IT",
 				"status": "Exited",
 				"source": "Tracora"
 			}).insert()
@@ -106,7 +106,7 @@ class TestTracoraAsset(FrappeTestCase):
 			"serial_no": "DL-SEP-OWN-001",
 			"owner_company": "Test External Agency",
 			"holding_company": "Test Internal Corp",
-			"branch": "HQ - TIC",
+			"branch": "Asset Test HQ",
 			"location": "Server Room 1",
 			"status": "In Store",
 			"condition": "Good"
@@ -127,7 +127,7 @@ class TestTracoraAsset(FrappeTestCase):
 			"serial_no": "ABC123_UNIQUE",
 			"owner_company": "Test Internal Corp",
 			"holding_company": "Test Internal Corp",
-			"branch": "HQ - TIC",
+			"branch": "Asset Test HQ",
 			"location": "Server Room 1",
 			"status": "In Store",
 			"condition": "Good"
@@ -144,7 +144,7 @@ class TestTracoraAsset(FrappeTestCase):
 			"serial_no": "LEN-001",
 			"owner_company": "Test Internal Corp",
 			"holding_company": "Test Internal Corp",
-			"branch": "HQ - TIC",
+			"branch": "Asset Test HQ",
 			"location": "Server Room 1",
 			"status": "In Store",
 			"condition": "Good"
@@ -163,7 +163,7 @@ class TestTracoraAsset(FrappeTestCase):
 			"serial_no": asset_c_tag,
 			"owner_company": "Test Internal Corp",
 			"holding_company": "Test Internal Corp",
-			"branch": "HQ - TIC",
+			"branch": "Asset Test HQ",
 			"location": "Server Room 1",
 			"status": "In Store",
 			"condition": "Good"
@@ -182,7 +182,7 @@ class TestTracoraAsset(FrappeTestCase):
 			"serial_no": shared_serial,
 			"owner_company": "Test Internal Corp",
 			"holding_company": "Test Internal Corp",
-			"branch": "HQ - TIC",
+			"branch": "Asset Test HQ",
 			"location": "Server Room 1",
 			"status": "In Store",
 			"condition": "Good"
@@ -196,7 +196,7 @@ class TestTracoraAsset(FrappeTestCase):
 			"serial_no": shared_serial,
 			"owner_company": "Test Internal Corp",
 			"holding_company": "Test Internal Corp",
-			"branch": "HQ - TIC",
+			"branch": "Asset Test HQ",
 			"location": "Server Room 1",
 			"status": "In Store",
 			"condition": "Good"
@@ -215,7 +215,7 @@ class TestTracoraAsset(FrappeTestCase):
 			"serial_no": shared_serial,
 			"owner_company": "Test Internal Corp",
 			"holding_company": "Test Internal Corp",
-			"branch": "HQ - TIC",
+			"branch": "Asset Test HQ",
 			"location": "Server Room 1",
 			"status": "In Store",
 			"condition": "Good"
@@ -236,7 +236,7 @@ class TestTracoraAsset(FrappeTestCase):
 			"serial_no": common_serial,
 			"owner_company": "Test Internal Corp",
 			"holding_company": "Test Internal Corp",
-			"branch": "HQ - TIC",
+			"branch": "Asset Test HQ",
 			"location": "Server Room 1",
 			"status": "In Store",
 			"condition": "Good"
@@ -251,7 +251,7 @@ class TestTracoraAsset(FrappeTestCase):
 			"serial_no": common_serial,
 			"owner_company": "Test Internal Corp",
 			"holding_company": "Test Internal Corp",
-			"branch": "HQ - TIC",
+			"branch": "Asset Test HQ",
 			"location": "Server Room 1",
 			"status": "In Store",
 			"condition": "Good"
@@ -274,7 +274,7 @@ class TestTracoraAsset(FrappeTestCase):
 			"serial_no": "SN-RES-01",
 			"owner_company": "Test Internal Corp",
 			"holding_company": "Test Internal Corp",
-			"branch": "HQ - TIC",
+			"branch": "Asset Test HQ",
 			"location": "Server Room 1",
 			"status": "In Store",
 			"condition": "Good"
@@ -293,7 +293,7 @@ class TestTracoraAsset(FrappeTestCase):
 			"serial_no": "SAM-POOR-001",
 			"owner_company": "Test Internal Corp",
 			"holding_company": "Test Internal Corp",
-			"branch": "HQ - TIC",
+			"branch": "Asset Test HQ",
 			"location": "Server Room 1",
 			"status": "In Store",
 			"condition": "Poor"
@@ -311,7 +311,7 @@ class TestTracoraAsset(FrappeTestCase):
 			"serial_no": "CSC-001",
 			"owner_company": "Test Internal Corp",
 			"holding_company": "Test Internal Corp",
-			"branch": "HQ - TIC",
+			"branch": "Asset Test HQ",
 			"location": "",
 			"status": "In Store",
 			"condition": "Good"
@@ -368,7 +368,7 @@ class TestTracoraAsset(FrappeTestCase):
 			"serial_no": "HP-PRN-001",
 			"owner_company": "Test Internal Corp",
 			"holding_company": "Test Internal Corp",
-			"branch": "HQ - TIC",
+			"branch": "Asset Test HQ",
 			"location": "Server Room 1",
 			"status": "In Store",
 			"condition": "Good",
@@ -388,7 +388,7 @@ class TestTracoraAsset(FrappeTestCase):
 			"serial_no": "MTK-RTR-001",
 			"owner_company": "Test Internal Corp",
 			"holding_company": "Test Internal Corp",
-			"branch": "North - TIC",  # North branch
+			"branch": "Asset Test North",  # North branch
 			"location": "Server Room 1",
 			"status": "In Store",
 			"condition": "Good",
@@ -407,7 +407,7 @@ class TestTracoraAsset(FrappeTestCase):
 			"serial_no": "SNY-TV-001",
 			"owner_company": "Test Internal Corp",
 			"holding_company": "Test Internal Corp",
-			"branch": "HQ - TIC",
+			"branch": "Asset Test HQ",
 			"location": "Server Room 1",
 			"status": "In Store",
 			"condition": "Good",
@@ -428,7 +428,7 @@ class TestTracoraAsset(FrappeTestCase):
 			"serial_no": "DEL-DEL-001",
 			"owner_company": "Test Internal Corp",
 			"holding_company": "Test Internal Corp",
-			"branch": "HQ - TIC",
+			"branch": "Asset Test HQ",
 			"location": "Server Room 1",
 			"status": "In Store",
 			"condition": "Good"

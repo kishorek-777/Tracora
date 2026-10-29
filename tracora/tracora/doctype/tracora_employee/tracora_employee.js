@@ -139,7 +139,7 @@ frappe.ui.form.on('Tracora Employee', {
 					is_shared: 0
 				},
 				fields: ['name', 'asset_tag', 'asset_name', 'brand', 'model_number', 'serial_no', 'location'],
-				limit_page_length: 100
+				limit: 100
 			},
 			callback: function(r) {
 				const available_assets = r.message || [];

@@ -42,17 +42,17 @@ class TestTracoraReports(FrappeTestCase):
 			}).insert()
 
 		# Branch & Location
-		if not frappe.db.exists("Tracora Branch", "HQ - RIC"):
+		if not frappe.db.exists("Tracora Branch", "Report Branch"):
 			frappe.get_doc({
 				"doctype": "Tracora Branch",
-				"branch_name": "HQ",
+				"branch_name": "Report Branch",
 				"company": "Report Internal Corp"
 			}).insert()
 
-		if not frappe.db.exists("Tracora Department", "Engineering - RIC"):
+		if not frappe.db.exists("Tracora Department", "Report Engineering"):
 			frappe.get_doc({
 				"doctype": "Tracora Department",
-				"department_name": "Engineering",
+				"department_name": "Report Engineering",
 				"company": "Report Internal Corp"
 			}).insert()
 
@@ -118,8 +118,8 @@ class TestTracoraReports(FrappeTestCase):
 			"first_name": "Internal",
 			"last_name": "Reporter",
 			"company": "Report Internal Corp",
-			"branch": "HQ - RIC",
-			"department": "Engineering - RIC",
+			"branch": "Report Branch",
+			"department": "Report Engineering",
 			"status": "Active",
 			"source": "Tracora"
 		}).insert(ignore_permissions=True)
@@ -132,7 +132,7 @@ class TestTracoraReports(FrappeTestCase):
 			"serial_no": "SN-REP-INT-001",
 			"owner_company": "Report Internal Corp",
 			"holding_company": "Report Internal Corp",
-			"branch": "HQ - RIC",
+			"branch": "Report Branch",
 			"location": "Reports Test Lab",
 			"status": "Assigned",
 			"assigned_to": emp_int.name,
@@ -190,8 +190,8 @@ class TestTracoraReports(FrappeTestCase):
 			"first_name": "Departed",
 			"last_name": "Worker",
 			"company": "Report Internal Corp",
-			"branch": "HQ - RIC",
-			"department": "Engineering - RIC",
+			"branch": "Report Branch",
+			"department": "Report Engineering",
 			"status": "Active",
 			"source": "Tracora"
 		}).insert(ignore_permissions=True)
@@ -204,7 +204,7 @@ class TestTracoraReports(FrappeTestCase):
 			"serial_no": "SN-REP-EXIT-999",
 			"owner_company": "Report Internal Corp",
 			"holding_company": "Report Internal Corp",
-			"branch": "HQ - RIC",
+			"branch": "Report Branch",
 			"location": "Reports Test Lab",
 			"status": "Assigned",
 			"assigned_to": emp_exited.name,
@@ -292,7 +292,7 @@ class TestTracoraReports(FrappeTestCase):
 			"serial_no": "SN-UNASSIGNED-001",
 			"owner_company": "Report Internal Corp",
 			"holding_company": "Report Internal Corp",
-			"branch": "HQ - RIC",
+			"branch": "Report Branch",
 			"location": "Reports Test Lab",
 			"status": "In Store",
 			"assigned_to": None,

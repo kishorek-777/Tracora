@@ -40,18 +40,18 @@ class TestTracoraMovements(FrappeTestCase):
 			}).insert()
 
 		# 2. Branch & Department
-		if not frappe.db.exists("Tracora Branch", "HQ - TIC"):
+		if not frappe.db.exists("Tracora Branch", "Movement Test HQ"):
 			frappe.get_doc({
 				"doctype": "Tracora Branch",
-				"branch_name": "HQ",
+				"branch_name": "Movement Test HQ",
 				"company": "Test Internal Corp",
 				"source": "Tracora"
 			}).insert()
 
-		if not frappe.db.exists("Tracora Department", "IT - TIC"):
+		if not frappe.db.exists("Tracora Department", "Movement Test IT"):
 			frappe.get_doc({
 				"doctype": "Tracora Department",
-				"department_name": "IT",
+				"department_name": "Movement Test IT",
 				"company": "Test Internal Corp",
 				"source": "Tracora"
 			}).insert()
@@ -83,8 +83,8 @@ class TestTracoraMovements(FrappeTestCase):
 				"employee_name": "Alice M",
 				"mobile": "9876540001",
 				"company": "Test Internal Corp",
-				"branch": "HQ - TIC",
-				"department": "IT - TIC",
+				"branch": "Movement Test HQ",
+				"department": "Movement Test IT",
 				"status": "Active",
 				"source": "Tracora"
 			}).insert()
@@ -96,8 +96,8 @@ class TestTracoraMovements(FrappeTestCase):
 				"employee_name": "Bob M",
 				"mobile": "9876540002",
 				"company": "Test Internal Corp",
-				"branch": "HQ - TIC",
-				"department": "IT - TIC",
+				"branch": "Movement Test HQ",
+				"department": "Movement Test IT",
 				"status": "Active",
 				"source": "Tracora"
 			}).insert()
@@ -109,8 +109,8 @@ class TestTracoraMovements(FrappeTestCase):
 				"employee_name": "Charlie Exited",
 				"mobile": "9876540003",
 				"company": "Test Internal Corp",
-				"branch": "HQ - TIC",
-				"department": "IT - TIC",
+				"branch": "Movement Test HQ",
+				"department": "Movement Test IT",
 				"status": "Exited",
 				"source": "Tracora"
 			}).insert()
@@ -122,8 +122,8 @@ class TestTracoraMovements(FrappeTestCase):
 				"employee_name": "Diana Pending",
 				"mobile": "9876540004",
 				"company": "Test Internal Corp",
-				"branch": "HQ - TIC",
-				"department": "IT - TIC",
+				"branch": "Movement Test HQ",
+				"department": "Movement Test IT",
 				"status": "Pending Clearance",
 				"source": "Tracora"
 			}).insert()
@@ -139,7 +139,7 @@ class TestTracoraMovements(FrappeTestCase):
 			"serial_no": unique_serial,
 			"owner_company": "Test Internal Corp",
 			"holding_company": "Test Internal Corp",
-			"branch": "HQ - TIC",
+			"branch": "Movement Test HQ",
 			"location": "Main Office",
 			"is_shared": is_shared,
 			"status": status,
@@ -291,8 +291,8 @@ class TestTracoraMovements(FrappeTestCase):
 			"employee_name": "Pending Clear Tester",
 			"mobile": "9876540099",
 			"company": "Test Internal Corp",
-			"branch": "HQ - TIC",
-			"department": "IT - TIC",
+			"branch": "Movement Test HQ",
+			"department": "Movement Test IT",
 			"status": "Active",
 			"source": "Tracora"
 		}).insert()
@@ -393,8 +393,8 @@ class TestTracoraMovements(FrappeTestCase):
 			"employee_name": "Dave Delete Guard",
 			"mobile": "9876540098",
 			"company": "Test Internal Corp",
-			"branch": "HQ - TIC",
-			"department": "IT - TIC",
+			"branch": "Movement Test HQ",
+			"department": "Movement Test IT",
 			"status": "Active",
 			"source": "Tracora"
 		}).insert()
