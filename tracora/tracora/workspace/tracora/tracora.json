@@ -6,12 +6,12 @@
    "label": "Assets by Category"
   },
   {
-   "chart_name": "Assets by Status",
-   "label": "Assets by Status"
+   "chart_name": "Assets by Location",
+   "label": "Assets by Location"
   }
  ],
- "content": "[{\"id\": \"header_metrics\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>Operations Command Center</b></span>\", \"col\": 12}}, {\"id\": \"card_in_custody\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"Assets in Custody\", \"col\": 3}}, {\"id\": \"card_in_store\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"Available in Store\", \"col\": 3}}, {\"id\": \"card_maintenance\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"Under Maintenance\", \"col\": 3}}, {\"id\": \"card_licences\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"Active Software Licences\", \"col\": 3}}, {\"id\": \"spacer_1\", \"type\": \"spacer\", \"data\": {\"col\": 12}}, {\"id\": \"chart_category\", \"type\": \"chart\", \"data\": {\"chart_name\": \"Assets by Category\", \"col\": 6}}, {\"id\": \"chart_status\", \"type\": \"chart\", \"data\": {\"chart_name\": \"Assets by Status\", \"col\": 6}}, {\"id\": \"spacer_2\", \"type\": \"spacer\", \"data\": {\"col\": 12}}, {\"id\": \"header_actions\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>Quick Operations &amp; Modules</b></span>\", \"col\": 12}}, {\"id\": \"shortcut_handover\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Handover Asset\", \"col\": 3}}, {\"id\": \"shortcut_repair\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Log Repair\", \"col\": 3}}, {\"id\": \"shortcut_contracts\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Vendor Contracts\", \"col\": 3}}, {\"id\": \"shortcut_reports\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Reports\", \"col\": 3}}, {\"id\": \"spacer_3\", \"type\": \"spacer\", \"data\": {\"col\": 12}}, {\"id\": \"card_assets\", \"type\": \"card\", \"data\": {\"card_name\": \"Assets\", \"col\": 4}}, {\"id\": \"card_vendors\", \"type\": \"card\", \"data\": {\"card_name\": \"Vendors & Contracts\", \"col\": 4}}, {\"id\": \"card_masters\", \"type\": \"card\", \"data\": {\"card_name\": \"Masters\", \"col\": 4}}, {\"id\": \"card_admin\", \"type\": \"card\", \"data\": {\"card_name\": \"Administration\", \"col\": 4}}, {\"id\": \"card_reports\", \"type\": \"card\", \"data\": {\"card_name\": \"Reports\", \"col\": 4}}]",
- "creation": "2026-10-29 21:22:54.788286",
+ "content": "[{\"id\": \"header_metrics\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>Operations Command Center</b></span>\", \"col\": 12}}, {\"id\": \"card_in_custody\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"Assigned Assets\", \"col\": 3}}, {\"id\": \"card_in_store\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"Available in Store\", \"col\": 3}}, {\"id\": \"card_maintenance\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"Under Maintenance\", \"col\": 3}}, {\"id\": \"card_licences\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"Active Software Licences\", \"col\": 3}}, {\"id\": \"spacer_1\", \"type\": \"spacer\", \"data\": {\"col\": 12}}, {\"id\": \"chart_category\", \"type\": \"chart\", \"data\": {\"chart_name\": \"Assets by Category\", \"col\": 6}}, {\"id\": \"chart_location\", \"type\": \"chart\", \"data\": {\"chart_name\": \"Assets by Location\", \"col\": 6}}, {\"id\": \"spacer_2\", \"type\": \"spacer\", \"data\": {\"col\": 12}}, {\"id\": \"header_actions\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>Quick Operations &amp; Modules</b></span>\", \"col\": 12}}, {\"id\": \"shortcut_movements\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Asset Movements\", \"col\": 3}}, {\"id\": \"shortcut_maintenance\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Maintenance Logs\", \"col\": 3}}, {\"id\": \"shortcut_audit_logs\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Audit Logs\", \"col\": 3}}, {\"id\": \"shortcut_contracts\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Vendor Contracts\", \"col\": 3}}, {\"id\": \"spacer_3\", \"type\": \"spacer\", \"data\": {\"col\": 12}}, {\"id\": \"card_assets\", \"type\": \"card\", \"data\": {\"card_name\": \"Assets & Operations\", \"col\": 4}}, {\"id\": \"card_software\", \"type\": \"card\", \"data\": {\"card_name\": \"Software & Licences\", \"col\": 4}}, {\"id\": \"card_vendors\", \"type\": \"card\", \"data\": {\"card_name\": \"Vendors & Contracts\", \"col\": 4}}, {\"id\": \"card_org\", \"type\": \"card\", \"data\": {\"card_name\": \"Organization & Places\", \"col\": 4}}, {\"id\": \"card_infra\", \"type\": \"card\", \"data\": {\"card_name\": \"Infrastructure\", \"col\": 4}}, {\"id\": \"card_admin\", \"type\": \"card\", \"data\": {\"card_name\": \"Administration\", \"col\": 4}}, {\"id\": \"card_reports\", \"type\": \"card\", \"data\": {\"card_name\": \"Reports\", \"col\": 4}}]",
+ "creation": "2026-10-29 22:50:43.155984",
  "custom_blocks": [],
  "docstatus": 0,
  "doctype": "Workspace",
@@ -26,7 +26,7 @@
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "Assets",
+   "label": "Assets & Operations",
    "link_count": 0,
    "link_type": "DocType",
    "onboard": 0,
@@ -39,6 +39,17 @@
    "label": "Assets",
    "link_count": 0,
    "link_to": "Tracora Asset",
+   "link_type": "DocType",
+   "onboard": 1,
+   "type": "Link"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Asset Categories",
+   "link_count": 0,
+   "link_to": "Tracora Asset Category",
    "link_type": "DocType",
    "onboard": 1,
    "type": "Link"
@@ -80,23 +91,22 @@
    "type": "Link"
   },
   {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Software & Licences",
+   "link_count": 0,
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
    "dependencies": "",
+   "description": "Software licences, seat allocations, product keys, and expiry tracking.",
    "hidden": 0,
    "is_query_report": 0,
    "label": "Software Licences",
    "link_count": 0,
    "link_to": "Tracora Software Licence",
-   "link_type": "DocType",
-   "onboard": 1,
-   "type": "Link"
-  },
-  {
-   "dependencies": "",
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Infra Records",
-   "link_count": 0,
-   "link_to": "Tracora Infra Record",
    "link_type": "DocType",
    "onboard": 1,
    "type": "Link"
@@ -137,7 +147,7 @@
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "Masters",
+   "label": "Organization & Places",
    "link_count": 0,
    "link_type": "DocType",
    "onboard": 0,
@@ -194,6 +204,26 @@
    "label": "Locations",
    "link_count": 0,
    "link_to": "Tracora Location",
+   "link_type": "DocType",
+   "onboard": 1,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Infrastructure",
+   "link_count": 0,
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Infra Records",
+   "link_count": 0,
+   "link_to": "Tracora Infra Record",
    "link_type": "DocType",
    "onboard": 1,
    "type": "Link"
@@ -286,14 +316,14 @@
    "type": "Link"
   }
  ],
- "modified": "2026-10-29 21:47:22.257369",
+ "modified": "2026-10-30 03:31:52.830189",
  "modified_by": "Administrator",
  "module": "Tracora",
  "name": "Tracora",
  "number_cards": [
   {
-   "label": "Assets in Custody",
-   "number_card_name": "Assets in Custody"
+   "label": "Assigned Assets",
+   "number_card_name": "Assigned Assets"
   },
   {
    "label": "Available in Store",
@@ -330,7 +360,7 @@
    "color": "Green",
    "doc_view": "",
    "icon": "arrow-up-right",
-   "label": "Handover Asset",
+   "label": "Asset Movements",
    "link_to": "Tracora Asset Movement",
    "type": "DocType"
   },
@@ -339,9 +369,17 @@
    "doc_view": "",
    "format": "{} open",
    "icon": "wrench",
-   "label": "Log Repair",
+   "label": "Maintenance Logs",
    "link_to": "Tracora Maintenance Log",
    "stats_filter": "[[\"Tracora Maintenance Log\", \"log_status\", \"=\", \"Open\"]]",
+   "type": "DocType"
+  },
+  {
+   "color": "Purple",
+   "doc_view": "",
+   "icon": "clipboard-check",
+   "label": "Audit Logs",
+   "link_to": "Tracora Asset Audit Log",
    "type": "DocType"
   },
   {
@@ -352,15 +390,6 @@
    "label": "Vendor Contracts",
    "link_to": "Tracora Vendor Contract",
    "type": "DocType"
-  },
-  {
-   "color": "Purple",
-   "doc_view": "",
-   "icon": "chart-column",
-   "label": "Reports",
-   "link_to": "Tracora Report",
-   "report_ref_doctype": "Tracora Asset",
-   "type": "Report"
   }
  ],
  "title": "Tracora",

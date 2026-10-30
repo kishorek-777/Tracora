@@ -5,6 +5,43 @@ frappe.provide('tracora');
 
 tracora.open_quick_ops = function(initial_tag) {
 	let selected_asset = null;
+	let media_stream = null;
+	let scan_anim_id = null;
+	let is_detecting = false;
+
+	// Audio Chime Synthesizer via Web Audio API (Zero external assets needed)
+	function play_scan_sound(success) {
+		try {
+			const AudioContext = window.AudioContext || window.webkitAudioContext;
+			if (!AudioContext) return;
+			const ctx = new AudioContext();
+			const osc = ctx.createOscillator();
+			const gain = ctx.createGain();
+			osc.connect(gain);
+			gain.connect(ctx.destination);
+
+			if (success) {
+				// High futuristic confirmation double-chime (880Hz -> 1760Hz)
+				osc.type = 'sine';
+				osc.frequency.setValueAtTime(880, ctx.currentTime);
+				osc.frequency.setValueAtTime(1760, ctx.currentTime + 0.08);
+				gain.gain.setValueAtTime(0.15, ctx.currentTime);
+				gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.22);
+				osc.start(ctx.currentTime);
+				osc.stop(ctx.currentTime + 0.22);
+			} else {
+				// Gentle low advisory buzzer
+				osc.type = 'sawtooth';
+				osc.frequency.setValueAtTime(220, ctx.currentTime);
+				gain.gain.setValueAtTime(0.2, ctx.currentTime);
+				gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.25);
+				osc.start(ctx.currentTime);
+				osc.stop(ctx.currentTime + 0.25);
+			}
+		} catch (e) {
+			// Web Audio not permitted or muted
+		}
+	}
 
 	const d = new frappe.ui.Dialog({
 		title: __('⚡ Quick Asset Operations'),
@@ -14,7 +51,15 @@ tracora.open_quick_ops = function(initial_tag) {
 				fieldname: 'scan_input',
 				fieldtype: 'Data',
 				reqd: 0,
-				description: __('Scan with barcode reader or type tag and press Enter.')
+				description: __('Laser scanner wedge, laptop camera, or typed tag.')
+			},
+			{
+				fieldtype: 'HTML',
+				fieldname: 'camera_toggle_html'
+			},
+			{
+				fieldtype: 'HTML',
+				fieldname: 'camera_view_html'
 			},
 			{
 				fieldtype: 'HTML',
@@ -32,6 +77,140 @@ tracora.open_quick_ops = function(initial_tag) {
 		}
 	});
 
+	// Setup Camera Toggle UI
+	const camera_toggle_container = d.fields_dict.camera_toggle_html.$wrapper;
+	camera_toggle_container.html(`
+		<div class="d-flex justify-content-between align-items-center mb-2" style="font-size: 12px;">
+			<span class="text-muted">
+				<i class="fa fa-barcode mr-1"></i> ${__('Physical laser guns scan directly into the field above.')}
+			</span>
+			<button class="btn btn-xs btn-default" id="btn-toggle-camera" style="border-radius: 6px; font-weight: 600;">
+				📷 ${__('Scan with Laptop Camera')}
+			</button>
+		</div>
+	`);
+
+	const camera_view_container = d.fields_dict.camera_view_html.$wrapper;
+
+	function stop_camera() {
+		if (scan_anim_id) {
+			cancelAnimationFrame(scan_anim_id);
+			scan_anim_id = null;
+		}
+		is_detecting = false;
+		if (media_stream) {
+			media_stream.getTracks().forEach(track => track.stop());
+			media_stream = null;
+		}
+		camera_view_container.empty();
+		$('#btn-toggle-camera').html(`📷 ${__('Scan with Laptop Camera')}`).removeClass('btn-danger').addClass('btn-default');
+	}
+
+	async function start_camera() {
+		try {
+			camera_view_container.html(`
+				<div class="tracora-webcam-container">
+					<div class="tracora-reticle-corner tracora-reticle-tl"></div>
+					<div class="tracora-reticle-corner tracora-reticle-tr"></div>
+					<div class="tracora-reticle-corner tracora-reticle-bl"></div>
+					<div class="tracora-reticle-corner tracora-reticle-br"></div>
+					<div class="tracora-laser-line"></div>
+					<video id="tracora-scanner-video" class="tracora-webcam-video" autoplay playsinline muted></video>
+					<div style="position: absolute; bottom: 8px; left: 0; right: 0; text-align: center; color: #38bdf8; font-size: 11px; font-weight: 600; text-shadow: 0 1px 3px rgba(0,0,0,0.8); z-index: 11;">
+						${__('Align Barcode or QR Code within the cyber reticle')}
+					</div>
+				</div>
+			`);
+
+			$('#btn-toggle-camera').html(`🛑 ${__('Stop Camera')}`).removeClass('btn-default').addClass('btn-danger');
+
+			// Request Camera: prioritize environment, fallback to user (laptop webcam)
+			let stream;
+			try {
+				stream = await navigator.mediaDevices.getUserMedia({
+					video: { facingMode: { ideal: 'environment' }, width: { ideal: 1280 }, height: { ideal: 720 } }
+				});
+			} catch (err) {
+				stream = await navigator.mediaDevices.getUserMedia({ video: true });
+			}
+
+			media_stream = stream;
+			const video = document.getElementById('tracora-scanner-video');
+			if (!video) return;
+			video.srcObject = stream;
+			await video.play();
+
+			// Continuous detection loop using native BarcodeDetector API if available
+			if ('BarcodeDetector' in window) {
+				const barcodeDetector = new window.BarcodeDetector({
+					formats: ['qr_code', 'code_128', 'code_39', 'ean_13', 'ean_8', 'data_matrix', 'upc_a', 'upc_e']
+				});
+
+				is_detecting = true;
+				let last_check = 0;
+
+				async function scan_frame(timestamp) {
+					if (!is_detecting || !video || video.readyState < 2) {
+						if (is_detecting) scan_anim_id = requestAnimationFrame(scan_frame);
+						return;
+					}
+
+					// Throttle barcode analysis every 160ms for smooth performance
+					if (timestamp - last_check > 160) {
+						last_check = timestamp;
+						try {
+							const barcodes = await barcodeDetector.detect(video);
+							if (barcodes && barcodes.length > 0) {
+								const raw_val = barcodes[0].rawValue;
+								if (raw_val) {
+									stop_camera();
+									play_scan_sound(true);
+									d.set_value('scan_input', raw_val);
+									lookup_asset(raw_val);
+									return;
+								}
+							}
+						} catch (e) {
+							// Frame decode failure or blur, continue scanning
+						}
+					}
+					if (is_detecting) {
+						scan_anim_id = requestAnimationFrame(scan_frame);
+					}
+				}
+				scan_anim_id = requestAnimationFrame(scan_frame);
+			} else {
+				// Older browsers without native BarcodeDetector: provide manual snap/hint
+				frappe.show_alert({
+					message: __('Native camera barcode reader active. Hold code steady.'),
+					indicator: 'blue'
+				});
+			}
+		} catch (err) {
+			console.error('Camera access error:', err);
+			frappe.msgprint({
+				title: __('Camera Access Denied or Unavailable'),
+				message: __('Could not access laptop camera. Please verify browser camera permissions, or use a handheld barcode scanner.'),
+				indicator: 'red'
+			});
+			stop_camera();
+		}
+	}
+
+	$('#btn-toggle-camera').on('click', function(e) {
+		e.preventDefault();
+		if (media_stream) {
+			stop_camera();
+		} else {
+			start_camera();
+		}
+	});
+
+	// Cleanup video stream when modal closes
+	d.$wrapper.on('hidden.bs.modal', function() {
+		stop_camera();
+	});
+
 	function lookup_asset(query_str) {
 		const preview_container = d.fields_dict.asset_preview_html.$wrapper;
 		preview_container.html(`
@@ -41,7 +220,7 @@ tracora.open_quick_ops = function(initial_tag) {
 			</div>
 		`);
 
-		// Try finding asset by asset_tag, serial_no, or name
+		// Search asset by asset_tag, serial_no, or doc name
 		frappe.call({
 			method: 'frappe.client.get_list',
 			args: {
@@ -72,11 +251,13 @@ tracora.open_quick_ops = function(initial_tag) {
 							if (!asset) {
 								render_not_found(query_str);
 							} else {
+								play_scan_sound(true);
 								render_asset_card(asset);
 							}
 						}
 					});
 				} else {
+					play_scan_sound(true);
 					render_asset_card(asset);
 				}
 			}
@@ -84,6 +265,7 @@ tracora.open_quick_ops = function(initial_tag) {
 	}
 
 	function render_not_found(query_str) {
+		play_scan_sound(false);
 		selected_asset = null;
 		const preview_container = d.fields_dict.asset_preview_html.$wrapper;
 		preview_container.html(`
@@ -314,4 +496,3 @@ $(document).on('keydown', function(e) {
 		tracora.open_quick_ops();
 	}
 });
-

@@ -37,6 +37,42 @@ frappe.listview_settings['Tracora Asset'] = {
 	onload: function(listview) {
 		listview.page.empty_state_text = __('No assets yet. Register the first one.');
 
+		// Quick Status Filter Pills
+		setTimeout(() => {
+			if (!$('.tracora-status-filter-pills').length) {
+				const $pills = $(`
+					<div class="tracora-status-filter-pills d-flex align-items-center gap-2 mb-2 px-3 py-1" style="font-size: 12px;">
+						<button class="btn btn-xs btn-primary-light text-primary" data-status="All" style="font-weight: 600; border-radius: 9999px; padding: 2px 10px;">
+							${__('All')}
+						</button>
+						<button class="btn btn-xs btn-default" data-status="In Store" style="font-weight: 600; border-radius: 9999px; padding: 2px 10px; color: #0284c7;">
+							● ${__('In Store')}
+						</button>
+						<button class="btn btn-xs btn-default" data-status="Assigned" style="font-weight: 600; border-radius: 9999px; padding: 2px 10px; color: #059669;">
+							● ${__('Assigned')}
+						</button>
+						<button class="btn btn-xs btn-default" data-status="Under Maintenance" style="font-weight: 600; border-radius: 9999px; padding: 2px 10px; color: #d97706;">
+							● ${__('Under Maintenance')}
+						</button>
+					</div>
+				`);
+
+				$pills.find('button').on('click', function(e) {
+					e.preventDefault();
+					const status = $(this).attr('data-status');
+					$pills.find('button').removeClass('btn-primary-light text-primary').addClass('btn-default');
+					$(this).removeClass('btn-default').addClass('btn-primary-light text-primary');
+
+					listview.filter_area.clear();
+					if (status !== 'All') {
+						listview.filter_area.add([['Tracora Asset', 'status', '=', status]]);
+					}
+				});
+
+				listview.page.main.find('.frappe-list').prepend($pills);
+			}
+		}, 100);
+
 		// Quick Scan Action Button
 		listview.page.add_inner_button(__('📷 Quick Scan'), function() {
 			if (window.tracora && typeof tracora.open_quick_ops === 'function') {

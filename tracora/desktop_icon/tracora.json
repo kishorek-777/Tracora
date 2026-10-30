@@ -1,6 +1,6 @@
 {
  "app": "tracora",
- "bg_color": "#00e5ff",
+ "bg_color": "blue",
  "creation": "2026-09-07 00:50:24.474006",
  "docstatus": 0,
  "doctype": "Desktop Icon",
@@ -11,7 +11,8 @@
  "label": "Tracora",
  "link_to": "Tracora",
  "link_type": "Workspace Sidebar",
- "modified": "2026-09-07 21:35:00.000000",
+ "logo_url": "/assets/tracora/images/tracora_icon.svg",
+ "modified": "2026-10-30 00:48:35.567449",
  "modified_by": "Administrator",
  "name": "Tracora",
  "owner": "Administrator",
@@ -22,6 +23,9 @@
   },
   {
    "role": "Tracora Admin"
+  },
+  {
+   "role": "Tracora Auditor"
   }
  ],
  "sidebar": "Tracora",

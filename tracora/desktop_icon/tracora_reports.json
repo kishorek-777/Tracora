@@ -1,17 +1,17 @@
 {
  "app": "tracora",
  "bg_color": "blue",
- "creation": "2026-09-10 11:55:00.000000",
+ "creation": "2026-09-10 11:55:00",
  "docstatus": 0,
  "doctype": "Desktop Icon",
  "hidden": 0,
  "icon": "chart-column",
  "icon_type": "Link",
  "idx": 1,
- "label": "Reports",
+ "label": "Tracora Reports",
  "link_to": "Tracora Reports",
  "link_type": "Workspace Sidebar",
- "modified": "2026-09-10 11:55:00.000000",
+ "modified": "2026-10-30 00:03:36.079258",
  "modified_by": "Administrator",
  "name": "Tracora Reports",
  "owner": "Administrator",
@@ -23,6 +23,9 @@
   },
   {
    "role": "Tracora Admin"
+  },
+  {
+   "role": "Tracora Auditor"
   }
  ],
  "sidebar": "Tracora Reports",

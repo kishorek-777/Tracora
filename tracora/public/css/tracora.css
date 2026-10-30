@@ -90,10 +90,14 @@
 }
 
 /* Accent Card Indicators */
+[number_card_name="Assigned Assets"] .widget,
+[data-widget-name="Assigned Assets"],
 [number_card_name="Assets in Custody"] .widget,
 [data-widget-name="Assets in Custody"] {
 	border-top: 3.5px solid #10b981 !important;
 }
+[number_card_name="Assigned Assets"] .number,
+[data-widget-name="Assigned Assets"] .number,
 [number_card_name="Assets in Custody"] .number,
 [data-widget-name="Assets in Custody"] .number {
 	color: #059669 !important;
@@ -141,17 +145,26 @@
 	letter-spacing: -0.2px !important;
 }
 
-/* SVG Chart Legends: clear text, no overlap, crisp typography */
+/* SVG & Bar/Donut Chart Typography: clear text, crisp labels, clean values without overlap */
 .frappe-chart .legend-dataset-label {
+	font-size: 9px !important;
+	font-weight: 600 !important;
+	letter-spacing: -0.4px !important;
+	fill: #334155 !important;
+}
+
+.frappe-chart .axis text,
+.frappe-chart .chart-label {
 	font-size: 11px !important;
 	font-weight: 500 !important;
 	fill: #334155 !important;
 }
 
-.frappe-chart .legend-dataset-value {
-	font-size: 11px !important;
+.frappe-chart .legend-dataset-value,
+.frappe-chart .data-point-value {
+	font-size: 9.5px !important;
 	font-weight: 700 !important;
-	fill: #64748b !important;
+	fill: #0f172a !important;
 }
 
 .frappe-chart .legend-dot {
@@ -200,41 +213,93 @@
 /* Shortcuts */
 .widget.shortcut-widget-box,
 [data-widget-type="shortcut"] {
-	padding: 12px 16px !important;
+	padding: 10px 12px !important;
 	display: flex !important;
 	align-items: center !important;
 	justify-content: space-between !important;
 	font-weight: 600 !important;
-	font-size: 13.5px !important;
+	font-size: 13px !important;
 	color: #1e293b !important;
 	border-radius: 10px !important;
 	cursor: pointer !important;
 	min-height: 48px !important;
 }
 
+.widget.shortcut-widget-box .widget-head,
+[data-widget-type="shortcut"] .widget-head {
+	width: 100% !important;
+	display: flex !important;
+	align-items: center !important;
+	justify-content: space-between !important;
+}
+
+.widget.shortcut-widget-box .widget-label,
+[data-widget-type="shortcut"] .widget-label {
+	min-width: 0 !important;
+	flex: 1 1 auto !important;
+	margin-right: 6px !important;
+}
+
+.widget.shortcut-widget-box .widget-title,
+[data-widget-type="shortcut"] .widget-title {
+	font-size: 12.5px !important;
+	font-weight: 600 !important;
+	white-space: nowrap !important;
+	display: flex !important;
+	align-items: center !important;
+}
+
+.widget.shortcut-widget-box .widget-title .ellipsis,
+[data-widget-type="shortcut"] .widget-title .ellipsis {
+	overflow: visible !important;
+	text-overflow: clip !important;
+	white-space: nowrap !important;
+	max-width: none !important;
+}
+
+.widget.shortcut-widget-box .widget-control,
+[data-widget-type="shortcut"] .widget-control {
+	flex-shrink: 0 !important;
+	display: flex !important;
+	align-items: center !important;
+}
+
+.widget.shortcut-widget-box .indicator-pill,
+[data-widget-type="shortcut"] .indicator-pill {
+	font-size: 10.5px !important;
+	padding: 2px 6px !important;
+	white-space: nowrap !important;
+}
+
 .widget.shortcut-widget-box .shortcut-icon {
-	margin-right: 10px !important;
+	margin-right: 8px !important;
 	color: #3b82f6 !important;
 }
 
+[shortcut_name="Asset Movements"] .shortcut-icon,
+[data-widget-name="Asset Movements"] .shortcut-icon,
 [shortcut_name="Handover Asset"] .shortcut-icon,
 [data-widget-name="Handover Asset"] .shortcut-icon {
 	color: #10b981 !important;
 }
 
+[shortcut_name="Maintenance Logs"] .shortcut-icon,
+[data-widget-name="Maintenance Logs"] .shortcut-icon,
 [shortcut_name="Log Repair"] .shortcut-icon,
 [data-widget-name="Log Repair"] .shortcut-icon {
 	color: #f59e0b !important;
 }
 
+[shortcut_name="Audit Logs"] .shortcut-icon,
+[data-widget-name="Audit Logs"] .shortcut-icon,
+[shortcut_name="Asset Audit Logs"] .shortcut-icon,
+[data-widget-name="Asset Audit Logs"] .shortcut-icon {
+	color: #8b5cf6 !important;
+}
+
 [shortcut_name="Vendor Contracts"] .shortcut-icon,
 [data-widget-name="Vendor Contracts"] .shortcut-icon {
 	color: #3b82f6 !important;
-}
-
-[shortcut_name="Reports"] .shortcut-icon,
-[data-widget-name="Reports"] .shortcut-icon {
-	color: #8b5cf6 !important;
 }
 
 /* ==========================================================================
@@ -518,3 +583,787 @@
 	background: #1e293b;
 	border-color: #475569;
 }
+
+/* Shortcut Widget Title: allow clean 2-line display without clipping */
+.widget.shortcut-widget-box .widget-title,
+.widget.shortcut-widget-box .widget-title *,
+.widget.shortcut-widget-box .widget-title span,
+.widget.shortcut-widget-box .widget-title .ellipsis,
+[data-widget-type="shortcut"] .widget-title,
+[data-widget-type="shortcut"] .widget-title *,
+[data-widget-type="shortcut"] .widget-title span,
+[data-widget-type="shortcut"] .widget-title .ellipsis {
+	white-space: normal !important;
+	line-height: 1.25 !important;
+	font-size: 12px !important;
+	font-weight: 600 !important;
+	display: -webkit-box !important;
+	-webkit-line-clamp: 2 !important;
+	-webkit-box-orient: vertical !important;
+	overflow: hidden !important;
+	text-overflow: clip !important;
+	height: auto !important;
+	max-height: 32px !important;
+}
+
+/* Ensure title-area in workspace page-head does not clip the status chip */
+#page-Workspaces .page-head .title-area {
+	overflow: visible !important;
+}
+
+/* ==========================================================================
+   7. Workspace Top Header Status Chip & Actions
+   ========================================================================== */
+.tracora-status-chip {
+	display: inline-flex;
+	align-items: center;
+	gap: 7px;
+	padding: 4px 12px;
+	background: #ecfdf5;
+	border: 1px solid #a7f3d0;
+	border-radius: 9999px;
+	font-size: 11.5px;
+	font-weight: 600;
+	color: #065f46;
+	margin-left: 12px;
+	letter-spacing: -0.1px;
+}
+
+[data-theme="dark"] .tracora-status-chip {
+	background: rgba(16, 185, 129, 0.12);
+	border-color: rgba(16, 185, 129, 0.3);
+	color: #34d399;
+}
+
+@keyframes tracoraPulse {
+	0% {
+		transform: scale(0.95);
+		box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+	}
+	70% {
+		transform: scale(1);
+		box-shadow: 0 0 0 6px rgba(16, 185, 129, 0);
+	}
+	100% {
+		transform: scale(0.95);
+		box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+	}
+}
+
+.tracora-status-dot {
+	width: 7px;
+	height: 7px;
+	border-radius: 50%;
+	background-color: #10b981;
+	animation: tracoraPulse 2s infinite cubic-bezier(0.4, 0, 0.6, 1);
+	display: inline-block;
+}
+
+.tracora-quickscan-btn {
+	background: linear-gradient(135deg, #059669 0%, #047857 55%, #064e3b 100%) !important;
+	color: #ffffff !important;
+	border: 1px solid rgba(52, 211, 153, 0.4) !important;
+	border-radius: 8px !important;
+	padding: 5px 12px !important;
+	font-weight: 600 !important;
+	font-size: 12.5px !important;
+	display: inline-flex !important;
+	align-items: center !important;
+	gap: 6px !important;
+	box-shadow: 0 2px 5px rgba(5, 150, 105, 0.28), 0 0 10px rgba(16, 185, 129, 0.2) !important;
+	transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+	letter-spacing: -0.1px !important;
+}
+
+.tracora-quickscan-btn:hover {
+	background: linear-gradient(135deg, #047857 0%, #065f46 55%, #022c22 100%) !important;
+	transform: translateY(-1.5px) !important;
+	box-shadow: 0 5px 14px rgba(5, 150, 105, 0.38), 0 0 18px rgba(16, 185, 129, 0.35) !important;
+	border-color: rgba(52, 211, 153, 0.75) !important;
+	color: #ffffff !important;
+}
+
+.tracora-quickscan-btn:active {
+	transform: translateY(0.5px) scale(0.98) !important;
+	box-shadow: 0 1px 3px rgba(5, 150, 105, 0.3) !important;
+}
+
+.tracora-scan-icon {
+	flex-shrink: 0;
+	transition: transform 0.2s ease;
+}
+
+.tracora-quickscan-btn:hover .tracora-scan-icon {
+	transform: scale(1.1);
+}
+
+.tracora-kbd-badge {
+	display: inline-flex;
+	align-items: center;
+	gap: 1px;
+	background: rgba(0, 0, 0, 0.28);
+	border: 1px solid rgba(255, 255, 255, 0.22);
+	border-radius: 4px;
+	padding: 1.5px 5px;
+	font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+	font-size: 9.5px;
+	font-weight: 700;
+	letter-spacing: 0.3px;
+	color: #ecfdf5;
+	margin-left: 3px;
+}
+
+.tracora-kbd-badge kbd {
+	background: transparent !important;
+	border: none !important;
+	box-shadow: none !important;
+	padding: 0 !important;
+	margin: 0 !important;
+	color: inherit !important;
+	font-size: inherit !important;
+}
+
+.tracora-kbd-badge .kbd-sep {
+	opacity: 0.6;
+	font-size: 8px;
+	padding: 0 1px;
+}
+
+.tracora-mobile-btn {
+	background: #ffffff !important;
+	color: #1e293b !important;
+	border: 1px solid #cbd5e1 !important;
+	border-radius: 8px !important;
+	padding: 5px 12px !important;
+	font-weight: 600 !important;
+	font-size: 12.5px !important;
+	display: inline-flex !important;
+	align-items: center !important;
+	gap: 5px !important;
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+	transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.tracora-mobile-btn:hover {
+	background: #f8fafc !important;
+	color: #0f172a !important;
+	border-color: #94a3b8 !important;
+	transform: translateY(-1.5px) !important;
+	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08) !important;
+}
+
+[data-theme="dark"] .tracora-mobile-btn {
+	background: #1e293b !important;
+	color: #f1f5f9 !important;
+	border-color: #475569 !important;
+}
+
+[data-theme="dark"] .tracora-mobile-btn:hover {
+	background: #334155 !important;
+	border-color: #64748b !important;
+}
+
+.tracora-pulse-btn {
+	background: linear-gradient(135deg, #059669 0%, #047857 100%) !important;
+	color: #ffffff !important;
+	border: none !important;
+	font-weight: 600 !important;
+	box-shadow: 0 2px 4px rgba(5, 150, 105, 0.25) !important;
+	transition: all 0.2s ease !important;
+}
+
+.tracora-pulse-btn:hover {
+	background: linear-gradient(135deg, #047857 0%, #065f46 100%) !important;
+	box-shadow: 0 4px 8px rgba(5, 150, 105, 0.35) !important;
+	transform: translateY(-1px);
+}
+
+/* ==========================================================================
+   8. Webcam Scanner Viewfinder & Laser Sweep Animation
+   ========================================================================== */
+.tracora-webcam-container {
+	position: relative;
+	width: 100%;
+	max-width: 480px;
+	margin: 10px auto;
+	border-radius: 12px;
+	overflow: hidden;
+	background: #020617;
+	border: 2px solid #0284c7;
+	box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+.tracora-webcam-video {
+	width: 100%;
+	height: 260px;
+	object-fit: cover;
+	display: block;
+}
+
+@keyframes laserSweep {
+	0% {
+		top: 15%;
+		opacity: 0.8;
+	}
+	50% {
+		top: 85%;
+		opacity: 1;
+	}
+	100% {
+		top: 15%;
+		opacity: 0.8;
+	}
+}
+
+.tracora-laser-line {
+	position: absolute;
+	left: 10%;
+	right: 10%;
+	height: 2px;
+	background: linear-gradient(90deg, transparent 0%, #00e5ff 25%, #38bdf8 50%, #00e5ff 75%, transparent 100%);
+	box-shadow: 0 0 12px 2px #00e5ff, 0 0 4px #38bdf8;
+	animation: laserSweep 2.2s infinite ease-in-out;
+	pointer-events: none;
+	z-index: 10;
+}
+
+.tracora-reticle-corner {
+	position: absolute;
+	width: 24px;
+	height: 24px;
+	border-color: #00e5ff;
+	border-style: solid;
+	pointer-events: none;
+	z-index: 9;
+}
+.tracora-reticle-tl { top: 16px; left: 16px; border-width: 3px 0 0 3px; border-top-left-radius: 6px; }
+.tracora-reticle-tr { top: 16px; right: 16px; border-width: 3px 3px 0 0; border-top-right-radius: 6px; }
+.tracora-reticle-bl { bottom: 16px; left: 16px; border-width: 0 0 3px 3px; border-bottom-left-radius: 6px; }
+.tracora-reticle-br { bottom: 16px; right: 16px; border-width: 0 3px 3px 0; border-bottom-right-radius: 6px; }
+
+/* ==========================================================================
+   9. Tracora High-Performance Report Design System (UI/UX)
+   ========================================================================== */
+/* Report Summary Cards */
+.report-summary {
+	background: #ffffff !important;
+	border: 1px solid #e2e8f0 !important;
+	border-radius: 12px !important;
+	padding: 16px !important;
+	margin-bottom: 20px !important;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
+	display: grid !important;
+	grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)) !important;
+	gap: 16px !important;
+}
+
+[data-theme="dark"] .report-summary {
+	background: #1e293b !important;
+	border-color: #334155 !important;
+}
+
+.report-summary .summary-item {
+	display: flex !important;
+	flex-direction: column !important;
+	justify-content: center !important;
+	height: auto !important;
+	min-height: 86px !important;
+	max-height: none !important;
+	padding: 16px 20px !important;
+	margin: 0 !important;
+	background: #f8fafc !important;
+	border: 1px solid #e2e8f0 !important;
+	border-top: 4px solid #94a3b8 !important;
+	border-radius: 10px !important;
+	transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+	overflow: visible !important;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
+}
+
+.report-summary .summary-item:hover {
+	transform: translateY(-2px) !important;
+	box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08) !important;
+}
+
+.report-summary .summary-label {
+	font-size: 11px !important;
+	font-weight: 700 !important;
+	text-transform: uppercase !important;
+	letter-spacing: 0.6px !important;
+	color: #64748b !important;
+	margin-bottom: 6px !important;
+	height: auto !important;
+	line-height: 1.3 !important;
+	overflow: visible !important;
+	text-overflow: clip !important;
+	white-space: normal !important;
+	text-align: left !important;
+	display: flex !important;
+	align-items: center !important;
+	transition: color 0.2s ease !important;
+}
+
+.report-summary .summary-value {
+	font-size: 28px !important;
+	font-weight: 800 !important;
+	letter-spacing: -0.8px !important;
+	display: flex !important;
+	align-items: center !important;
+	gap: 8px !important;
+	line-height: 1.1 !important;
+	height: auto !important;
+	overflow: visible !important;
+	text-align: left !important;
+	padding: 0 !important;
+	transition: color 0.2s ease !important;
+}
+
+/* ==========================================================================
+   Full-Color Executive Report KPI Cards (Top Border Accent, Tint & Typography)
+   ========================================================================== */
+
+/* 1. Indigo / Purple: Total Assets & Master Tracked Metrics */
+.report-summary .summary-item.kpi-indigo,
+.report-summary .summary-item:nth-child(1),
+.report-summary .summary-item:has(.summary-value.indigo) {
+	border-top: 4px solid #6366f1 !important;
+	border-color: #e0e7ff !important;
+	background: linear-gradient(180deg, #f5f3ff 0%, #ffffff 85%) !important;
+	box-shadow: 0 2px 8px rgba(99, 102, 241, 0.08) !important;
+}
+.report-summary .summary-item.kpi-indigo:hover,
+.report-summary .summary-item:nth-child(1):hover,
+.report-summary .summary-item:has(.summary-value.indigo):hover {
+	box-shadow: 0 6px 16px rgba(99, 102, 241, 0.16) !important;
+}
+.report-summary .summary-item.kpi-indigo .summary-label,
+.report-summary .summary-item:nth-child(1) .summary-label,
+.report-summary .summary-item:has(.summary-value.indigo) .summary-label {
+	color: #4f46e5 !important;
+}
+.report-summary .summary-item.kpi-indigo .summary-label::before,
+.report-summary .summary-item:nth-child(1) .summary-label::before,
+.report-summary .summary-item:has(.summary-value.indigo) .summary-label::before {
+	content: "";
+	display: inline-block;
+	width: 6px;
+	height: 6px;
+	border-radius: 50%;
+	background: #6366f1;
+	margin-right: 6px;
+}
+.report-summary .summary-item.kpi-indigo .summary-value,
+.report-summary .summary-item:nth-child(1) .summary-value,
+.report-summary .summary-item:has(.summary-value.indigo) .summary-value {
+	color: #312e81 !important;
+}
+
+/* 2. Emerald Green: Assigned Assets & Active Custodians */
+.report-summary .summary-item.kpi-green,
+.report-summary .summary-item:nth-child(2),
+.report-summary .summary-item:has(.summary-value.green) {
+	border-top: 4px solid #10b981 !important;
+	border-color: #d1fae5 !important;
+	background: linear-gradient(180deg, #ecfdf5 0%, #ffffff 85%) !important;
+	box-shadow: 0 2px 8px rgba(16, 185, 129, 0.08) !important;
+}
+.report-summary .summary-item.kpi-green:hover,
+.report-summary .summary-item:nth-child(2):hover,
+.report-summary .summary-item:has(.summary-value.green):hover {
+	box-shadow: 0 6px 16px rgba(16, 185, 129, 0.16) !important;
+}
+.report-summary .summary-item.kpi-green .summary-label,
+.report-summary .summary-item:nth-child(2) .summary-label,
+.report-summary .summary-item:has(.summary-value.green) .summary-label {
+	color: #059669 !important;
+}
+.report-summary .summary-item.kpi-green .summary-label::before,
+.report-summary .summary-item:nth-child(2) .summary-label::before,
+.report-summary .summary-item:has(.summary-value.green) .summary-label::before {
+	content: "";
+	display: inline-block;
+	width: 6px;
+	height: 6px;
+	border-radius: 50%;
+	background: #10b981;
+	margin-right: 6px;
+}
+.report-summary .summary-item.kpi-green .summary-value,
+.report-summary .summary-item:nth-child(2) .summary-value,
+.report-summary .summary-item:has(.summary-value.green) .summary-value {
+	color: #065f46 !important;
+}
+
+/* 3. Royal Blue / Cyan: Available in Store & External Partners */
+.report-summary .summary-item.kpi-blue,
+.report-summary .summary-item.kpi-cyan,
+.report-summary .summary-item:nth-child(3),
+.report-summary .summary-item:has(.summary-value.blue),
+.report-summary .summary-item:has(.summary-value.cyan) {
+	border-top: 4px solid #3b82f6 !important;
+	border-color: #dbeafe !important;
+	background: linear-gradient(180deg, #eff6ff 0%, #ffffff 85%) !important;
+	box-shadow: 0 2px 8px rgba(59, 130, 246, 0.08) !important;
+}
+.report-summary .summary-item.kpi-blue:hover,
+.report-summary .summary-item.kpi-cyan:hover,
+.report-summary .summary-item:nth-child(3):hover,
+.report-summary .summary-item:has(.summary-value.blue):hover,
+.report-summary .summary-item:has(.summary-value.cyan):hover {
+	box-shadow: 0 6px 16px rgba(59, 130, 246, 0.16) !important;
+}
+.report-summary .summary-item.kpi-blue .summary-label,
+.report-summary .summary-item.kpi-cyan .summary-label,
+.report-summary .summary-item:nth-child(3) .summary-label,
+.report-summary .summary-item:has(.summary-value.blue) .summary-label,
+.report-summary .summary-item:has(.summary-value.cyan) .summary-label {
+	color: #2563eb !important;
+}
+.report-summary .summary-item.kpi-blue .summary-label::before,
+.report-summary .summary-item.kpi-cyan .summary-label::before,
+.report-summary .summary-item:nth-child(3) .summary-label::before,
+.report-summary .summary-item:has(.summary-value.blue) .summary-label::before,
+.report-summary .summary-item:has(.summary-value.cyan) .summary-label::before {
+	content: "";
+	display: inline-block;
+	width: 6px;
+	height: 6px;
+	border-radius: 50%;
+	background: #3b82f6;
+	margin-right: 6px;
+}
+.report-summary .summary-item.kpi-blue .summary-value,
+.report-summary .summary-item.kpi-cyan .summary-value,
+.report-summary .summary-item:nth-child(3) .summary-value,
+.report-summary .summary-item:has(.summary-value.blue) .summary-value,
+.report-summary .summary-item:has(.summary-value.cyan) .summary-value {
+	color: #1e40af !important;
+}
+
+/* 4. Amber / Orange: Under Maintenance & Impending Renewals */
+.report-summary .summary-item.kpi-orange,
+.report-summary .summary-item:nth-child(4),
+.report-summary .summary-item:has(.summary-value.orange) {
+	border-top: 4px solid #f59e0b !important;
+	border-color: #fef3c7 !important;
+	background: linear-gradient(180deg, #fffbeb 0%, #ffffff 85%) !important;
+	box-shadow: 0 2px 8px rgba(245, 158, 11, 0.08) !important;
+}
+.report-summary .summary-item.kpi-orange:hover,
+.report-summary .summary-item:nth-child(4):hover,
+.report-summary .summary-item:has(.summary-value.orange):hover {
+	box-shadow: 0 6px 16px rgba(245, 158, 11, 0.16) !important;
+}
+.report-summary .summary-item.kpi-orange .summary-label,
+.report-summary .summary-item:nth-child(4) .summary-label,
+.report-summary .summary-item:has(.summary-value.orange) .summary-label {
+	color: #d97706 !important;
+}
+.report-summary .summary-item.kpi-orange .summary-label::before,
+.report-summary .summary-item:nth-child(4) .summary-label::before,
+.report-summary .summary-item:has(.summary-value.orange) .summary-label::before {
+	content: "";
+	display: inline-block;
+	width: 6px;
+	height: 6px;
+	border-radius: 50%;
+	background: #f59e0b;
+	margin-right: 6px;
+}
+.report-summary .summary-item.kpi-orange .summary-value,
+.report-summary .summary-item:nth-child(4) .summary-value,
+.report-summary .summary-item:has(.summary-value.orange) .summary-value {
+	color: #92400e !important;
+}
+
+/* 5. Rose / Red: Urgent Expirations & Exited Alerts */
+.report-summary .summary-item.kpi-red,
+.report-summary .summary-item:has(.summary-value.red) {
+	border-top: 4px solid #ef4444 !important;
+	border-color: #fee2e2 !important;
+	background: linear-gradient(180deg, #fef2f2 0%, #ffffff 85%) !important;
+	box-shadow: 0 2px 8px rgba(239, 68, 68, 0.08) !important;
+}
+.report-summary .summary-item.kpi-red:hover,
+.report-summary .summary-item:has(.summary-value.red):hover {
+	box-shadow: 0 6px 16px rgba(239, 68, 68, 0.16) !important;
+}
+.report-summary .summary-item.kpi-red .summary-label,
+.report-summary .summary-item:has(.summary-value.red) .summary-label {
+	color: #dc2626 !important;
+}
+.report-summary .summary-item.kpi-red .summary-label::before,
+.report-summary .summary-item:has(.summary-value.red) .summary-label::before {
+	content: "";
+	display: inline-block;
+	width: 6px;
+	height: 6px;
+	border-radius: 50%;
+	background: #ef4444;
+	margin-right: 6px;
+}
+.report-summary .summary-item.kpi-red .summary-value,
+.report-summary .summary-item:has(.summary-value.red) .summary-value {
+	color: #991b1b !important;
+}
+
+/* 6. Purple: External Assets & Global Licence Portfolios */
+.report-summary .summary-item.kpi-purple,
+.report-summary .summary-item:has(.summary-value.purple) {
+	border-top: 4px solid #8b5cf6 !important;
+	border-color: #ede9fe !important;
+	background: linear-gradient(180deg, #f5f3ff 0%, #ffffff 85%) !important;
+	box-shadow: 0 2px 8px rgba(139, 92, 246, 0.08) !important;
+}
+.report-summary .summary-item.kpi-purple:hover,
+.report-summary .summary-item:has(.summary-value.purple):hover {
+	box-shadow: 0 6px 16px rgba(139, 92, 246, 0.16) !important;
+}
+.report-summary .summary-item.kpi-purple .summary-label,
+.report-summary .summary-item:has(.summary-value.purple) .summary-label {
+	color: #7c3aed !important;
+}
+.report-summary .summary-item.kpi-purple .summary-label::before,
+.report-summary .summary-item:has(.summary-value.purple) .summary-label::before {
+	content: "";
+	display: inline-block;
+	width: 6px;
+	height: 6px;
+	border-radius: 50%;
+	background: #8b5cf6;
+	margin-right: 6px;
+}
+.report-summary .summary-item.kpi-purple .summary-value,
+.report-summary .summary-item:has(.summary-value.purple) .summary-value {
+	color: #5b21b6 !important;
+}
+
+/* --- Dark Theme Support for KPI Cards --- */
+[data-theme="dark"] .report-summary .summary-item {
+	background: #0f172a !important;
+	border-color: #1e293b !important;
+}
+
+[data-theme="dark"] .report-summary .summary-item.kpi-indigo,
+[data-theme="dark"] .report-summary .summary-item:nth-child(1),
+[data-theme="dark"] .report-summary .summary-item:has(.summary-value.indigo) {
+	border-top: 4px solid #818cf8 !important;
+	border-color: #312e81 !important;
+	background: linear-gradient(180deg, rgba(99, 102, 241, 0.18) 0%, #0f172a 85%) !important;
+}
+[data-theme="dark"] .report-summary .summary-item.kpi-indigo .summary-label,
+[data-theme="dark"] .report-summary .summary-item:nth-child(1) .summary-label,
+[data-theme="dark"] .report-summary .summary-item:has(.summary-value.indigo) .summary-label {
+	color: #a5b4fc !important;
+}
+[data-theme="dark"] .report-summary .summary-item.kpi-indigo .summary-value,
+[data-theme="dark"] .report-summary .summary-item:nth-child(1) .summary-value,
+[data-theme="dark"] .report-summary .summary-item:has(.summary-value.indigo) .summary-value {
+	color: #e0e7ff !important;
+}
+
+[data-theme="dark"] .report-summary .summary-item.kpi-green,
+[data-theme="dark"] .report-summary .summary-item:nth-child(2),
+[data-theme="dark"] .report-summary .summary-item:has(.summary-value.green) {
+	border-top: 4px solid #34d399 !important;
+	border-color: #064e3b !important;
+	background: linear-gradient(180deg, rgba(16, 185, 129, 0.18) 0%, #0f172a 85%) !important;
+}
+[data-theme="dark"] .report-summary .summary-item.kpi-green .summary-label,
+[data-theme="dark"] .report-summary .summary-item:nth-child(2) .summary-label,
+[data-theme="dark"] .report-summary .summary-item:has(.summary-value.green) .summary-label {
+	color: #6ee7b7 !important;
+}
+[data-theme="dark"] .report-summary .summary-item.kpi-green .summary-value,
+[data-theme="dark"] .report-summary .summary-item:nth-child(2) .summary-value,
+[data-theme="dark"] .report-summary .summary-item:has(.summary-value.green) .summary-value {
+	color: #ecfdf5 !important;
+}
+
+[data-theme="dark"] .report-summary .summary-item.kpi-blue,
+[data-theme="dark"] .report-summary .summary-item.kpi-cyan,
+[data-theme="dark"] .report-summary .summary-item:nth-child(3),
+[data-theme="dark"] .report-summary .summary-item:has(.summary-value.blue),
+[data-theme="dark"] .report-summary .summary-item:has(.summary-value.cyan) {
+	border-top: 4px solid #60a5fa !important;
+	border-color: #1e3a8a !important;
+	background: linear-gradient(180deg, rgba(59, 130, 246, 0.18) 0%, #0f172a 85%) !important;
+}
+[data-theme="dark"] .report-summary .summary-item.kpi-blue .summary-label,
+[data-theme="dark"] .report-summary .summary-item.kpi-cyan .summary-label,
+[data-theme="dark"] .report-summary .summary-item:nth-child(3) .summary-label,
+[data-theme="dark"] .report-summary .summary-item:has(.summary-value.blue) .summary-label,
+[data-theme="dark"] .report-summary .summary-item:has(.summary-value.cyan) .summary-label {
+	color: #93c5fd !important;
+}
+[data-theme="dark"] .report-summary .summary-item.kpi-blue .summary-value,
+[data-theme="dark"] .report-summary .summary-item.kpi-cyan .summary-value,
+[data-theme="dark"] .report-summary .summary-item:nth-child(3) .summary-value,
+[data-theme="dark"] .report-summary .summary-item:has(.summary-value.blue) .summary-value,
+[data-theme="dark"] .report-summary .summary-item:has(.summary-value.cyan) .summary-value {
+	color: #eff6ff !important;
+}
+
+[data-theme="dark"] .report-summary .summary-item.kpi-orange,
+[data-theme="dark"] .report-summary .summary-item:nth-child(4),
+[data-theme="dark"] .report-summary .summary-item:has(.summary-value.orange) {
+	border-top: 4px solid #fbbf24 !important;
+	border-color: #78350f !important;
+	background: linear-gradient(180deg, rgba(245, 158, 11, 0.18) 0%, #0f172a 85%) !important;
+}
+[data-theme="dark"] .report-summary .summary-item.kpi-orange .summary-label,
+[data-theme="dark"] .report-summary .summary-item:nth-child(4) .summary-label,
+[data-theme="dark"] .report-summary .summary-item:has(.summary-value.orange) .summary-label {
+	color: #fcd34d !important;
+}
+[data-theme="dark"] .report-summary .summary-item.kpi-orange .summary-value,
+[data-theme="dark"] .report-summary .summary-item:nth-child(4) .summary-value,
+[data-theme="dark"] .report-summary .summary-item:has(.summary-value.orange) .summary-value {
+	color: #fffbeb !important;
+}
+
+[data-theme="dark"] .report-summary .summary-item.kpi-red,
+[data-theme="dark"] .report-summary .summary-item:has(.summary-value.red) {
+	border-top: 4px solid #f87171 !important;
+	border-color: #7f1d1d !important;
+	background: linear-gradient(180deg, rgba(239, 68, 68, 0.18) 0%, #0f172a 85%) !important;
+}
+[data-theme="dark"] .report-summary .summary-item.kpi-red .summary-label,
+[data-theme="dark"] .report-summary .summary-item:has(.summary-value.red) .summary-label {
+	color: #fca5a5 !important;
+}
+[data-theme="dark"] .report-summary .summary-item.kpi-red .summary-value,
+[data-theme="dark"] .report-summary .summary-item:has(.summary-value.red) .summary-value {
+	color: #fee2e2 !important;
+}
+
+[data-theme="dark"] .report-summary .summary-item.kpi-purple,
+[data-theme="dark"] .report-summary .summary-item:has(.summary-value.purple) {
+	border-top: 4px solid #a78bfa !important;
+	border-color: #4c1d95 !important;
+	background: linear-gradient(180deg, rgba(139, 92, 246, 0.18) 0%, #0f172a 85%) !important;
+}
+[data-theme="dark"] .report-summary .summary-item.kpi-purple .summary-label,
+[data-theme="dark"] .report-summary .summary-item:has(.summary-value.purple) .summary-label {
+	color: #c4b5fd !important;
+}
+[data-theme="dark"] .report-summary .summary-item.kpi-purple .summary-value,
+[data-theme="dark"] .report-summary .summary-item:has(.summary-value.purple) .summary-value {
+	color: #f5f3ff !important;
+}
+
+/* Report Datatable Polish (Safe typography without disrupting frappe-datatable cell geometry) */
+.frappe-control[data-fieldtype="Report"] .datatable,
+.query-report .datatable {
+	font-family: inherit !important;
+	border: 1px solid #e2e8f0 !important;
+	border-radius: 8px !important;
+}
+
+.datatable .dt-header {
+	background-color: #f8fafc !important;
+	border-bottom: 2px solid #e2e8f0 !important;
+}
+
+.datatable .dt-header .dt-cell__content {
+	font-weight: 700 !important;
+	font-size: 11.5px !important;
+	letter-spacing: 0.3px !important;
+	color: #475569 !important;
+}
+
+/* Inline Filter Input Polish */
+.datatable .dt-filter {
+	border: 1px solid #cbd5e1 !important;
+	background: #ffffff !important;
+	border-radius: 6px !important;
+	padding: 2px 8px !important;
+	font-size: 11.5px !important;
+	color: #334155 !important;
+	height: 24px !important;
+	line-height: 20px !important;
+	transition: all 0.15s ease !important;
+}
+
+.datatable .dt-filter:focus {
+	border-color: #3b82f6 !important;
+	box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.15) !important;
+	outline: none !important;
+}
+
+.datatable .dt-row:hover {
+	background-color: #f8fafc !important;
+}
+
+.datatable .dt-cell__content {
+	color: #1e293b !important;
+	font-size: 12.5px !important;
+}
+
+/* Compact report chart if toggled visible */
+.query-report .chart-wrapper {
+	margin-bottom: 16px !important;
+	max-height: 220px !important;
+}
+.query-report .chart-wrapper .frappe-chart {
+	max-height: 200px !important;
+}
+
+/* Indicator badges in Reports */
+.indicator-pill {
+	display: inline-flex !important;
+	align-items: center !important;
+	gap: 5px !important;
+	padding: 2px 8px !important;
+	border-radius: 9999px !important;
+	font-size: 11px !important;
+	font-weight: 600 !important;
+	line-height: 1.2 !important;
+	letter-spacing: -0.1px !important;
+}
+
+.indicator-pill.green {
+	background: #ecfdf5 !important;
+	color: #065f46 !important;
+	border: 1px solid #a7f3d0 !important;
+}
+
+.indicator-pill.blue {
+	background: #eff6ff !important;
+	color: #1e40af !important;
+	border: 1px solid #bfdbfe !important;
+}
+
+.indicator-pill.orange,
+.indicator-pill.yellow {
+	background: #fffbeb !important;
+	color: #92400e !important;
+	border: 1px solid #fde68a !important;
+}
+
+.indicator-pill.red {
+	background: #fef2f2 !important;
+	color: #991b1b !important;
+	border: 1px solid #fecaca !important;
+}
+
+.indicator-pill.cyan {
+	background: #ecfeff !important;
+	color: #155e75 !important;
+	border: 1px solid #a5f3fc !important;
+}
+
+.indicator-pill.purple {
+	background: #f5f3ff !important;
+	color: #5b21b6 !important;
+	border: 1px solid #ddd6fe !important;
+}
+
+.indicator-pill.gray,
+.indicator-pill.darkgray {
+	background: #f8fafc !important;
+	color: #475569 !important;
+	border: 1px solid #e2e8f0 !important;
+}
+
+

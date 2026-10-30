@@ -111,6 +111,12 @@ frappe.query_reports["Tracora Report"] = {
 		}
 	],
 
+	get_datatable_options: function(options) {
+		return Object.assign(options || {}, {
+			inlineFilters: false
+		});
+	},
+
 	onload: function(report) {
 		report.toggle_contextual_filters = function() {
 			const view = report.get_filter_value("primary_view") || "Assets Owned";
@@ -179,16 +185,152 @@ frappe.query_reports["Tracora Report"] = {
 				report.toggle_contextual_filters();
 			}
 		}, 100);
+
+		if (!report.page.has_chart_toggle) {
+			report.page.has_chart_toggle = true;
+			report.page.add_inner_button(__('📊 Toggle Chart'), function() {
+				if (report.$chart) {
+					report.$chart.toggle();
+				}
+			}, __('Actions'));
+		}
 	},
 
 	after_refresh: function(report) {
 		if (report && typeof report.toggle_contextual_filters === "function") {
 			report.toggle_contextual_filters();
 		}
+
+		// Keep the datatable prominently in focus: hide bulky chart by default
+		if (report.$chart && report.$chart.length) {
+			report.$chart.hide();
+		}
+
+		// Executive KPI Summary Cards
+		if (report && report.$summary && report.data && Array.isArray(report.data)) {
+			report.$summary.empty();
+			const view = report.get_filter_value("primary_view") || "Assets Owned";
+			const data = report.data;
+			const total_count = data.length;
+			const summaries = [];
+
+			if (view === "Licence Expiry" || view === "Licence Renewal Due") {
+				const exp_30 = data.filter(d => {
+					const days = Number(d.days_remaining ?? d.days_until_renewal);
+					return !isNaN(days) && days <= 30;
+				}).length;
+				const exp_90 = data.filter(d => {
+					const days = Number(d.days_remaining ?? d.days_until_renewal);
+					return !isNaN(days) && days > 30 && days <= 90;
+				}).length;
+
+				summaries.push({
+					value: total_count,
+					indicator: "Indigo",
+					label: __("Tracked Licences"),
+					datatype: "Int"
+				});
+				summaries.push({
+					value: exp_30,
+					indicator: exp_30 > 0 ? "Red" : "Green",
+					label: __("Expiring ≤ 30 Days"),
+					datatype: "Int"
+				});
+				summaries.push({
+					value: exp_90,
+					indicator: exp_90 > 0 ? "Orange" : "Blue",
+					label: __("Expiring in 31–90 Days"),
+					datatype: "Int"
+				});
+			} else if (view === "Assets by Employee") {
+				const exited_alerts = data.filter(d => d.employee_status === "Exited").length;
+				const unique_emps = new Set(data.map(d => d.employee).filter(Boolean)).size;
+
+				summaries.push({
+					value: total_count,
+					indicator: "Indigo",
+					label: __("Assets in Custody"),
+					datatype: "Int"
+				});
+				summaries.push({
+					value: unique_emps,
+					indicator: "Green",
+					label: __("Active Custodians"),
+					datatype: "Int"
+				});
+				summaries.push({
+					value: exited_alerts,
+					indicator: exited_alerts > 0 ? "Red" : "Green",
+					label: __("Exited Employee Alerts"),
+					datatype: "Int"
+				});
+			} else if (view === "External Custody") {
+				const unique_holders = new Set(data.map(d => d.external_holder_name).filter(Boolean)).size;
+				summaries.push({
+					value: total_count,
+					indicator: "Purple",
+					label: __("External Assets"),
+					datatype: "Int"
+				});
+				summaries.push({
+					value: unique_holders,
+					indicator: "Blue",
+					label: __("External Partners"),
+					datatype: "Int"
+				});
+			} else {
+				// Standard Asset Views (Assets Owned, Assets Held, Assets by Branch, Assets by Department)
+				const assigned = data.filter(d => d.status === "Assigned").length;
+				const in_store = data.filter(d => d.status === "In Store").length;
+				const maintenance = data.filter(d => d.status === "Under Maintenance").length;
+
+				summaries.push({
+					value: total_count,
+					indicator: "Indigo",
+					label: __("Total Assets"),
+					datatype: "Int"
+				});
+				summaries.push({
+					value: assigned,
+					indicator: "Green",
+					label: __("Assigned"),
+					datatype: "Int"
+				});
+				summaries.push({
+					value: in_store,
+					indicator: "Blue",
+					label: __("Available in Store"),
+					datatype: "Int"
+				});
+				summaries.push({
+					value: maintenance,
+					indicator: "Orange",
+					label: __("Under Maintenance"),
+					datatype: "Int"
+				});
+			}
+
+			if (typeof report.render_summary === "function") {
+				report.render_summary(summaries);
+			}
+
+			// Apply rich thematic classes to each summary-item card
+			report.$summary.find(".summary-item").each(function(idx) {
+				const $card = $(this);
+				const sum = summaries[idx];
+				if (sum && sum.indicator) {
+					$card.addClass("kpi-" + sum.indicator.toLowerCase());
+				}
+			});
+		}
 	},
 
 	formatter: function(value, row, column, data, default_formatter) {
 		value = default_formatter(value, row, column, data);
+
+		if (column.fieldname === "asset_tag" && value) {
+			return `<span style="font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-weight: 600; color: #2563eb;">${value}</span>`;
+		}
 
 		if (column.fieldname === "status" && data && data.status) {
 			const color_map = {
@@ -200,6 +342,18 @@ frappe.query_reports["Tracora Report"] = {
 				"Lost": "red"
 			};
 			const c = color_map[data.status] || "blue";
+			return `<span class="indicator-pill ${c}">${value}</span>`;
+		}
+
+		if (column.fieldname === "condition" && data && data.condition) {
+			const cond_map = {
+				"New": "green",
+				"Good": "cyan",
+				"Fair": "orange",
+				"Poor": "red",
+				"Damaged": "red"
+			};
+			const c = cond_map[data.condition] || "gray";
 			return `<span class="indicator-pill ${c}">${value}</span>`;
 		}
 

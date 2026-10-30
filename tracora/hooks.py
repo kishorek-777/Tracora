@@ -1,9 +1,10 @@
 app_name = "tracora"
-app_title = "Tracora"
+app_title = "IT Asset Intelligence"
 app_publisher = "Kishore"
 app_description = "Asset custody register"
 app_email = "kishore.k@aionioncapital.com"
 app_license = "mit"
+app_logo_url = "/assets/tracora/images/tracora_icon.svg"
 
 # Website routing for custom SPA portal & mobile PWA
 website_route_rules = [
@@ -12,6 +13,13 @@ website_route_rules = [
 	{"from_route": "/mobile/<path:app_path>", "to_route": "mobile"},
 	{"from_route": "/mobile", "to_route": "mobile"},
 ]
+
+# Desk JS includes with cache busting
+app_include_js = [
+	"/assets/tracora/js/tracora.js?v=2.8.0",
+	"/assets/tracora/js/tracora_quick_ops.js?v=2.8.0",
+]
+app_include_css = "/assets/tracora/css/tracora.css?v=2.8.0"
 
 # Doc events for external apps (HRMS / ERPNext)
 doc_events = {
@@ -68,13 +76,6 @@ scheduler_events = {
 	],
 }
 
-
-# Desk JS includes
-app_include_js = [
-	"/assets/tracora/js/tracora.js",
-	"/assets/tracora/js/tracora_quick_ops.js",
-]
-app_include_css = "/assets/tracora/css/tracora.css"
 
 # Permission hooks
 permission_query_conditions = {

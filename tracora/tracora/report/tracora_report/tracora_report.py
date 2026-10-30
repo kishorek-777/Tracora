@@ -69,17 +69,17 @@ def add_filter_condition(conditions, values, field_expr, param_name, filter_val)
 # -------------------------------------------------------------------------
 def get_assets_owned(filters):
 	columns = [
-		{"label": _("Asset Tag"), "fieldname": "asset_tag", "fieldtype": "Data", "width": 130},
+		{"label": _("Asset Tag"), "fieldname": "asset_tag", "fieldtype": "Data", "width": 120},
 		{"label": _("Asset Name"), "fieldname": "asset_name", "fieldtype": "Data", "width": 180},
-		{"label": _("Brand"), "fieldname": "brand", "fieldtype": "Link", "options": "Tracora Brand", "width": 120},
-		{"label": _("Model Number"), "fieldname": "model_number", "fieldtype": "Data", "width": 130},
-		{"label": _("Serial No"), "fieldname": "serial_no", "fieldtype": "Data", "width": 130},
-		{"label": _("Owner Company"), "fieldname": "owner_company", "fieldtype": "Link", "options": "Tracora Company", "width": 150},
-		{"label": _("Holding Company"), "fieldname": "holding_company", "fieldtype": "Link", "options": "Tracora Company", "width": 150},
-		{"label": _("Branch"), "fieldname": "branch", "fieldtype": "Link", "options": "Tracora Branch", "width": 130},
-		{"label": _("Location"), "fieldname": "location", "fieldtype": "Link", "options": "Tracora Location", "width": 130},
-		{"label": _("Status"), "fieldname": "status", "fieldtype": "Data", "width": 120},
+		{"label": _("Status"), "fieldname": "status", "fieldtype": "Data", "width": 145},
 		{"label": _("Condition"), "fieldname": "condition", "fieldtype": "Data", "width": 100},
+		{"label": _("Location"), "fieldname": "location", "fieldtype": "Link", "options": "Tracora Location", "width": 130},
+		{"label": _("Brand"), "fieldname": "brand", "fieldtype": "Link", "options": "Tracora Brand", "width": 110},
+		{"label": _("Model Number"), "fieldname": "model_number", "fieldtype": "Data", "width": 120},
+		{"label": _("Serial No"), "fieldname": "serial_no", "fieldtype": "Data", "width": 120},
+		{"label": _("Owner Company"), "fieldname": "owner_company", "fieldtype": "Link", "options": "Tracora Company", "width": 140},
+		{"label": _("Holding Company"), "fieldname": "holding_company", "fieldtype": "Link", "options": "Tracora Company", "width": 140},
+		{"label": _("Branch"), "fieldname": "branch", "fieldtype": "Link", "options": "Tracora Branch", "width": 120},
 	]
 	conditions = []
 	values = {}
@@ -131,14 +131,14 @@ def get_assets_owned(filters):
 # -------------------------------------------------------------------------
 def get_assets_held(filters):
 	columns = [
-		{"label": _("Asset Tag"), "fieldname": "asset_tag", "fieldtype": "Data", "width": 130},
+		{"label": _("Asset Tag"), "fieldname": "asset_tag", "fieldtype": "Data", "width": 120},
 		{"label": _("Asset Name"), "fieldname": "asset_name", "fieldtype": "Data", "width": 180},
-		{"label": _("Holding Company"), "fieldname": "holding_company", "fieldtype": "Link", "options": "Tracora Company", "width": 150},
-		{"label": _("Owner Company (Ownership)"), "fieldname": "owner_company", "fieldtype": "Link", "options": "Tracora Company", "width": 180},
+		{"label": _("Status"), "fieldname": "status", "fieldtype": "Data", "width": 145},
 		{"label": _("Assigned To"), "fieldname": "assigned_to", "fieldtype": "Link", "options": "Tracora Employee", "width": 140},
-		{"label": _("Branch"), "fieldname": "branch", "fieldtype": "Link", "options": "Tracora Branch", "width": 130},
 		{"label": _("Location"), "fieldname": "location", "fieldtype": "Link", "options": "Tracora Location", "width": 130},
-		{"label": _("Status"), "fieldname": "status", "fieldtype": "Data", "width": 120},
+		{"label": _("Holding Company"), "fieldname": "holding_company", "fieldtype": "Link", "options": "Tracora Company", "width": 140},
+		{"label": _("Owner Company (Ownership)"), "fieldname": "owner_company", "fieldtype": "Link", "options": "Tracora Company", "width": 160},
+		{"label": _("Branch"), "fieldname": "branch", "fieldtype": "Link", "options": "Tracora Branch", "width": 120},
 	]
 	conditions = []
 	values = {}
@@ -173,7 +173,7 @@ def get_assets_by_branch(filters):
 		{"label": _("Asset Tag"), "fieldname": "asset_tag", "fieldtype": "Data", "width": 130},
 		{"label": _("Asset Name"), "fieldname": "asset_name", "fieldtype": "Data", "width": 180},
 		{"label": _("Brand"), "fieldname": "brand", "fieldtype": "Link", "options": "Tracora Brand", "width": 120},
-		{"label": _("Status"), "fieldname": "status", "fieldtype": "Data", "width": 120},
+		{"label": _("Status"), "fieldname": "status", "fieldtype": "Data", "width": 145},
 		{"label": _("Condition"), "fieldname": "condition", "fieldtype": "Data", "width": 100},
 		{"label": _("Assigned To"), "fieldname": "assigned_to", "fieldtype": "Link", "options": "Tracora Employee", "width": 140},
 		{"label": _("Location"), "fieldname": "location", "fieldtype": "Link", "options": "Tracora Location", "width": 130},
@@ -212,7 +212,7 @@ def get_assets_by_department(filters):
 		{"label": _("Asset Tag"), "fieldname": "asset_tag", "fieldtype": "Data", "width": 130},
 		{"label": _("Asset Name"), "fieldname": "asset_name", "fieldtype": "Data", "width": 180},
 		{"label": _("Brand"), "fieldname": "brand", "fieldtype": "Link", "options": "Tracora Brand", "width": 120},
-		{"label": _("Status"), "fieldname": "status", "fieldtype": "Data", "width": 120},
+		{"label": _("Status"), "fieldname": "status", "fieldtype": "Data", "width": 145},
 		{"label": _("Assigned To"), "fieldname": "assigned_to", "fieldtype": "Link", "options": "Tracora Employee", "width": 140},
 	]
 	conditions = []
