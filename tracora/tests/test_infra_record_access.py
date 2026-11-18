@@ -216,3 +216,49 @@ class TestInfraRecordAccess(FrappeTestCase):
 			frappe.has_permission("Event", "read", user=self.plain_user),
 			"Plain user should have read permission on Event",
 		)
+
+	def test_08_import_permission_and_data_import_validation(self):
+		"""Tracora Infra Record, Category, and Record Type allow import, granting import permission to Admin and Super Admin while denying others."""
+		infra_doctypes = [
+			"Tracora Infra Record",
+			"Tracora Infra Category",
+			"Tracora Infra Record Type",
+		]
+		for dt in infra_doctypes:
+			doc_name = frappe.scrub(dt)
+			frappe.reload_doc("tracora", "doctype", doc_name, force=True)
+			meta = frappe.get_meta(dt)
+			self.assertEqual(meta.allow_import, 1, f"{dt} must have allow_import enabled")
+
+			# Admin and Super Admin have import permission
+			self.assertTrue(
+				frappe.has_permission(dt, "import", user=self.admin_user),
+				f"Tracora Admin should have import permission on {dt}",
+			)
+			self.assertTrue(
+				frappe.has_permission(dt, "import", user=self.super_admin_user),
+				f"Tracora Super Admin should have import permission on {dt}",
+			)
+
+			# Plain user and System Manager without Tracora role cannot import
+			self.assertFalse(
+				frappe.has_permission(dt, "import", user=self.plain_user),
+				f"Plain user should NOT have import permission on {dt}",
+			)
+			self.assertFalse(
+				frappe.has_permission(dt, "import", user=self.sys_mgr_user),
+				f"System Manager should NOT have import permission on {dt}",
+			)
+
+			# DataImport document validation succeeds as Admin
+			frappe.set_user(self.admin_user)
+			try:
+				di = frappe.get_doc({
+					"doctype": "Data Import",
+					"reference_doctype": dt,
+					"import_type": "Insert New Records",
+				})
+				di.validate_doctype()
+			finally:
+				frappe.set_user("Administrator")
+
