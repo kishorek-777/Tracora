@@ -3,6 +3,24 @@
 
 frappe.provide('tracora');
 
+// One-time migration: reset cached section-breaks-state for Tracora so new default keep_closed takes effect
+(function() {
+	if (!localStorage.getItem('tracora_sidebar_default_collapsed_v1')) {
+		try {
+			const raw = localStorage.getItem('section-breaks-state');
+			if (raw) {
+				const state = JSON.parse(raw);
+				if (state && (state['Tracora'] || state['tracora'])) {
+					delete state['Tracora'];
+					delete state['tracora'];
+					localStorage.setItem('section-breaks-state', JSON.stringify(state));
+				}
+			}
+		} catch (e) {}
+		localStorage.setItem('tracora_sidebar_default_collapsed_v1', '1');
+	}
+})();
+
 tracora.check_scheduler_health = function() {
 	if (!frappe.session || frappe.session.user === 'Guest') return;
 

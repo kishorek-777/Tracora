@@ -16,10 +16,10 @@ website_route_rules = [
 
 # Desk JS includes with cache busting
 app_include_js = [
-	"/assets/tracora/js/tracora.js?v=2.8.0",
-	"/assets/tracora/js/tracora_quick_ops.js?v=2.8.0",
+	"/assets/tracora/js/tracora.js?v=2.8.1",
+	"/assets/tracora/js/tracora_quick_ops.js?v=2.8.1",
 ]
-app_include_css = "/assets/tracora/css/tracora.css?v=2.8.0"
+app_include_css = "/assets/tracora/css/tracora.css?v=2.8.1"
 
 # Doc events for external apps (HRMS / ERPNext)
 doc_events = {
